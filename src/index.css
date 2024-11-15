@@ -1,0 +1,152 @@
+:root {
+  font-family: Poppins;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: black;
+  background-color: #FFFFFF;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* LIQUIDATION REPORT CONTAINERS (LEFT & RIGHT) */
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 50px;
+  max-width: 1000px;
+  margin: auto;
+  border-radius: 8px;
+}
+
+.form-left, .form-right {
+  flex: 1;
+}
+
+.left-fields, .form-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.left-fields label,
+.form-right label {
+  margin-top: 10px;
+}
+
+h1 {
+  text-align: center;
+}
+
+a {
+  font-weight: 500;
+  color: #263146;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #263146;
+}
+
+body {
+  margin: auto;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.5em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 30px;
+  border: none;
+  margin: 3px;
+  padding: 7px 25px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: white;
+  background-color: #263146;
+  transition: background-color 0.25s;
+}
+
+label {
+  letter-spacing: -0.5px;
+  font-size: large;
+  font-weight: bold;
+}
+
+
+.dropzone {
+  border: 1px dashed #ccc;
+  background-color: #e3e3e3;
+  padding: 10px;
+  height: 265px;
+  text-align: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* BUTTON STYLING */
+button {
+  border-radius: 30px;
+  border: none;
+  padding: 7px 25px;
+  color: white;
+  background-color: #263146;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+/* SAVE BUTTON */
+button.btnSave {
+  background-color: #263146;
+  width: 33%;
+}
+
+/* DISABLED BUTTON */
+button.btnUpdate {
+  background-color: #505050;
+  width: 33%;
+}
+
+/* CANCEL BUTTON */
+button.btnCancel {
+  color: black;
+  background-color: #E3E3E3;
+  width: 33%;
+}
+
+button:hover {
+  color: black;
+  background-color: #E3E3E3;
+}
+
+input, .dropzone {
+  margin-top: 5px;
+  font-family: inherit;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+}
+
+nav {
+  background-color: #263146;
+  padding: 0 20px; /* Adjusted padding to focus spacing on sides */
+  font-size: large;
+  height: 70px;
+  color: white;
+  width: 100%;
+  display: flex;
+  align-items: center; /* Vertically centers the items */
+}
+
