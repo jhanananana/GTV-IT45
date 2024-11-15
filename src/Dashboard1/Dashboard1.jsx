@@ -1,8 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form"; // Hook for form handling
-import "./Dashboard.css";
+import './Dashboard1.css';
 
-const Dashboard = () => {
+const Dashboard1 = () => {
     const { register, handleSubmit } = useForm(); // Initialize useForm hook
 
     const onSubmit = (data) => {
@@ -108,5 +108,4 @@ const Legend = () => (
     </div>
 );
 
-export default Dashboard;
-
+export default Dashboard1;

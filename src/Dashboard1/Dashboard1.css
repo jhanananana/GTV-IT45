@@ -99,6 +99,9 @@ td {
   
 .dashboard-group label {
     margin-right: 10px; /* Space between label and input */
+    color: black;
+    font-size: 1rem;
+    font-weight: 500;
 }
   
 .dashboard-group input {

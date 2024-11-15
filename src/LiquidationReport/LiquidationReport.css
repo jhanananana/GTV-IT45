@@ -18,7 +18,6 @@ body {
 
 .form-container {
   display: flex;
-  justify-content: space-between;
   padding: 40px;
   border-radius: 8px;
   margin: auto;
@@ -27,26 +26,26 @@ body {
 }
 
 /* Left and Right Columns */
-.rejectForm-left {
+.form-left {
   flex: 1;
 }
 
-.rejectForm-right {
+.form-right {
   flex: 1;
 }
 
 /* Left Fields */
-.rejectForm-fields {
+.form-fields {
   display: flex;
   flex-direction: column;
 }
 
-.rejectForm-group {
+.form-group {
   margin-bottom: 20px;
 }
 
-.rejectForm-left label,
-.rejectForm-right label {
+.form-left label,
+.form-right label {
   margin-top: 10px;
 }
 
@@ -59,7 +58,7 @@ button {
   border-radius: 30px;
   border: none;
   margin: 3px;
-  padding: 7px 25px;
+  padding: 10px 20px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -82,11 +81,6 @@ button.btnCancel {
   color: black;
   background-color: #E3E3E3;
   width: 150px;
-}
-
-button:hover {
-  color: black;
-  background-color: #E3E3E3;
 }
 
 /* Label Styling */

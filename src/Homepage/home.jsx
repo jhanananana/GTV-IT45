@@ -19,6 +19,10 @@ const Home = () => {
                     <div className="links">
                         <Link to="/home" className="link">Home</Link>
                         <Link to="/liquidationreport" className="link">Liquidation Report</Link>
+                        <Link to="/dashboard1" className="link">Dashboard 1</Link>
+                        <Link to="/dashboard1" className="link">Dashboard 2</Link>
+                        <Link to="/dashboard3" className="link">Dashboard 3 (Display)</Link>
+                        <Link to="/reason-for-rejecting" className="link">Reject Form</Link>
                     </div>
                 </div>
             </div>
