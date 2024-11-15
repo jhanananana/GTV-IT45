@@ -84,49 +84,80 @@ td {
     margin-top: 5px;
     font-size: medium;
     font-family: inherit;
-    margin-bottom: 5px;
     padding: 8px;
     border-radius: 5px;
-    width: 380px;
+    width: 300px;
     border: 1px solid #ddd;
-    margin-left: 10px;
 }
 
-/* FORM CONTAINER FOR LEFT & RIGHT SIDES */
-.dashboard-container {
+.dashboard-group {
     display: flex;
-    justify-content: space-between;
-    padding: 50px;
-    max-width: 100%;
-    margin: auto;
-    border-radius: 8px;
-    gap: 20px; /* Adds space between the left and right columns */
+    flex-direction: row; /* Align label and input horizontally */
+    align-items: left; /* Vertically center */
+    margin-bottom: 10px;
   }
+  
+.dashboard-group label {
+    margin-right: 10px; /* Space between label and input */
+}
+  
+.dashboard-group input {
+    width: 50%; /* Reduce input width */
+    margin-top: 5px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+}
+  
+  /* LIQUIDATION REPORT CONTAINERS (LEFT & RIGHT) */
+.dashboard-container {
+  display: flex;
+  margin: 0px 40px;
+  border-radius: 8px;
+}
 
-/* Left and Right Form Sections */
-.dashboard-left,
-.dashboard-right {
+.dashboard-left, .dashboard-right {
   flex: 1;
 }
 
-/* Aligning the Fields Inside Left and Right */
-.dashboard-group {
-  display: flex;
-  flex-direction: column; /* Stack label and input vertically */
-  align-items: flex-start; /* Align to left */
-  margin-bottom: 10px;
-}
-
-.dashboard-group label {
-  margin-bottom: 5px; /* Space between label and input */
-}
-
-.dashboard-group input {
-  width: 80%;
-}
-
-/* Adjustments for right-side fields */
-.dashboard-right .dashboard-group {
+/* Left Fields */
+.dashboard-fields {
   display: flex;
   flex-direction: column;
+}
+
+.dashboard-group {
+  margin-bottom: 20px;
+}
+
+.dashboard-left label,
+.dashboard-right label {
+    width: 30%;
+    margin-top: 10px;
+    text-align: right;
+} 
+
+.dashboard-buttons {
+    margin: 20px;
+    display: flex;
+    justify-content: right;
+    gap: 10px; /* Space between buttons */
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    width: 200px;
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.btn.reject {
+    background-color: #840303;
+}
+
+.btn.approve {
+    background-color: #6AAD36;
 }

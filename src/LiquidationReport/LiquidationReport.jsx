@@ -103,7 +103,7 @@ const LiquidationReport = () => {
             <input className='cashAdvInput' id="excessRefund" type="number" {...register('excessRefund')} placeholder="123,456.78" readOnly />
           </div>
 
-          <div className="buttons">
+          <div className="buttons" style={{justifyContent: 'right'}}>
             <button type="submit" className="btnSave">Save</button>
             <button type="button" className="btnUpdate" onClick={handleUpdate}>Update</button>
             <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>

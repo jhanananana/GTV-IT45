@@ -11,33 +11,42 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* LIQUIDATION REPORT CONTAINERS (LEFT & RIGHT) */
+/* Centering the entire form container */
+body {
+  margin: 0;
+}
+
 .form-container {
   display: flex;
   justify-content: space-between;
-  padding: 50px;
-  max-width: 1000px;
-  margin: auto;
+  padding: 40px;
   border-radius: 8px;
+  margin: auto;
+  width: 70%;
   gap: 20px; /* Adds space between the left and right columns */
 }
 
-.form-left, .form-right {
+/* Left and Right Columns */
+.rejectForm-left {
+  flex: 1;
+}
+
+.rejectForm-right {
   flex: 1;
 }
 
 /* Left Fields */
-.left-fields {
+.rejectForm-fields {
   display: flex;
   flex-direction: column;
 }
 
-.field-group {
+.rejectForm-group {
   margin-bottom: 20px;
 }
 
-.left-fields label,
-.form-right label {
+.rejectForm-left label,
+.rejectForm-right label {
   margin-top: 10px;
 }
 
@@ -61,18 +70,18 @@ button {
 
 button.btnSave {
   background-color: #263146;
-  width: 33%;
+  width: 150px;
 }
 
 button.btnUpdate {
   background-color: #505050;
-  width: 33%;
+  width: 150px;
 }
 
 button.btnCancel {
   color: black;
   background-color: #E3E3E3;
-  width: 33%;
+  width: 150px;
 }
 
 button:hover {
@@ -82,7 +91,6 @@ button:hover {
 
 /* Label Styling */
 label {
-  letter-spacing: -0.5px;
   font-size: large;
   text-align: right;
 }
@@ -111,25 +119,25 @@ label {
   margin-bottom: 5px;
   padding: 8px;
   border-radius: 5px;
-  width: 40px;
+  width: 140px;
   border: 1px solid #e0e0e0;
 }
 
 /* Flexbox for Label and Input Alignment */
-.form-group {
+.rejectForm-group {
   display: flex;
   flex-direction: row; /* Align label and input horizontally */
   align-items: center; /* Vertically center */
   margin-bottom: 10px;
 }
 
-.form-group label {
+.rejectForm-group label {
   width: 100%; /* Label width */
   margin-right: 10px; /* Space between label and input */
 }
 
-.form-group input {
-  width: 70%; /* Reduce input width */
+.rejectForm-group input {
+  width: 50%; /* Reduce input width */
   margin-top: 5px;
   padding: 8px;
   border-radius: 5px;
