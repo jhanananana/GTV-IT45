@@ -1,0 +1,132 @@
+.title {
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+.navlinks .link {
+    color: black;
+    text-decoration: underline;
+}
+
+h2 {
+    margin-left: 20px;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.legend {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.legend-item {
+    padding: 15px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: white;
+}
+
+.legend-item.open {
+    background-color: #f1c40f;
+}
+
+.legend-item.closed-approved {
+    background-color: #27ae60;
+}
+
+.legend-item.closed-declined {
+    background-color: #c0392b;
+}
+
+.section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+td {
+    background-color: #f5f5f5;
+    height: 40px;
+}
+
+.dashBoardInput {
+    margin-top: 5px;
+    font-size: medium;
+    font-family: inherit;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 5px;
+    width: 380px;
+    border: 1px solid #ddd;
+    margin-left: 10px;
+}
+
+/* FORM CONTAINER FOR LEFT & RIGHT SIDES */
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 50px;
+    max-width: 100%;
+    margin: auto;
+    border-radius: 8px;
+    gap: 20px; /* Adds space between the left and right columns */
+  }
+
+/* Left and Right Form Sections */
+.dashboard-left,
+.dashboard-right {
+  flex: 1;
+}
+
+/* Aligning the Fields Inside Left and Right */
+.dashboard-group {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  align-items: flex-start; /* Align to left */
+  margin-bottom: 10px;
+}
+
+.dashboard-group label {
+  margin-bottom: 5px; /* Space between label and input */
+}
+
+.dashboard-group input {
+  width: 80%;
+}
+
+/* Adjustments for right-side fields */
+.dashboard-right .dashboard-group {
+  display: flex;
+  flex-direction: column;
+}

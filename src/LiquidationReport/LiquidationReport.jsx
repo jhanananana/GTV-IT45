@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
-import PopupCashAdv from './CashAdvPopUp.jsx'; // Assuming the file is in the same directory as LiquidationReport.jsx
-import './index.css';
+import PopupCashAdv from './CashAdvPopUp.jsx';
+import './LiquidationReport.css';
 
 const LiquidationReport = () => {
   const { register, handleSubmit, reset } = useForm();
   const [file, setFile] = useState(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false); // Add state to control popup visibility
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     setFile(acceptedFiles[0]);
@@ -24,7 +24,7 @@ const LiquidationReport = () => {
   };
 
   const handleCashAdvanceRequest = () => {
-    setIsPopupOpen(true); // Open the popup
+    setIsPopupOpen(true);
   };
 
   const handleUpdate = () => {
@@ -37,87 +37,51 @@ const LiquidationReport = () => {
   };
 
   const closePopup = () => {
-    setIsPopupOpen(false); // Close the popup
+    setIsPopupOpen(false);
   };
 
   return (
     <>
-      <nav className="nav">
-        <img src="/logo.jpg" width={40} style={{ borderRadius: '100%', marginRight: '15px' }} />
-        Galanter & Jones SEA. INC.
-      </nav>
-
       <div className="form-container">
         {/* Left Side */}
         <div className="form-left">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <h1>Liquidation Report</h1>
-            <table>
-              <tbody>
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>Liquidation ID:</label>
-                  </td>
-                  <td>
-                    <input type="text" {...register('liquidationId')} defaultValue="1000" readOnly />
-                  </td>
-                </tr>
+            <h1 style={{ textAlign: 'right'}}>Liquidation Report</h1>
 
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>First Name:</label>
-                  </td>
-                  <td>
-                    <input type="text" {...register('firstName')} placeholder="First Name" />
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="liquidationId">Liquidation ID:</label>
+              <input className='cashAdvInput' id="liquidationId" type="text" {...register('liquidationId')} defaultValue="1000" readOnly />
+            </div>
 
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>Last Name:</label>
-                  </td>
-                  <td>
-                    <input type="text" {...register('lastName')} placeholder="Last Name" />
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="firstName">First Name:</label>
+              <input className='cashAdvInput' id="firstName" type="text" {...register('firstName')} placeholder="First Name" />
+            </div>
 
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>Activity:</label>
-                  </td>
-                  <td>
-                    <input type="text" {...register('activity')} placeholder="Name of Activity" />
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name:</label>
+              <input className='cashAdvInput' id="lastName" type="text" {...register('lastName')} placeholder="Last Name" />
+            </div>
 
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>Date of Activity:</label>
-                  </td>
-                  <td>
-                    <input type="text" {...register('dateOfActivity')} placeholder="YYYY/MM/DD" defaultValue={new Date().toISOString().split('T')[0]}
-                    />
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="activity">Activity:</label>
+              <input className='cashAdvInput' id="activity" type="text" {...register('activity')} placeholder="Name of Activity" />
+            </div>
 
-                <tr>
-                  <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-                    <label>Cash Advance Amount:</label>
-                  </td>
-                  <td>
-                    <input type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount" />
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="dateOfActivity">Date of Activity:</label>
+              <input className='cashAdvInput' id="dateOfActivity" type="text" {...register('dateOfActivity')} placeholder="YYYY/MM/DD" defaultValue={new Date().toISOString().split('T')[0]} />
+            </div>
 
-                <tr>
-                  <td></td>
-                  <td>
-                    <button type="button" onClick={handleCashAdvanceRequest}>Request Cash Advance</button>
-                  </td>
-                </tr>
+            <div className="form-group">
+              <label htmlFor="cashAdvanceAmount">Cash Advance Amount:</label>
+              <input className='cashAdvInput' id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount" />
+            </div>
+            
+            <div className="form-group" style={{justifyContent: 'right'}}>
+              <button type="button" onClick={handleCashAdvanceRequest}>Request Cash Advance</button>
+            </div>
 
-              </tbody>
-            </table>
           </form>
         </div>
 
@@ -129,23 +93,15 @@ const LiquidationReport = () => {
             <p>{file ? file.name : "Drag and drop file here"}</p>
           </div>
 
-          <tr>
-            <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-              <label>Total Amount Spent:</label>
-            </td>
-            <td>
-              <input type="number" {...register('totalAmountSpent')} placeholder="Amount Spent" />
-            </td>
-          </tr>
+          <div className="form-group">
+            <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
+            <input className='cashAdvInput' id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Amount Spent" />
+          </div>
 
-          <tr>
-            <td style={{ textAlign: 'right', paddingRight: '10px' }}>
-              <label>Excess/For Refund:</label>
-            </td>
-            <td>
-              <input type="number" {...register('excessRefund')} placeholder="123,456.78" readOnly />
-            </td>
-          </tr>
+          <div className="form-group">
+            <label htmlFor="excessRefund">Excess/For Refund:</label>
+            <input className='cashAdvInput' id="excessRefund" type="number" {...register('excessRefund')} placeholder="123,456.78" readOnly />
+          </div>
 
           <div className="buttons">
             <button type="submit" className="btnSave">Save</button>
@@ -155,12 +111,11 @@ const LiquidationReport = () => {
         </div>
       </div>
 
+
       {/* Render the popup component conditionally */}
       {isPopupOpen && <PopupCashAdv closePopup={closePopup} />}
-
     </>
   );
 };
 
 export default LiquidationReport;
-

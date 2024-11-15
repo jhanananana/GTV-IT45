@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./src/navbarAndFooter.css";
+import "./navbarAndFooter.css";
 
 export const Navbar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);

@@ -5,10 +5,15 @@ import { Link } from "react-router-dom";
 // styling imports
 import './home.css';
 
+// Import Navbar and Footer components
+import Navbar from '../NavBarAndFooter/navbar.jsx'; 
+import Footer from '../NavBarAndFooter/footer.jsx'; 
+
 const Home = () => {
     return (
         <div className="home">
-            {/* <Navbar /> */}
+            {/* Render Navbar */}
+            <Navbar />
             <div className="page-container">
                 <div className="content">
                     <div className="links">
@@ -17,7 +22,8 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            {/* <Footer /> */}
+            {/* Render Footer */}
+            <Footer />
         </div>
     );
 };

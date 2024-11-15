@@ -2,11 +2,9 @@
   font-family: Poppins;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light;
   color: black;
   background-color: #FFFFFF;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,15 +19,21 @@
   max-width: 1000px;
   margin: auto;
   border-radius: 8px;
+  gap: 20px; /* Adds space between the left and right columns */
 }
 
 .form-left, .form-right {
   flex: 1;
 }
 
-.left-fields, .form-right {
+/* Left Fields */
+.left-fields {
   display: flex;
   flex-direction: column;
+}
+
+.field-group {
+  margin-bottom: 20px;
 }
 
 .left-fields label,
@@ -41,26 +45,7 @@ h1 {
   text-align: center;
 }
 
-a {
-  font-weight: 500;
-  color: #263146;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #263146;
-}
-
-body {
-  margin: auto;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 2.5em;
-  line-height: 1.1;
-}
-
+/* Button Styling */
 button {
   border-radius: 30px;
   border: none;
@@ -74,50 +59,16 @@ button {
   transition: background-color 0.25s;
 }
 
-label {
-  letter-spacing: -0.5px;
-  font-size: large;
-  font-weight: bold;
-}
-
-
-.dropzone {
-  border: 1px dashed #ccc;
-  background-color: #e3e3e3;
-  padding: 10px;
-  height: 265px;
-  text-align: center;
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-
-/* BUTTON STYLING */
-button {
-  border-radius: 30px;
-  border: none;
-  padding: 7px 25px;
-  color: white;
-  background-color: #263146;
-  cursor: pointer;
-  transition: background-color 0.25s;
-}
-
-/* SAVE BUTTON */
 button.btnSave {
   background-color: #263146;
   width: 33%;
 }
 
-/* DISABLED BUTTON */
 button.btnUpdate {
   background-color: #505050;
   width: 33%;
 }
 
-/* CANCEL BUTTON */
 button.btnCancel {
   color: black;
   background-color: #E3E3E3;
@@ -129,24 +80,58 @@ button:hover {
   background-color: #E3E3E3;
 }
 
-input, .dropzone {
+/* Label Styling */
+label {
+  letter-spacing: -0.5px;
+  font-size: large;
+  text-align: right;
+}
+
+/* Dropzone Styling */
+.dropzone {
+  border: 1px dashed #ccc;
+  background-color: #e3e3e3;
+  padding: 10px;
+  margin: 10px 0;
+  height: 275px;
+  text-align: center;
+}
+
+/* Button Container */
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Input Fields Styling */
+.cashAdvInput {
   margin-top: 5px;
+  font-size: medium;
   font-family: inherit;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 8px;
   border-radius: 5px;
-  width: 100%;
+  width: 40px;
   border: 1px solid #e0e0e0;
 }
 
-nav {
-  background-color: #263146;
-  padding: 0 20px; /* Adjusted padding to focus spacing on sides */
-  font-size: large;
-  height: 70px;
-  color: white;
-  width: 100%;
+/* Flexbox for Label and Input Alignment */
+.form-group {
   display: flex;
-  align-items: center; /* Vertically centers the items */
+  flex-direction: row; /* Align label and input horizontally */
+  align-items: center; /* Vertically center */
+  margin-bottom: 10px;
 }
 
+.form-group label {
+  width: 100%; /* Label width */
+  margin-right: 10px; /* Space between label and input */
+}
+
+.form-group input {
+  width: 70%; /* Reduce input width */
+  margin-top: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+}
