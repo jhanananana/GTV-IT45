@@ -1,0 +1,35 @@
+.home .page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.home .content {
+    width: 1080px;
+    /* align content to center */
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* set default font */
+    font-family: "Poppins", san-serif;
+    /* set to monitor height */
+    height: 100vh;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    text-align: center;
+}
+
+.links .link {
+    background-color: #263145;
+    color: white;
+    width: 300px;
+    padding: 20px;
+    height: 30px;
+    border-radius: 20px;
+}
