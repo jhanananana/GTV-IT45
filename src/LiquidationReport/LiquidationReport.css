@@ -26,7 +26,11 @@ body {
 }
 
 /* Left and Right Columns */
-.form-left, .form-right {
+.form-left {
+  flex: 1;
+}
+
+.form-right {
   flex: 1;
 }
 
