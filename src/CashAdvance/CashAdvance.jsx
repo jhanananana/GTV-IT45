@@ -1,12 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { doc, setDoc } from "firebase/firestore";
+import db from "../firebase"; // Import your Firebase configuration
 import './CashAdvance.css';
 
-const CashAdvance = ({ onCancel }) => { // Accept onCancel prop
+const CashAdvance = ({ onCancel }) => {
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {  // Correct the syntax for the handleSubmit function
-    navigate('/dashboard1'); // Navigate to the dashboard
+  // State for form fields
+  const [cashAdvanceId, setCashAdvanceId] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [activity, setActivity] = useState('');
+
+  // Handle form submission
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Form validation
+    if (!cashAdvanceId || !accountName || !activity) {
+      alert("Please fill in all the fields.");
+      return;
+    }
+
+    try {
+      // Add document to the specific Firestore collection and document
+      const docRef = doc(db, "Cash Advance", cashAdvanceId); // Use the collection name and document ID
+      await setDoc(docRef, {
+        cashAdvanceId: cashAdvanceId,
+        accountName: accountName,
+        activity: activity,
+      });
+
+      // Navigate to the dashboard after successful submission
+      navigate('/dashboard1');
+      alert("Cash Advance Request submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting Cash Advance Request:", error);
+      alert("Failed to submit request. Please try again.");
+    }
   };
 
   return (
@@ -17,17 +48,34 @@ const CashAdvance = ({ onCancel }) => { // Accept onCancel prop
           
           <div className="form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-            <input id="cashAdvanceId" type="text" placeholder="#####" readOnly />
+            <input
+              id="cashAdvanceId"
+              type="text"
+              placeholder="Enter Cash Advance ID"
+              value={cashAdvanceId}
+              onChange={(e) => setCashAdvanceId(e.target.value)} // Update state
+            />
           </div>
           
           <div className="form-group">
             <label htmlFor="accountName">Account Name:</label>
-            <input id="accountName" type="text" placeholder="Account Name" readOnly />
+            <input
+              id="accountName"
+              type="text"
+              placeholder="Enter Account Name"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)} // Update state
+            />
           </div>
           
           <div className="form-group">
             <label htmlFor="activity">Activity:</label>
-            <textarea id="activity" placeholder="Activity" />
+            <textarea
+              id="activity"
+              placeholder="Describe the activity"
+              value={activity}
+              onChange={(e) => setActivity(e.target.value)} // Update state
+            />
           </div>
           
           <div>
