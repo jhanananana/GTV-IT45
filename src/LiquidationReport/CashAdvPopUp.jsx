@@ -2,6 +2,16 @@ import React from 'react';
 import Popup from 'reactjs-popup'; // Correct import from reactjs-popup
 import './PopUp.css'; // Where to get the CSS for Pop Up
 
+const preventInvalidChars = (e) => {
+  if (e.key === "e" || e.key === "+" || e.key === "-") {
+    e.preventDefault();
+  }
+};
+
+const validateNumberInput = (e) => {
+  e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only allow digits
+};
+
 export default function PopupCashAdv({ closePopup }) { // Accept closePopup as prop
   return (
     <Popup open modal nested onClose={closePopup}>
@@ -38,7 +48,8 @@ export default function PopupCashAdv({ closePopup }) { // Accept closePopup as p
                     <label htmlFor="amount">Amount:</label>
                   </td>
                   <td>
-                    <input className='cashAdvInput' type="number" id="amount" placeholder="Enter Amount" />
+                    <input className='cashAdvInput' type="number" id="amount" placeholder="Enter Amount"
+                    onKeyDown={preventInvalidChars} onInput={validateNumberInput}/>
                   </td>
                 </tr>
               </tbody>

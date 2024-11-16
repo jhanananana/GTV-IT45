@@ -40,6 +40,16 @@ const LiquidationReport = () => {
     setIsPopupOpen(false);
   };
 
+  const preventInvalidChars = (e) => {
+    if (e.key === "e" || e.key === "+" || e.key === "-") {
+      e.preventDefault();
+    }
+  };
+
+  const validateNumberInput = (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only allow digits
+  };
+
   return (
     <>
       <div className="form-container">
@@ -75,7 +85,8 @@ const LiquidationReport = () => {
 
             <div className="form-group">
               <label htmlFor="cashAdvanceAmount">Cash Advance Amount:</label>
-              <input className='cashAdvInput' id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount" />
+              <input className='cashAdvInput' id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount"
+              onKeyDown={preventInvalidChars} onInput={validateNumberInput}/>
             </div>
             
             <div className="form-group" style={{justifyContent: 'right'}}>
@@ -95,7 +106,8 @@ const LiquidationReport = () => {
 
           <div className="form-group">
             <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
-            <input className='cashAdvInput' id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Amount Spent" />
+            <input className='cashAdvInput' id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Amount Spent"
+            onKeyDown={preventInvalidChars} onInput={validateNumberInput}/>
           </div>
 
           <div className="form-group">
