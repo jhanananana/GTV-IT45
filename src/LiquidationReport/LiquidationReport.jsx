@@ -4,6 +4,9 @@ import { useDropzone } from 'react-dropzone';
 import CashAdvance from '../CashAdvance/CashAdvance.jsx'; // Import the component
 import './LiquidationReport.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
+import { onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import db from "../firebase";
 
 const LiquidationReport = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -24,7 +27,7 @@ const LiquidationReport = () => {
     accept: 'image/*',
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
     setIsPopupOpen(true); // Open the success popup
   };
@@ -65,6 +68,7 @@ const LiquidationReport = () => {
     <>
       <Navbar />
       <div className="form-container">
+      <form onSubmit={handleSubmit(onSubmit)}>
         {/* Left Side */}
         <div className="form-left">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -145,6 +149,7 @@ const LiquidationReport = () => {
             <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>
           </div>
         </div>
+        </form>
       </div>
 
       {/* Render the Cash Advance form conditionally */}
