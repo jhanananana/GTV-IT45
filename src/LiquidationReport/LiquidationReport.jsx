@@ -34,7 +34,6 @@ const LiquidationReport = () => {
 
   const handleCashAdvanceSubmit = () => {
     setIsCashAdvanceOpen(false); // Close Cash Advance form
-
   };
 
   const handleCashAdvanceRequest = () => {
@@ -67,17 +66,17 @@ const LiquidationReport = () => {
   return (
     <>
       <Navbar />
-      <div className="form-container">
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Left Side */}
-        <div className="form-left">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-container">
+          {/* Left Side */}
+          <div className="form-left">
+            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
             <h1 style={{ textAlign: 'right' }}>Liquidation Report</h1>
 
             {/* Form Fields */}
             <div className="form-group">
               <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input disabled={true} className="cashAdvInput" id="liquidationId" type="text" {...register('liquidationId')} defaultValue="1000" readOnly/>
+              <input disabled={true} className="cashAdvInput" id="liquidationId" type="text" {...register('liquidationId')} defaultValue="1000" readOnly />
             </div>
 
             <div className="form-group">
@@ -114,43 +113,43 @@ const LiquidationReport = () => {
             <div className="form-group" style={{ justifyContent: 'right' }}>
               <button type="button" onClick={handleCashAdvanceRequest}>Request Cash Advance</button>
             </div>
-          </form>
+            {/* </form> */}
+          </div>
+
+          {/* Right Side */}
+          <div className="form-right">
+            <div className="buttons" style={{ justifyContent: 'right' }}>
+              <label>Upload a photo of receipt</label>
+              <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove</button>
+            </div>
+
+            <div {...getRootProps()} className="dropzone">
+              <input {...getInputProps()} />
+              {file ? (
+                <img src={URL.createObjectURL(file)} alt="Uploaded Receipt" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+              ) : (
+                <p>Drag and drop file here</p>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
+              <input className="cashAdvInput" id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Total Amount Spent" onKeyDown={preventInvalidChars} onInput={validateNumberInput} />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="excessRefund">Excess/For Refund:</label>
+              <input disabled={true} className="cashAdvInput" id="excessRefund" type="number" {...register('excessRefund')} placeholder="10,000" readOnly />
+            </div>
+
+            <div className="buttons" style={{ justifyContent: 'right' }}>
+              <button type="button" className="btnSave">Save</button>
+              <button type="button" className="btnUpdate" onClick={handleUpdate}>Update</button>
+              <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>
+            </div>
+          </div>
         </div>
-
-        {/* Right Side */}
-        <div className="form-right">
-          <div className="buttons" style={{ justifyContent: 'right' }}>
-            <label>Upload a photo of receipt</label>
-            <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove</button>
-          </div>
-
-          <div {...getRootProps()} className="dropzone">
-            <input {...getInputProps()} />
-            {file ? (
-              <img src={URL.createObjectURL(file)} alt="Uploaded Receipt" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            ) : (
-              <p>Drag and drop file here</p>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
-            <input className="cashAdvInput" id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Total Amount Spent" onKeyDown={preventInvalidChars} onInput={validateNumberInput} />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="excessRefund">Excess/For Refund:</label>
-            <input disabled={true} className="cashAdvInput" id="excessRefund" type="number" {...register('excessRefund')} placeholder="10,000" readOnly />
-          </div>
-
-          <div className="buttons" style={{ justifyContent: 'right' }}>
-            <button type="button" className="btnSave">Save</button>
-            <button type="button" className="btnUpdate" onClick={handleUpdate}>Update</button>
-            <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>
-          </div>
-        </div>
-        </form>
-      </div>
+      </form>
 
       {/* Render the Cash Advance form conditionally */}
       {isCashAdvanceOpen && (
