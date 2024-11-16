@@ -18,4 +18,5 @@ measurementId: "G-3XXE679W96",
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics (app);
-export const firestore = getFirestore(app);
+const firestore = getFirestore(app);
+export default firestore;
