@@ -1,45 +1,53 @@
-import React from "react";
-import { useForm } from "react-hook-form"; // Hook for form handling
-import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import './Dashboard2.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
+import ReasonForRejecting from '../ReasonForRejecting/ReasonForRejecting.jsx'; // Import the reject form component
 
 const Dashboard2 = () => {
-    const { register, handleSubmit } = useForm(); // Initialize useForm hook
-    const navigate = useNavigate(); // Initialize navigate function
+    const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
+
+    const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false); // State for controlling popup visibility
 
     const onSubmit = (data) => {
-        console.log(data); // Handle form submission
+        console.log(data);
     };
 
-    // Handle "Approve" button click
     const handleApprove = () => {
-        navigate("/Dashboard3"); // Redirect to Dashboard3
+        navigate("/dashboard3"); // Redirect to Dashboard3
+    };
+
+    // Handle "Reject" button click
+    const handleReject = () => {
+        setIsRejectPopupOpen(true); // Open the reject form popup
+    };
+
+    const closeRejectPopup = () => {
+        setIsRejectPopupOpen(false); // Close the reject form popup
     };
 
     return (
-        <div><Navbar />
+        <div>
+            <Navbar />
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
-            {/* Left Side */}
+
             <div className="dashboard-container">
-                {/* Left Side */}
                 <div className="dashboard-left">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="dashboard-group">
                             <label htmlFor="liquidationId">Cash Advance ID:</label>
-                            <input disabled={true} className="dashBoardInput" id="liquidationId" 
-                            type="text" {...register("liquidationId")} defaultValue="1000" readOnly />
+                            <input disabled={true} className="dashBoardInput" id="liquidationId" type="text" {...register("liquidationId")} defaultValue="1000" readOnly />
                         </div>
 
                         <div className="dashboard-group">
                             <label htmlFor="accountName">Account Name:</label>
-                            <input disabled={true} className="dashBoardInput" id="accountName" 
-                            type="text" {...register("accountName")} defaultValue="John Doe" readOnly />
+                            <input disabled={true} className="dashBoardInput" id="accountName" type="text" {...register("accountName")} defaultValue="John Doe" readOnly />
                         </div>
                     </form>
                 </div>
 
-                {/* Right Side */}
                 <div className="dashboard-right">
                     <div className="dashboard-group">
                         <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
@@ -49,8 +57,6 @@ const Dashboard2 = () => {
             </div>
 
             <div className="content">
-                <div className="title-part">
-                </div>
                 <div className="tables">
                     <Section
                         columns={[
@@ -62,10 +68,20 @@ const Dashboard2 = () => {
                     />
                 </div>
             </div>
+
             <div className="dashboard-buttons">
-                <button type="button" className="btn reject">Reject</button>
-                <button type="button" className="btn approve" onClick={handleApprove}>Approve</button> {/* Added onClick for navigation */}
+                <button type="button" className="btn reject" onClick={handleReject}>Reject</button>
+                <button type="button" className="btn approve" onClick={handleApprove}>Approve</button>
             </div>
+
+            {/* Conditionally render the Reject Popup */}
+            {isRejectPopupOpen && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <ReasonForRejecting onCancel={closeRejectPopup} /> {/* Pass the closeRejectPopup function here */}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
