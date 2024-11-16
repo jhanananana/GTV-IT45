@@ -6,6 +6,7 @@ import ReasonForRejecting from './src/ReasonForRejecting/ReasonForRejecting.jsx'
 import Dashboard1 from './src/Dashboard1/Dashboard1.jsx';
 import Dashboard2 from './src/Dashboard2/Dashboard2.jsx';
 import Dashboard3 from './src/Dashboard3/Dashboard3.jsx';
+import CashAdvance from './src/CashAdvance/CashAdvance.jsx';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/dashboard1" element={<Dashboard1 />} />
           <Route path="/dashboard2" element={<Dashboard2 />} />
           <Route path="/dashboard3" element={<Dashboard3 />} />
+          <Route path="/cashadvance" element={<CashAdvance />} />
           <Route path="/reason-for-rejecting" element={<ReasonForRejecting />} />
         </Routes>
       </div>

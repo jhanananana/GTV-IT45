@@ -19,12 +19,14 @@ const Dashboard2 = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="dashboard-group">
                             <label htmlFor="liquidationId">Cash Advance ID:</label>
-                            <input className="dashBoardInput" id="liquidationId" type="text" {...register("liquidationId")} defaultValue="1000" readOnly />
+                            <input disabled={true} className="dashBoardInput" id="liquidationId" 
+                            type="text" {...register("liquidationId")} defaultValue="1000" readOnly />
                         </div>
 
                         <div className="dashboard-group">
                             <label htmlFor="accountName">Account Name:</label>
-                            <input className="dashBoardInput" id="accountName" type="text" {...register("accountName")} defaultValue="John Doe" readOnly />
+                            <input disabled={true} className="dashBoardInput" id="accountName" 
+                            type="text" {...register("accountName")} defaultValue="John Doe" readOnly />
                         </div>
                     </form>
                 </div>
@@ -33,7 +35,7 @@ const Dashboard2 = () => {
                 <div className="dashboard-right">
                     <div className="dashboard-group">
                         <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
-                        <input className="dashBoardInput" id="cashAdvAmount" type="text" {...register("cashAdvAmount")} defaultValue="5000" readOnly />
+                        <input disabled={true} className="dashBoardInput" id="cashAdvAmount" type="text" {...register("cashAdvAmount")} defaultValue="5000" readOnly />
                     </div>
                 </div>
             </div>

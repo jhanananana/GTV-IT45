@@ -117,6 +117,9 @@ label {
   border: 1px solid #e0e0e0;
 }
 
+.cashAdvInput.field-disabled {
+  background-color: black;
+}
 /* Flexbox for Label and Input Alignment */
 .rejectForm-group {
   display: flex;

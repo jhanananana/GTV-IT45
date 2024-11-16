@@ -10,9 +10,13 @@ const LiquidationReport = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const onDrop = (acceptedFiles) => {
-    setFile(acceptedFiles[0]);
+    if (acceptedFiles.length > 0 && acceptedFiles[0].type.startsWith("image/")) {
+      setFile(acceptedFiles[0]);
+    } else {
+      alert("Only image files are allowed!");
+    }
   };
-
+  
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: 'image/*',
@@ -60,7 +64,7 @@ const LiquidationReport = () => {
 
             <div className="form-group">
               <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input className='cashAdvInput' id="liquidationId" type="text" {...register('liquidationId')} defaultValue="1000" readOnly />
+              <input disabled={true} className='cashAdvInput' id="liquidationId" type="text" {...register('liquidationId')} defaultValue="1000" readOnly />
             </div>
 
             <div className="form-group">
@@ -75,18 +79,27 @@ const LiquidationReport = () => {
 
             <div className="form-group">
               <label htmlFor="activity">Activity:</label>
-              <input className='cashAdvInput' id="activity" type="text" {...register('activity')} placeholder="Name of Activity" />
+              <textarea className='cashAdvInput' id="activity" {...register('activity')} 
+                        placeholder="Describe the activity" rows="3" 
+                        style={{ resize: 'none' }} 
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="dateOfActivity">Date of Activity:</label>
-              <input className='cashAdvInput' id="dateOfActivity" type="text" {...register('dateOfActivity')} placeholder="YYYY/MM/DD" defaultValue={new Date().toISOString().split('T')[0]} />
+              <input 
+                className='cashAdvInput' 
+                id="dateOfActivity" 
+                type="date" 
+                {...register('dateOfActivity')} 
+                defaultValue={new Date().toISOString().split('T')[0]} 
+              />
             </div>
 
             <div className="form-group">
               <label htmlFor="cashAdvanceAmount">Cash Advance Amount:</label>
-              <input className='cashAdvInput' id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount"
-              onKeyDown={preventInvalidChars} onInput={validateNumberInput}/>
+              <input disabled={true} className='cashAdvInput' id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount"
+              onKeyDown={preventInvalidChars} onInput={validateNumberInput} readOnly/>
             </div>
             
             <div className="form-group" style={{justifyContent: 'right'}}>
@@ -106,13 +119,13 @@ const LiquidationReport = () => {
 
           <div className="form-group">
             <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
-            <input className='cashAdvInput' id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Amount Spent"
+            <input className='cashAdvInput' id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Total Amount Spent"
             onKeyDown={preventInvalidChars} onInput={validateNumberInput}/>
           </div>
 
           <div className="form-group">
             <label htmlFor="excessRefund">Excess/For Refund:</label>
-            <input className='cashAdvInput' id="excessRefund" type="number" {...register('excessRefund')} placeholder="123,456.78" readOnly />
+            <input disabled={true} className='cashAdvInput' id="excessRefund" type="number" {...register('excessRefund')} placeholder="10,000" readOnly />
           </div>
 
           <div className="buttons" style={{justifyContent: 'right'}}>

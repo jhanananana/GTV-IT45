@@ -1,4 +1,4 @@
-/* .title {
+.title {
     margin-left: 10px;
     font-size: 18px;
 }
@@ -90,12 +90,16 @@ td {
     border: 1px solid #ddd;
 }
 
+.dashboard-group input[readonly] {
+    background-color: #e0e0e0;
+}
+
 .dashboard-group {
     display: flex;
     flex-direction: row; /* Align label and input horizontally */
     align-items: left; /* Vertically center */
     margin-bottom: 10px;
-  }
+}
   
 .dashboard-group label {
     margin-right: 10px; /* Space between label and input */
@@ -163,4 +167,4 @@ td {
 
 .btn.approve {
     background-color: #6AAD36;
-} */
+} 
