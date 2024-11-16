@@ -1,11 +1,21 @@
 import React from 'react';
 import './ReasonForRejecting.css';
+import { useNavigate } from 'react-router-dom';
 
-const ReasonForRejecting = () => {
+const ReasonForRejecting = ({ onCancel }) => {  // Accept onCancel as a prop
+  const navigate = useNavigate();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();  // Prevent the default form submission
+    // Add any rejection logic here if needed
+
+    navigate("/dashboard3");  // Navigate to Dashboard2 after rejection submission
+  };
+
   return (
     <div className="reject-container">
       <div className="reject-form">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h1 className="reject-header">Reason For Rejecting</h1>
           
           <div className="form-group">
@@ -28,10 +38,8 @@ const ReasonForRejecting = () => {
             <textarea id="reason" placeholder="Reason" />
           </div>
           
-          <div className="button-group">
-            <button type="submit" className="btn-submit">Submit</button>
-            <button type="button" className="btn-cancel">Cancel</button>
-          </div>
+          <button type="submit" className="btnSubmit">Submit</button>
+          <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button> {/* Use onCancel here */}
         </form>
       </div>
     </div>

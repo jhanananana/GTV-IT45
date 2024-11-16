@@ -28,7 +28,7 @@ export const Navbar = () => {
             </li>
             <li>
               <a href="#" className="shopName">
-                Galanter and Jones
+                Galanter & Jones SEA. INC. 
               </a>
             </li>
           </ul>

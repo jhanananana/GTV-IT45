@@ -15,6 +15,8 @@ a{
 
 header{
     width: 100%;
+    margin-bottom: 120px;
+
 }
 
 header div{
@@ -26,7 +28,6 @@ header div{
     background-color: #263145;
     position: fixed;
     top:-5px  ;
-
 }
 header div ul{
     list-style: none;
@@ -51,7 +52,6 @@ header div ul li a{
 
 .shopName{
     font-family: Poppins;
-    font-weight: bold;
     color: white;
 }
 

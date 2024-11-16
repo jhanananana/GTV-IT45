@@ -1,11 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CashAdvance.css';
 
-const CashAdvanceRequest = () => {
+const CashAdvance = ({ onCancel }) => { // Accept onCancel prop
+  const navigate = useNavigate();
+
+  const handleSubmit = (event) => {  // Correct the syntax for the handleSubmit function
+    navigate('/dashboard1'); // Navigate to the dashboard
+  };
+
   return (
     <div className="cash-advance-container">
       <div className="cash-advance-form">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h1 className="cash-advance-header">Cash Advance Request</h1>
           
           <div className="form-group">
@@ -23,9 +30,9 @@ const CashAdvanceRequest = () => {
             <textarea id="activity" placeholder="Activity" />
           </div>
           
-          <div className="button-group">
-            <button type="submit" className="btn-submit">Submit Request</button>
-            <button type="button" className="btn-cancel">Cancel</button>
+          <div>
+            <button type="submit" className="btnSubmit">Submit Request</button>
+            <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button>
           </div>
         </form>
       </div>
@@ -33,4 +40,4 @@ const CashAdvanceRequest = () => {
   );
 };
 
-export default CashAdvanceRequest;
+export default CashAdvance;

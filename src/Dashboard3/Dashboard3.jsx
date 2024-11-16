@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form"; // Hook for form handling
 import './Dashboard3.css';
+import Navbar from '../NavBarAndFooter/navbar.jsx'; 
 
 const Dashboard3 = () => {
     const { register, handleSubmit } = useForm(); // Initialize useForm hook
@@ -10,7 +11,7 @@ const Dashboard3 = () => {
     };
 
     return (
-        <div>
+        <div><Navbar />
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Status Dashboard</h1>
             <div className="content">
                 <div className="title-part">
@@ -29,7 +30,6 @@ const Dashboard3 = () => {
             <div className="dashboard-buttons">
         <button type="button" className="btn cancel">Close</button>
     </div>
-
         </div>
     );
 };

@@ -1,16 +1,24 @@
 import React from "react";
 import { useForm } from "react-hook-form"; // Hook for form handling
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import './Dashboard2.css';
+import Navbar from '../NavBarAndFooter/navbar.jsx';
 
 const Dashboard2 = () => {
     const { register, handleSubmit } = useForm(); // Initialize useForm hook
+    const navigate = useNavigate(); // Initialize navigate function
 
     const onSubmit = (data) => {
         console.log(data); // Handle form submission
     };
 
+    // Handle "Approve" button click
+    const handleApprove = () => {
+        navigate("/Dashboard3"); // Redirect to Dashboard3
+    };
+
     return (
-        <div>
+        <div><Navbar />
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
             {/* Left Side */}
             <div className="dashboard-container">
@@ -55,10 +63,9 @@ const Dashboard2 = () => {
                 </div>
             </div>
             <div className="dashboard-buttons">
-        <button type="button" className="btn reject">Reject</button>
-        <button type="button" className="btn approve">Approve</button>
-    </div>
-
+                <button type="button" className="btn reject">Reject</button>
+                <button type="button" className="btn approve" onClick={handleApprove}>Approve</button> {/* Added onClick for navigation */}
+            </div>
         </div>
     );
 };

@@ -26,11 +26,7 @@ body {
 }
 
 /* Left and Right Columns */
-.form-left {
-  flex: 1;
-}
-
-.form-right {
+.form-left, .form-right {
   flex: 1;
 }
 
@@ -72,6 +68,11 @@ button.btnSave {
   width: 150px;
 }
 
+button.btnSubmit {
+  background-color: #263146;
+  width: 200px;
+}
+
 button.btnUpdate {
   background-color: #505050;
   width: 150px;
@@ -94,7 +95,7 @@ label {
   border: 1px dashed #ccc;
   background-color: #e3e3e3;
   padding: 10px;
-  margin: 10px 0;
+  margin: 14px 0;
   height: 275px;
   text-align: center;
 }
@@ -102,6 +103,7 @@ label {
 /* Button Container */
 .buttons {
   display: flex;
+  margin-top: 35px;
   gap: 10px;
 }
 
@@ -120,7 +122,12 @@ label {
 .cashAdvInput.field-disabled {
   background-color: black;
 }
-/* Flexbox for Label and Input Alignment */
+
+.form-group input[readonly] {
+  background-color: #e0e0e0;
+}
+
+/* Flexbox for Label Input Alignment */
 .rejectForm-group {
   display: flex;
   flex-direction: row; /* Align label and input horizontally */
@@ -139,4 +146,32 @@ label {
   padding: 8px;
   border-radius: 5px;
   border: 1px solid #e0e0e0;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-content h2 {
+  margin-bottom: 10px;
+}
+
+.popup-content p {
+  margin-bottom: 20px;
 }
