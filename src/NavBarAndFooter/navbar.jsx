@@ -22,12 +22,12 @@ export const Navbar = () => {
               />
             </li>
             <li>
-              <a href="#">
+              <a href="/home">
                 <img className="logo" src="/images/logo.png" alt="Logo" />
               </a>
             </li>
             <li>
-              <a href="#" className="shopName">
+              <a href="/home" className="shopName">
                 Galanter & Jones SEA. INC. 
               </a>
             </li>
@@ -44,14 +44,20 @@ export default Navbar;
 export const Sidebar = () => {
   return (
     <div className="sidebar-container" id="sidebar">
-      <a href="#">
-        <div className="sidebar-item">sidebar-item</div>
+      <a href="/home">
+        <div className="sidebar-item">Home</div>
       </a>
-      <a href="#">
-        <div className="sidebar-item">sidebar-item</div>
+      <a href="/liquidationreport">
+        <div className="sidebar-item">Liquidation Form</div>
       </a>
-      <a href="#">
-        <div className="sidebar-item">sidebar-item</div>
+      <a href="/dashboard1">
+        <div className="sidebar-item">Dashboard 1 (For Input & Approval)</div>
+      </a>
+      <a href="/dashboard2">
+        <div className="sidebar-item">Dashboard 2 (For Approval)</div>
+      </a>
+      <a href="/dashboard3">
+        <div className="sidebar-item">Dashboard 3 (For Display)</div>
       </a>
     </div>
   );
