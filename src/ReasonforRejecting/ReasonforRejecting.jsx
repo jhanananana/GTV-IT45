@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ReasonForRejecting.css';
 import { useNavigate } from 'react-router-dom';
 
-const ReasonForRejecting = ({ onCancel }) => {  // Accept onCancel as a prop
+const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {  // Accept onCancel and onReject as props
+  const [reason, setReason] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();  // Prevent the default form submission
-    // Add any rejection logic here if needed
-
-    navigate("/dashboard3");  // Navigate to Dashboard2 after rejection submission
+    if (reason.trim() === "") {
+      alert("Please provide a reason for rejection.");
+      return;
+    }
+    // Pass rejection reason back to Dashboard1 for updating Firestore
+    onReject(reason);
   };
 
   return (
@@ -20,26 +24,44 @@ const ReasonForRejecting = ({ onCancel }) => {  // Accept onCancel as a prop
           
           <div className="form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-            <input id="cashAdvanceId" type="text" placeholder="#####" readOnly />
+            <input
+              id="cashAdvanceId"
+              type="text"
+              value={selectedRecord.cashAdvanceId}
+              readOnly
+            />
           </div>
           
           <div className="form-group">
             <label htmlFor="accountName">Account Name:</label>
-            <input id="accountName" type="text" placeholder="Account Name" readOnly />
+            <input
+              id="accountName"
+              type="text"
+              value={selectedRecord.accountName}
+              readOnly
+            />
           </div>
           
           <div className="form-group">
             <label htmlFor="activity">Activity:</label>
-            <textarea id="activity" placeholder="Activity" readOnly />
+            <textarea
+              id="activity"
+              value={selectedRecord.activity || ""}
+              readOnly
+            />
           </div>
           
           <div className="form-group">
             <label htmlFor="reason">Reason:</label>
-            <textarea id="reason" placeholder="Reason" />
+            <textarea
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)} // Capture reason
+            />
           </div>
           
           <button type="submit" className="btnSubmit">Submit</button>
-          <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button> {/* Use onCancel here */}
+          <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button>
         </form>
       </div>
     </div>

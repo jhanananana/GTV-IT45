@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import db from "../firebase"; // Import your Firebase configuration
 import './CashAdvance.css';
 
@@ -8,9 +8,38 @@ const CashAdvance = ({ onCancel }) => {
   const navigate = useNavigate();
 
   // State for form fields
-  const [cashAdvanceId, setCashAdvanceId] = useState('');
+  const [cashAdvanceId, setCashAdvanceId] = useState(null); // Set initial state to null
   const [accountName, setAccountName] = useState('');
   const [activity, setActivity] = useState('');
+
+  // Fetch the last Cash Advance ID from Firestore and increment it
+  const fetchLastCashAdvanceId = async () => {
+    try {
+      const currentIdDocRef = doc(db, "CashAdvanceMeta", "currentId");
+      const currentIdDoc = await getDoc(currentIdDocRef);
+  
+      if (!currentIdDoc.exists()) {
+        await setDoc(currentIdDocRef, { currentId: 10001 });
+        setCashAdvanceId(10001);
+      } else {
+        const currentId = currentIdDoc.data().currentId;
+        if (typeof currentId === 'number') {
+          setCashAdvanceId(currentId);
+        } else {
+          console.error('Invalid ID format in Firestore');
+          setCashAdvanceId(10001);  // Default fallback
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching last Cash Advance ID: ", error);
+      setCashAdvanceId(10001); // Default to 10001 if any error occurs
+    }
+  };
+
+  // Fetch the last Cash Advance ID when the component mounts
+  useEffect(() => {
+    fetchLastCashAdvanceId();
+  }, []);
 
   // Handle form submission
   const handleSubmit = async (event) => {
@@ -19,27 +48,30 @@ const CashAdvance = ({ onCancel }) => {
     // Form validation
     if (!cashAdvanceId || !accountName || !activity) {
       alert("Please fill in all the fields.");
-      return;
+      return; // Prevent form submission
     }
 
     try {
-      // Add document to the specific Firestore collection and document
-      const docRef = doc(db, "Cash Advance", cashAdvanceId); // Use the collection name and document ID
+      // Create the document for the Cash Advance request using the incremented ID
+      const docRef = doc(db, "Cash Advance", cashAdvanceId.toString()); 
       await setDoc(docRef, {
         cashAdvanceId: cashAdvanceId,
         accountName: accountName,
         activity: activity,
       });
 
+      // Increment the Cash Advance ID in the CashAdvanceMeta document
+      await updateDoc(doc(db, "CashAdvanceMeta", "currentId"), { currentId: cashAdvanceId + 1 });
+
       // Navigate to the dashboard after successful submission
-      navigate('/dashboard1');
       alert("Cash Advance Request submitted successfully!");
+      navigate('/dashboard1');
     } catch (error) {
       console.error("Error submitting Cash Advance Request:", error);
       alert("Failed to submit request. Please try again.");
     }
   };
-
+  
   return (
     <div className="cash-advance-container">
       <div className="cash-advance-form">
@@ -51,9 +83,10 @@ const CashAdvance = ({ onCancel }) => {
             <input
               id="cashAdvanceId"
               type="text"
-              placeholder="Enter Cash Advance ID"
-              value={cashAdvanceId}
-              onChange={(e) => setCashAdvanceId(e.target.value)} // Update state
+              placeholder="Cash Advance ID"
+              value={cashAdvanceId !== null ? cashAdvanceId : 'Loading...'}
+              readOnly
+              disabled
             />
           </div>
           

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LiquidationReport from './src/LiquidationReport/LiquidationReport';
 import Home from './src/Homepage/home.jsx';
+import GenManager from './src/GenManager/GenManager.jsx';
 import ReasonForRejecting from './src/ReasonForRejecting/ReasonForRejecting.jsx';
 import Dashboard1 from './src/Dashboard1/Dashboard1.jsx';
 import Dashboard2 from './src/Dashboard2/Dashboard2.jsx';
@@ -14,6 +15,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/home" element={<Home />} />
+          <Route path="/genmanager" element={<GenManager />} />
           <Route path="/liquidationreport" element={<LiquidationReport />} />
           <Route path="/dashboard1" element={<Dashboard1 />} />
           <Route path="/dashboard2" element={<Dashboard2 />} />

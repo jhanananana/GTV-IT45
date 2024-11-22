@@ -95,6 +95,7 @@ td {
 }
 
 .dashboard-group {
+    align-items: center;
     display: flex;
     flex-direction: row; /* Align label and input horizontally */
     align-items: left; /* Vertically center */
@@ -162,9 +163,25 @@ td {
 }
 
 .btn.reject {
+    border: 2px solid #840303;
     background-color: #840303;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.btn.reject:hover {
+    color: #840303;
+    border: 2px solid #840303;
+    background-color: white;
 }
 
 .btn.approve {
+    border: 2px solid #6AAD36;
     background-color: #6AAD36;
-} 
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.btn.approve:hover {
+    color: #6AAD36;
+    border: 2px solid #6AAD36;
+    background-color: white;
+}

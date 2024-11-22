@@ -31,6 +31,7 @@ body {
 }
 
 .form-right {
+  padding-top: 30px;
   flex: 1;
 }
 
@@ -101,6 +102,8 @@ label {
   padding: 10px;
   margin: 14px 0;
   height: 275px;
+  margin: 10px 0;
+  height: 280px;
   text-align: center;
 }
 

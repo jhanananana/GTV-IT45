@@ -22,8 +22,8 @@ h2 {
 
 .legend {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    justify-content: left; 
+    margin: 0px 40px;
 }
 
 .legend-item {
@@ -115,7 +115,7 @@ td {
   /* LIQUIDATION REPORT CONTAINERS (LEFT & RIGHT) */
 .dashboard-container {
   display: flex;
-  margin: 0px 40px;
+  margin: 0px;
   border-radius: 8px;
 }
 
