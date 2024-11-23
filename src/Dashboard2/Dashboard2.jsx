@@ -144,7 +144,6 @@ const Dashboard2 = () => {
                             <th>Cash Advance ID</th>
                             <th>Account Name</th>
                             <th>Cash Advance Amount</th>
-                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -156,7 +155,6 @@ const Dashboard2 = () => {
                                     <td>{record.cashAdvanceId}</td>
                                     <td>{record.accountName}</td>
                                     <td>{record.cashAdvAmount}</td>
-                                    <td>{record.status}</td>
                                     <td>
                                         <button
                                             type="button"

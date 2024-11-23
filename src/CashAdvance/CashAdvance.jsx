@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc, getDocs, query, collection, orderBy, limit } from "firebase/firestore";
 import db from "../firebase";
 import './CashAdvance.css';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../NavBarAndFooter/navbar.jsx'; 
+import Footer from '../NavBarAndFooter/footer.jsx'; 
 
-const CashAdvance = ({ onCancel, onSubmit }) => {
+const CashAdvance = () => {
   const [cashAdvanceId, setCashAdvanceId] = useState(null);
   const [accountName, setAccountName] = useState('');
   const [activity, setActivity] = useState('');
+  const navigate = useNavigate(); // For navigation after submission
 
+  // Fetch the last Cash Advance ID
   const fetchLastCashAdvanceId = async () => {
     try {
       const cashAdvanceRef = collection(db, "Cash Advance");
@@ -20,7 +25,7 @@ const CashAdvance = ({ onCancel, onSubmit }) => {
 
         setCashAdvanceId(lastId + 1);
       } else {
-        setCashAdvanceId(10001);
+        setCashAdvanceId(10001); // Default starting ID
       }
     } catch (error) {
       console.error("Error fetching last Cash Advance ID: ", error);
@@ -32,35 +37,35 @@ const CashAdvance = ({ onCancel, onSubmit }) => {
     fetchLastCashAdvanceId();
   }, []);
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!cashAdvanceId || !accountName || !activity) {
       alert("Please fill in all the fields.");
       return;
     }
-  
+
     try {
-      // Save the Cash Advance request as a draft (Pending status)
+      // Save the Cash Advance request
       const docRef = doc(db, "Cash Advance", cashAdvanceId.toString());
       await setDoc(docRef, {
         cashAdvanceId,
         accountName,
         activity,
-        status: "Pending", // Status as Pending for draft
+        status: "Pending",
       });
-  
-      alert("Cash Advance Request submitted! Please complete the liquidation report.");
-      onSubmit(cashAdvanceId);
-      onCancel();
+
+      alert("Cash Advance Request submitted successfully!.");
     } catch (error) {
       console.error("Error submitting Cash Advance Request:", error);
       alert("Failed to submit request. Please try again.");
     }
   };
-  
 
   return (
+    <div>
+    <Navbar />
     <div className="cash-advance-container">
       <div className="cash-advance-form">
         <form onSubmit={handleSubmit}>
@@ -101,11 +106,12 @@ const CashAdvance = ({ onCancel, onSubmit }) => {
 
           <div>
             <button type="submit" className="btnSubmit">Submit Request</button>
-            <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button>
           </div>
         </form>
       </div>
     </div>
+     <Footer />
+     </div>
   );
 };
 

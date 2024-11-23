@@ -50,6 +50,9 @@ export const Sidebar = () => {
       <a href="/liquidationreport">
         <div className="sidebar-item">Liquidation Form</div>
       </a>
+      <a href="/cashadvance">
+        <div className="sidebar-item">Cash Advance Request</div>
+      </a>
       <a href="/dashboard1">
         <div className="sidebar-item">Dashboard 1 (For Input & Approval)</div>
       </a>

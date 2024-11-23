@@ -14,10 +14,12 @@ const Home = () => {
                     <div className="links">
                         <Link to="/home" className="link">Home</Link>
                         <Link to="/genmanager" className="link">General Manager (Dashboard)</Link>
+                        <Link to="/cashadvance" className="link">Cash Advance Request</Link>
                         <Link to="/liquidationreport" className="link">Liquidation Report</Link>
                         <Link to="/dashboard1" className="link">Dashboard 1</Link>
                         <Link to="/dashboard1" className="link">Dashboard 2</Link>
                         <Link to="/dashboard3" className="link">Dashboard 3 (Display)</Link>
+                        
                     </div>
                 </div>
             </div>

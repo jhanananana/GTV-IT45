@@ -4,92 +4,84 @@ import { useDropzone } from 'react-dropzone';
 import CashAdvance from '../CashAdvance/CashAdvance.jsx';
 import './LiquidationReport.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
-import { setDoc, collection, serverTimestamp, getDocs, updateDoc, doc } from "firebase/firestore";
+import { setDoc, collection, updateDoc, doc, getDocs } from "firebase/firestore";
 import db from "../firebase";
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 
 const LiquidationReport = () => {
   const [liquidationID, setLiquidationID] = useState(null);
-  const [cashAdvanceId, setCashAdvanceId] = useState(null); // Initial state for cash advance ID
-  const { register, handleSubmit, reset } = useForm();
+  const [cashAdvanceId, setCashAdvanceId] = useState(null);
+  const [availableCashAdvances, setAvailableCashAdvances] = useState([]);
   const [file, setFile] = useState(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isCashAdvanceOpen, setIsCashAdvanceOpen] = useState(false);
+  const [excessRefund, setExcessRefund] = useState(0);
 
-  // Fetch last liquidation ID on mount
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+  // Fetch available cash advances on mount
   useEffect(() => {
-    const fetchLastLiquidationID = async () => {
+    const fetchAvailableCashAdvances = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "Liquidation"));
-        const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-        const lastID = lastDoc ? lastDoc.data().liquidationID : 1000;
-        setLiquidationID(lastID + 1);
+        const querySnapshot = await getDocs(collection(db, "Cash Advance"));
+        const available = querySnapshot.docs
+          .filter(doc => !doc.data().isAttached)
+          .map(doc => ({ id: doc.id, ...doc.data() }));
+        setAvailableCashAdvances(available);
       } catch (error) {
-        console.error("Error fetching last liquidation ID: ", error);
+        console.error("Error fetching cash advances: ", error);
       }
     };
-    fetchLastLiquidationID();
+    fetchAvailableCashAdvances();
   }, []);
 
+  // File upload handling
   const onDrop = (acceptedFiles) => {
-    if (acceptedFiles.length > 0 && acceptedFiles[0].type.startsWith("image/")) {
-      setFile(acceptedFiles[0]);
+    const file = acceptedFiles[0];
+    if (file && file.size > 5 * 1024 * 1024) {
+      alert("File size should be less than 5MB!");
+    } else if (file && file.type.startsWith("image/")) {
+      setFile(file);
     } else {
       alert("Only image files are allowed!");
     }
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: 'image/*',
-  });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*' });
 
+  // Handle form submission
   const onSubmit = async (data) => {
-    // Check if all required fields are filled
-    if (!data.firstName || !data.lastName || !data.activity || !data.totalAmountSpent || !cashAdvanceId || isNaN(data.cashAdvanceAmount)) {
-      alert("Please ensure all fields are filled correctly.");
+    if (!cashAdvanceId) {
+      alert("Please select a Cash Advance.");
       return;
     }
-  
-    const cashAdvanceAmount = parseFloat(data.cashAdvanceAmount);
-    const totalAmountSpent = parseFloat(data.totalAmountSpent);
-    const excess = cashAdvanceAmount - totalAmountSpent;
-  
-    // Create the liquidation data object
+
     const docData = {
-      activity: data.activity,
-      amtSpent: totalAmountSpent,
-      cashAdvAmt: cashAdvanceAmount,
-      date: serverTimestamp(),
-      excess: excess,
-      firstname: data.firstName,
-      lastname: data.lastName,
+      ...data,
+      cashAdvanceId,
       liquidationID,
-      cashAdvanceId,  // Ensure this is included
-      receipt: file ? file.name : "placeholderreceipt.png",
-      status: "Draft", // Save as Draft
+      isAttached: true,
+      date: new Date(),
     };
-  
+
     try {
-      // Save the liquidation as a draft
       await setDoc(doc(collection(db, "Liquidation")), docData);
-      // Update the Cash Advance status to Pending if it's a draft
-      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId.toString());
-      await updateDoc(cashAdvanceRef, { status: "Pending" });
-  
-      alert('Liquidation report saved as a draft!');
+
+      // Update the selected cash advance
+      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId);
+      await updateDoc(cashAdvanceRef, { isAttached: true });
+
+      alert("Liquidation report submitted successfully!");
       reset();
-      setFile(null);
       setCashAdvanceId(null);
-      setIsPopupOpen(true);
+      setFile(null);
     } catch (error) {
-      console.error("Error adding document: ", error);
-      alert('Error submitting form. Please try again.');
+      console.error("Error submitting form: ", error);
+      alert("Failed to submit. Please try again.");
     }
   };
 
-  // Modify the Cash Advance request handling
-  const handleCashAdvanceRequest = async () => {
+  // Handle Cash Advance selection
+  const handleCashAdvanceRequest = () => {
     if (cashAdvanceId) {
       alert("Cash Advance already set!");
       return;
@@ -97,25 +89,17 @@ const LiquidationReport = () => {
     setIsCashAdvanceOpen(true);
   };
 
-  const closeCashAdvanceForm = () => {
-    setIsCashAdvanceOpen(false); // Just close the form
-  };
-  
-  
-  const handleCancel = () => {
-    reset();
-    setFile(null);
-  };
+  const closeCashAdvanceForm = () => setIsCashAdvanceOpen(false);
 
-  const preventInvalidChars = (e) => {
-    if (e.key === "e" || e.key === "+" || e.key === "-") {
-      e.preventDefault();
+  // Dynamic calculation of excess refund
+  useEffect(() => {
+    const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
+    if (selectedCashAdvance) {
+      const totalSpent = parseFloat(document.getElementById('totalAmountSpent')?.value || 0);
+      const refund = selectedCashAdvance.amount - totalSpent;
+      setExcessRefund(refund >= 0 ? refund : 0);
     }
-  };
-
-  const validateNumberInput = (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, "");
-  };
+  }, [cashAdvanceId]);
 
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
@@ -136,39 +120,63 @@ const LiquidationReport = () => {
             </div>
             <div className="form-group">
               <label htmlFor="firstName">First Name:</label>
-              <input className="cashAdvInput" id="firstName" type="text" {...register('firstName')} placeholder="First Name" />
+              <input 
+                className="cashAdvInput" 
+                id="firstName" 
+                type="text" 
+                {...register('firstName', { required: 'First name is required' })} 
+                placeholder="First Name" 
+              />
+              {errors.firstName && <span className="error">{errors.firstName.message}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="lastName">Last Name:</label>
-              <input className="cashAdvInput" id="lastName" type="text" {...register('lastName')} placeholder="Last Name" />
+              <input 
+                className="cashAdvInput" 
+                id="lastName" 
+                type="text" 
+                {...register('lastName', { required: 'Last name is required' })} 
+                placeholder="Last Name" 
+              />
+              {errors.lastName && <span className="error">{errors.lastName.message}</span>}
             </div>
             <div className="form-group">
               <label htmlFor="activity">Activity:</label>
-              <textarea className="cashAdvInput" id="activity" {...register('activity')} placeholder="Describe the activity" rows="3" />
+              <textarea 
+                className="cashAdvInput" 
+                id="activity" 
+                {...register('activity', { required: 'Activity description is required' })} 
+                placeholder="Describe the activity" 
+                rows="3" 
+              />
+              {errors.activity && <span className="error">{errors.activity.message}</span>}
             </div>
             <div className="form-group">
-              <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-              <input
+              <label htmlFor="cashAdvanceId">Cash Advance:</label>
+              <select
                 className="cashAdvInput"
                 id="cashAdvanceId"
-                type="text"
-                value={cashAdvanceId ? cashAdvanceId : ""}  // Ensure it's not an object
-                placeholder="Cash Advance ID"
-                readOnly
-              />
-
-              <button type="button" className="btnRequest" onClick={handleCashAdvanceRequest}>
-                Request Cash Advance
-              </button>
+                value={cashAdvanceId || ""}
+                onChange={(e) => setCashAdvanceId(e.target.value)}
+                disabled={!availableCashAdvances.length}
+              >
+                <option value="" disabled>
+                  {availableCashAdvances.length ? 'Select a Cash Advance' : 'No Cash Advances Available'}
+                </option>
+                {availableCashAdvances.map(cashAdvance => (
+                  <option key={cashAdvance.id} value={cashAdvance.id}>
+                    {`ID: ${cashAdvance.id} - Amount: ${cashAdvance.amount}`}
+                  </option>
+                ))}
+              </select>
             </div>
+            <button type="button" className="btnRequest" onClick={handleCashAdvanceRequest}>
+              Request Cash Advance
+            </button>
           </div>
 
           <div className="form-right">
-            <div className="buttons" style={{ justifyContent: 'right' }}>
-              <label>Upload a photo of receipt</label>
-              <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove</button>
-            </div>
-
+            <label>Upload a photo of receipt</label>
             <div {...getRootProps()} className="dropzone">
               <input {...getInputProps()} />
               {file ? (
@@ -177,21 +185,25 @@ const LiquidationReport = () => {
                 <p>Drag and drop file here</p>
               )}
             </div>
-
+            <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove</button>
             <div className="form-group">
               <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
-              <input className="cashAdvInput" id="totalAmountSpent" type="number" {...register('totalAmountSpent')} placeholder="Total Amount Spent" onKeyDown={preventInvalidChars} onInput={validateNumberInput} />
+              <input 
+                className="cashAdvInput" 
+                id="totalAmountSpent" 
+                type="number" 
+                {...register('totalAmountSpent', { required: 'Total amount is required' })} 
+                placeholder="Total Amount Spent" 
+              />
+              {errors.totalAmountSpent && <span className="error">{errors.totalAmountSpent.message}</span>}
             </div>
-
             <div className="form-group">
               <label htmlFor="excessRefund">Excess/For Refund:</label>
-              <input disabled className="cashAdvInput" id="excessRefund" type="number" readOnly />
+              <input disabled className="cashAdvInput" id="excessRefund" type="number" value={excessRefund} readOnly />
             </div>
-
-            <div className="buttons" style={{ justifyContent: 'right' }}>
+            <div className="buttons">
               <button type="submit" className="btnSave">Save</button>
-              <button type="button" className="btnUpdate">Update</button>
-              <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>
+              <button type="button" className="btnCancel" onClick={() => reset()}>Cancel</button>
             </div>
           </div>
         </div>
@@ -200,21 +212,7 @@ const LiquidationReport = () => {
       {isCashAdvanceOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <CashAdvance onCancel={closeCashAdvanceForm} onSubmit={closeCashAdvanceForm} />
-          </div>
-        </div>
-      )}
-
-      {isPopupOpen && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <div className="popup-header">
-              <h3>Cash Advance Created!</h3>
-              <button className="popup-close-btn" onClick={() => setIsPopupOpen(false)}>X</button>
-            </div>
-            <div className="popup-body">
-              <p>Cash Advance ID: {cashAdvanceId}</p>
-            </div>
+            <CashAdvance onCancel={closeCashAdvanceForm} />
           </div>
         </div>
       )}

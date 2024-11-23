@@ -1,11 +1,11 @@
-/* Container and Center Alignment */
-
-.cash-advance-header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: black;
-    font-size: 2rem;
-    font-weight: bold;
+/* Center the Form */
+.cash-advance-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    padding: 10px; /* Add some padding to ensure spacing on smaller screens */
+    box-sizing: border-box; /* Ensure padding does not affect width calculation */
 }
 
 /* Form Styles */
@@ -17,6 +17,16 @@
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for emphasis */
+}
+
+/* Header Alignment */
+.cash-advance-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: black;
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 .accountName{
