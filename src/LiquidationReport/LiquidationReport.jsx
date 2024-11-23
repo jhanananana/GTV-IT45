@@ -10,7 +10,7 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 
 const LiquidationReport = () => {
   const [liquidationID, setLiquidationID] = useState(null);
-  const [cashAdvanceId, setCashAdvanceId] = useState(null);
+  const [cashAdvanceId, setCashAdvanceId] = useState(null); // Initial state for cash advance ID
   const { register, handleSubmit, reset } = useForm();
   const [file, setFile] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -45,67 +45,63 @@ const LiquidationReport = () => {
   });
 
   const onSubmit = async (data) => {
-    // Validation before submitting
-    if (!data.firstName || !data.lastName || !data.activity || !data.totalAmountSpent || !data.cashAdvanceAmount || !cashAdvanceId) {
-      alert("Please fill in all required fields.");
+    // Check if all required fields are filled
+    if (!data.firstName || !data.lastName || !data.activity || !data.totalAmountSpent || !cashAdvanceId || isNaN(data.cashAdvanceAmount)) {
+      alert("Please ensure all fields are filled correctly.");
       return;
     }
-
+  
+    const cashAdvanceAmount = parseFloat(data.cashAdvanceAmount);
+    const totalAmountSpent = parseFloat(data.totalAmountSpent);
+    const excess = cashAdvanceAmount - totalAmountSpent;
+  
+    // Create the liquidation data object
+    const docData = {
+      activity: data.activity,
+      amtSpent: totalAmountSpent,
+      cashAdvAmt: cashAdvanceAmount,
+      date: serverTimestamp(),
+      excess: excess,
+      firstname: data.firstName,
+      lastname: data.lastName,
+      liquidationID,
+      cashAdvanceId,  // Ensure this is included
+      receipt: file ? file.name : "placeholderreceipt.png",
+      status: "Draft", // Save as Draft
+    };
+  
     try {
-      const docData = {
-        activity: data.activity,
-        amtSpent: parseFloat(data.totalAmountSpent),
-        cashAdvAmt: parseFloat(data.cashAdvanceAmount),
-        date: serverTimestamp(),
-        excess: parseFloat(data.cashAdvanceAmount) - parseFloat(data.totalAmountSpent),
-        firstname: data.firstName,
-        lastname: data.lastName,
-        liquidationID,
-        cashAdvanceId, // Link Cash Advance ID
-        receipt: "placeholderreceipt.png",
-      };
-
-      await setDoc(collection(db, "Liquidation"), docData);
-
-      // Increment the liquidation ID for the next report
-      const nextLiquidationID = liquidationID + 1;
-      await updateDoc(doc(db, "Liquidation", "lastLiquidationID"), { liquidationID: nextLiquidationID });
-
-      alert('Form submitted and data saved successfully!');
+      // Save the liquidation as a draft
+      await setDoc(doc(collection(db, "Liquidation")), docData);
+      // Update the Cash Advance status to Pending if it's a draft
+      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId.toString());
+      await updateDoc(cashAdvanceRef, { status: "Pending" });
+  
+      alert('Liquidation report saved as a draft!');
       reset();
       setFile(null);
+      setCashAdvanceId(null);
+      setIsPopupOpen(true);
     } catch (error) {
       console.error("Error adding document: ", error);
       alert('Error submitting form. Please try again.');
     }
   };
 
-  const openCashAdvanceForm = () => {
-    return new Promise((resolve) => {
-      setIsCashAdvanceOpen(true);
-      const closeCashAdvanceForm = (cashAdvanceId) => {
-        setCashAdvanceId(cashAdvanceId);
-        setIsCashAdvanceOpen(false);
-        resolve(cashAdvanceId);
-      };
-      return closeCashAdvanceForm;
-    });
-  };
-
-  const handleCashAdvanceRequest = () => {
-    openCashAdvanceForm().then(() => {
-      alert("Cash Advance ID set!");
-    });
+  // Modify the Cash Advance request handling
+  const handleCashAdvanceRequest = async () => {
+    if (cashAdvanceId) {
+      alert("Cash Advance already set!");
+      return;
+    }
+    setIsCashAdvanceOpen(true);
   };
 
   const closeCashAdvanceForm = () => {
-    setIsCashAdvanceOpen(false);
+    setIsCashAdvanceOpen(false); // Just close the form
   };
-
-  const handleUpdate = () => {
-    alert('Form updated successfully!');
-  };
-
+  
+  
   const handleCancel = () => {
     reset();
     setFile(null);
@@ -129,50 +125,41 @@ const LiquidationReport = () => {
   return (
     <>
       <Navbar />
-      <Breadcrumbs links={breadcrumbsLinks} /> {/* Add Breadcrumbs */}
+      <Breadcrumbs links={breadcrumbsLinks} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-container">
           <div className="form-left">
             <h1 style={{ textAlign: 'right' }}>Liquidation Report</h1>
-
             <div className="form-group">
               <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input disabled value={liquidationID || "Loading..."} className="cashAdvInput" id="liquidationId" type="text" {...register('liquidationId')} readOnly />
+              <input disabled value={liquidationID || "Loading..."} className="cashAdvInput" id="liquidationId" type="text" readOnly />
             </div>
-
             <div className="form-group">
               <label htmlFor="firstName">First Name:</label>
               <input className="cashAdvInput" id="firstName" type="text" {...register('firstName')} placeholder="First Name" />
             </div>
-
             <div className="form-group">
               <label htmlFor="lastName">Last Name:</label>
               <input className="cashAdvInput" id="lastName" type="text" {...register('lastName')} placeholder="Last Name" />
             </div>
-
             <div className="form-group">
               <label htmlFor="activity">Activity:</label>
-              <textarea className="cashAdvInput" id="activity" {...register('activity')} placeholder="Describe the activity" rows="3" style={{ resize: 'none' }} />
+              <textarea className="cashAdvInput" id="activity" {...register('activity')} placeholder="Describe the activity" rows="3" />
             </div>
-
             <div className="form-group">
-              <label htmlFor="dateOfActivity">Date of Activity:</label>
+              <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
               <input
                 className="cashAdvInput"
-                id="dateOfActivity"
-                type="date"
-                {...register('dateOfActivity')}
-                defaultValue={new Date().toISOString().split('T')[0]}
+                id="cashAdvanceId"
+                type="text"
+                value={cashAdvanceId ? cashAdvanceId : ""}  // Ensure it's not an object
+                placeholder="Cash Advance ID"
+                readOnly
               />
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="cashAdvanceAmount">Cash Advance Amount:</label>
-              <input disabled className="cashAdvInput" id="cashAdvanceAmount" type="number" {...register('cashAdvanceAmount')} placeholder="Cash Advance Amount" readOnly />
-            </div>
-
-            <div className="form-group" style={{ justifyContent: 'right' }}>
-              <button type="button" onClick={handleCashAdvanceRequest}>Request Cash Advance</button>
+              <button type="button" className="btnRequest" onClick={handleCashAdvanceRequest}>
+                Request Cash Advance
+              </button>
             </div>
           </div>
 
@@ -198,12 +185,12 @@ const LiquidationReport = () => {
 
             <div className="form-group">
               <label htmlFor="excessRefund">Excess/For Refund:</label>
-              <input disabled className="cashAdvInput" id="excessRefund" type="number" {...register('excessRefund')} readOnly />
+              <input disabled className="cashAdvInput" id="excessRefund" type="number" readOnly />
             </div>
 
             <div className="buttons" style={{ justifyContent: 'right' }}>
               <button type="submit" className="btnSave">Save</button>
-              <button type="button" className="btnUpdate" onClick={handleUpdate}>Update</button>
+              <button type="button" className="btnUpdate">Update</button>
               <button type="button" className="btnCancel" onClick={handleCancel}>Cancel</button>
             </div>
           </div>
@@ -213,7 +200,7 @@ const LiquidationReport = () => {
       {isCashAdvanceOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <CashAdvance onCancel={closeCashAdvanceForm} />
+            <CashAdvance onCancel={closeCashAdvanceForm} onSubmit={closeCashAdvanceForm} />
           </div>
         </div>
       )}
@@ -221,8 +208,13 @@ const LiquidationReport = () => {
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <h2>Form submitted successfully!</h2>
-            <button onClick={() => setIsPopupOpen(false)}>Close</button>
+            <div className="popup-header">
+              <h3>Cash Advance Created!</h3>
+              <button className="popup-close-btn" onClick={() => setIsPopupOpen(false)}>X</button>
+            </div>
+            <div className="popup-body">
+              <p>Cash Advance ID: {cashAdvanceId}</p>
+            </div>
           </div>
         </div>
       )}

@@ -16,12 +16,12 @@ const Dashboard3 = () => {
                     id: doc.id,
                     ...doc.data(),
                 }))
-                .filter((record) => record.status === "Approved" || record.status === "Rejected"); // Filter approved or rejected records
+                .filter((record) => record.status === "Approved" || record.status === "Rejected"); 
 
-            setRecords(fetchedRecords); // Update the state with approved and rejected records
+            setRecords(fetchedRecords);
         });
 
-        return () => unsubscribe(); // Cleanup listener on component unmount
+        return () => unsubscribe();
     }, []);
 
     // Legend for status indicators
@@ -44,7 +44,7 @@ const Dashboard3 = () => {
     return (
         <div>
             <Navbar />
-            <Breadcrumbs links={breadcrumbsLinks} /> {/* Add Breadcrumbs */}
+            <Breadcrumbs links={breadcrumbsLinks} /> 
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Status Dashboard</h1>
 
             <Legend />
@@ -54,29 +54,27 @@ const Dashboard3 = () => {
                         <table className="dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
                             <thead>
                                 <tr>
-                                    <th>Liquidation ID</th>
                                     <th>Cash Advance ID</th>
                                     <th>Account Name</th>
                                     <th>Cash Advance Amount</th>
                                     <th>Status</th>
-                                    <th>Reason</th> {/* Added Reason Column */}
+                                    <th>Reason</th> 
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.length > 0 ? (
                                     records.map((record) => (
                                         <tr key={record.id}>
-                                            <td>{record.liquidationId}</td>
                                             <td>{record.cashAdvanceId}</td>
                                             <td>{record.accountName}</td>
                                             <td>{record.cashAdvAmount}</td>
                                             <td>{record.status}</td>
-                                            <td>{record.rejectionReason || "N/A"}</td> {/* Display rejection reason if exists */}
+                                            <td>{record.rejectionReason || "N/A"}</td> 
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="6">No records found.</td> {/* Adjusted colSpan for new column */}
+                                        <td colSpan="5">No records found.</td>
                                     </tr>
                                 )}
                             </tbody>

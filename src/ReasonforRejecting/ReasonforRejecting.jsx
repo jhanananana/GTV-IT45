@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import './ReasonForRejecting.css';
 import { useNavigate } from 'react-router-dom';
 
-const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {  // Accept onCancel and onReject as props
+const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => { 
   const [reason, setReason] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
-    event.preventDefault();  // Prevent the default form submission
+    event.preventDefault();  
     if (reason.trim() === "") {
       alert("Please provide a reason for rejection.");
       return;
     }
-    // Pass rejection reason back to Dashboard1 for updating Firestore
     onReject(reason);
   };
 

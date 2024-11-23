@@ -6,7 +6,7 @@ import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Footer from '../NavBarAndFooter/footer.jsx';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import ReasonForRejecting from '../ReasonForRejecting/ReasonForRejecting.jsx';
+import ReasonForRejecting from '../ReasonforRejecting/ReasonforRejecting.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 
 const Dashboard2 = () => {
