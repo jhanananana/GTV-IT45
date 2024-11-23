@@ -141,13 +141,22 @@ const LiquidationReport = () => {
               {errors.lastName && <span className="error">{errors.lastName.message}</span>}
             </div>
             <div className="form-group">
+              <label htmlFor="accountName">Account Name</label>
+              <input 
+                placeholder="Account name of the request is displayed here.." 
+                disabled className="cashAdvInput" id="liquidationId" type="text" readOnly />
+            </div>
+
+            <div className="form-group">
               <label htmlFor="activity">Activity:</label>
               <textarea 
+                disabled
                 className="cashAdvInput" 
                 id="activity" 
-                {...register('activity', { required: 'Activity description is required' })} 
-                placeholder="Describe the activity" 
-                rows="3" 
+                {...register('activity')} 
+                placeholder="Activity of the request is displayed here.." 
+                rows="3"
+                readOnly
               />
               {errors.activity && <span className="error">{errors.activity.message}</span>}
             </div>

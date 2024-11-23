@@ -27,7 +27,7 @@ const Dashboard3 = () => {
     // Legend for status indicators
     const Legend = () => (
         <div className="legend">
-            <span className="legend-item open">Open</span>
+            <span className="legend-item open">Open (Approved)</span>
             <span className="legend-item closed-approved">Closed (Approved)</span>
             <span className="legend-item closed-declined">Closed (Declined)</span>
         </div>
