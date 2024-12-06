@@ -23,76 +23,80 @@ const Dashboard2 = () => {
                 id: doc.id,
                 ...doc.data(),
             }));
-
-            const approvedRecords = fetchedRecords.filter(record => record.status === "Approved");
-            setRecords(approvedRecords);
+    
+            // Filter out approved or rejected records
+            const filteredRecords = fetchedRecords.filter(record => record.isApproved !== true && record.isApproved !== false);
+            setRecords(filteredRecords);
         });
-
+    
         return () => unsubscribe();
-    }, []);
+    }, []);    
 
     const handleApprove = async () => {
         if (!selectedRecord) {
             alert("No record selected. Please select a record to approve.");
-            return; // Prevent action if no record is selected
+            return;
         }
-
+        
         try {
             await updateDoc(doc(db, "Cash Advance", selectedRecord.id), {
-                status: "Approved",
+                status: "OPEN (Approved)", 
+                isApproved: true, 
+                isAttached: false,
             });
-
+    
             // Refetch records after updating the status
             const unsubscribe = onSnapshot(collection(db, "Cash Advance"), (snapshot) => {
                 const fetchedRecords = snapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-
-                const approvedRecords = fetchedRecords.filter(record => record.status === "Approved");
+    
+                const approvedRecords = fetchedRecords.filter(record => record.isApproved === true && record.isAttached === false);
                 setRecords(approvedRecords);
             });
-
+    
             alert("Record approved successfully!");
-            navigate("/dashboard3");
-
+            navigate("/dashboard2"); 
+    
             return () => unsubscribe();
         } catch (error) {
             console.error("Error approving record:", error);
             alert("Failed to approve record.");
         }
-    };
+    };    
 
     const handleReject = async (reason) => {
         if (!selectedRecord) {
             alert("No record selected for rejection. Please select a record to reject.");
             return;
         }
-
+    
         setIsRejectPopupOpen(true);
-
+    
         try {
             const updatedData = {
                 status: "Rejected",
                 rejectionReason: reason,
+                isApproved: false, 
+                isAttached: false, 
             };
-
+    
             await updateDoc(doc(db, "Cash Advance", selectedRecord.id), updatedData);
             setRecords((prevRecords) =>
                 prevRecords.filter((record) => record.id !== selectedRecord.id)
             );
-
+    
             alert("Record rejected successfully!");
-            navigate("/dashboard3");
+            navigate("/dashboard3"); 
         } catch (error) {
             console.error("Error rejecting record:", error);
         }
-    };
+    };    
 
     const handleRecordSelect = (recordId) => {
         const record = records.find((r) => r.id === recordId);
         setSelectedRecord(record);
-        setValue("liquidationId", record.liquidationId || "");
         setValue("cashAdvAmount", record.cashAdvAmount || "");
         setValue("cashAdvanceId", record.cashAdvanceId || "");
         setValue("accountName", record.accountName || "");
@@ -114,10 +118,6 @@ const Dashboard2 = () => {
                 <div className="dashboard-left">
                     <form>
                         <div className="dashboard-group">
-                            <label htmlFor="liquidationId">Liquidation ID:</label>
-                            <input disabled className="dashBoardInput" {...register("liquidationId")} readOnly />
-                        </div>
-                        <div className="dashboard-group">
                             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
                             <input disabled className="dashBoardInput" {...register("cashAdvanceId")} readOnly />
                         </div>
@@ -136,11 +136,10 @@ const Dashboard2 = () => {
                     </form>
                 </div>
             </div>
-            <div className="content" style={{ margin: "30px" }}>
+            <div className="content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
                 <table className="dashboard-table">
                     <thead>
                         <tr>
-                            <th>Liquidation ID</th>
                             <th>Cash Advance ID</th>
                             <th>Account Name</th>
                             <th>Cash Advance Amount</th>
@@ -151,7 +150,6 @@ const Dashboard2 = () => {
                         {records.length > 0 ? (
                             records.map((record) => (
                                 <tr key={record.id}>
-                                    <td>{record.liquidationId}</td>
                                     <td>{record.cashAdvanceId}</td>
                                     <td>{record.accountName}</td>
                                     <td>{record.cashAdvAmount}</td>

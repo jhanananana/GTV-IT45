@@ -40,23 +40,24 @@ const CashAdvance = () => {
   // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!cashAdvanceId || !accountName || !activity) {
       alert("Please fill in all the fields.");
       return;
     }
-
+  
     try {
-      // Save the Cash Advance request
       const docRef = doc(db, "Cash Advance", cashAdvanceId.toString());
       await setDoc(docRef, {
         cashAdvanceId,
         accountName,
         activity,
         status: "Pending",
+        isApproved: null, 
       });
-
-      alert("Cash Advance Request submitted successfully!.");
+  
+      alert("Cash Advance Request submitted successfully!");
+      navigate("/dashboard1"); 
     } catch (error) {
       console.error("Error submitting Cash Advance Request:", error);
       alert("Failed to submit request. Please try again.");

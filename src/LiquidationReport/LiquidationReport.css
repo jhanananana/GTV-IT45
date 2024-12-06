@@ -22,7 +22,8 @@ body {
   border-radius: 8px;
   margin: auto;
   width: 70%;
-  gap: 20px; /* Adds space between the left and right columns */
+  gap: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for emphasis */
 }
 
 /* Left and Right Columns */

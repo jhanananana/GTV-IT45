@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
-import CashAdvance from '../CashAdvance/CashAdvance.jsx';
 import './LiquidationReport.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
+import Footer from '../NavBarAndFooter/footer.jsx';
 import { setDoc, collection, updateDoc, doc, getDocs } from "firebase/firestore";
 import db from "../firebase";
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
@@ -13,18 +13,17 @@ const LiquidationReport = () => {
   const [cashAdvanceId, setCashAdvanceId] = useState(null);
   const [availableCashAdvances, setAvailableCashAdvances] = useState([]);
   const [file, setFile] = useState(null);
-  const [isCashAdvanceOpen, setIsCashAdvanceOpen] = useState(false);
   const [excessRefund, setExcessRefund] = useState(0);
-
+  const [cashAdvAmount, setCashAdvAmount] = useState(0);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-  // Fetch available cash advances on mount
   useEffect(() => {
     const fetchAvailableCashAdvances = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "Cash Advance"));
         const available = querySnapshot.docs
-          .filter(doc => !doc.data().isAttached)
+          .filter(doc => doc.data().isApproved && !doc.data().isAttached)
           .map(doc => ({ id: doc.id, ...doc.data() }));
         setAvailableCashAdvances(available);
       } catch (error) {
@@ -32,6 +31,29 @@ const LiquidationReport = () => {
       }
     };
     fetchAvailableCashAdvances();
+
+    const fetchLastLiquidationID = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Liquidation"));
+        const docs = querySnapshot.docs;
+        
+        if (docs.length > 0) {
+          const lastDocID = Math.max(
+            ...docs.map(doc => {
+              const match = doc.id.match(/#(\d+)$/);
+              return match ? parseInt(match[1], 10) : 0;
+            })
+          );
+    
+          setLiquidationID(lastDocID + 1);
+        } else {
+          setLiquidationID(1000);
+        }
+      } catch (error) {
+        console.error("Error fetching last liquidation ID: ", error);
+      }
+    };
+    fetchLastLiquidationID();    
   }, []);
 
   // File upload handling
@@ -51,26 +73,37 @@ const LiquidationReport = () => {
   // Handle form submission
   const onSubmit = async (data) => {
     if (!cashAdvanceId) {
-      alert("Please select a Cash Advance.");
+      alert("Please select an OPEN Cash Advance Request to continue.");
       return;
     }
+
+    const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
+    const cashAdvAmount = selectedCashAdvance.cashAdvAmount || 0;
+    const activity = selectedCashAdvance.activity || "N/A";
+    const accountName = selectedCashAdvance.accountName || "N/A";
 
     const docData = {
       ...data,
       cashAdvanceId,
-      liquidationID,
+      accountName,
+      activity,
+      cashAdvAmount,
+      liquidationID: liquidationID || 'N/A',
       isAttached: true,
-      date: new Date(),
+      isApproved: true,
+      date: date
     };
 
     try {
-      await setDoc(doc(collection(db, "Liquidation")), docData);
-
-      // Update the selected cash advance
-      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId);
-      await updateDoc(cashAdvanceRef, { isAttached: true });
-
+      await setDoc(doc(db, "Liquidation", `Liquidation ${liquidationID}`), docData);
       alert("Liquidation report submitted successfully!");
+
+      setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
+
+      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId);
+      await updateDoc(cashAdvanceRef, { isAttached: true, isApproved: true });
+
+      setLiquidationID(prevID => prevID + 1);
       reset();
       setCashAdvanceId(null);
       setFile(null);
@@ -80,26 +113,19 @@ const LiquidationReport = () => {
     }
   };
 
-  // Handle Cash Advance selection
-  const handleCashAdvanceRequest = () => {
-    if (cashAdvanceId) {
-      alert("Cash Advance already set!");
-      return;
-    }
-    setIsCashAdvanceOpen(true);
-  };
-
-  const closeCashAdvanceForm = () => setIsCashAdvanceOpen(false);
-
-  // Dynamic calculation of excess refund
   useEffect(() => {
     const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
     if (selectedCashAdvance) {
+      document.getElementById('accountName').value = selectedCashAdvance.accountName;
+      document.getElementById('activity').value = selectedCashAdvance.activity;
+      document.getElementById('cashAdvAmount').value = selectedCashAdvance.cashAdvAmount;
+      setCashAdvAmount(selectedCashAdvance.amount);
+
       const totalSpent = parseFloat(document.getElementById('totalAmountSpent')?.value || 0);
       const refund = selectedCashAdvance.amount - totalSpent;
       setExcessRefund(refund >= 0 ? refund : 0);
     }
-  }, [cashAdvanceId]);
+  }, [cashAdvanceId, availableCashAdvances]);
 
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
@@ -114,55 +140,79 @@ const LiquidationReport = () => {
         <div className="form-container">
           <div className="form-left">
             <h1 style={{ textAlign: 'right' }}>Liquidation Report</h1>
+
+            {/* LIQUIDATION ID FIELD */}
             <div className="form-group">
               <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input disabled value={liquidationID || "Loading..."} className="cashAdvInput" id="liquidationId" type="text" readOnly />
+              <input disabled value={liquidationID} className="cashAdvInput" id="liquidationId" type="text" readOnly />
             </div>
+
+            {/* FIRST NAME */}
             <div className="form-group">
               <label htmlFor="firstName">First Name:</label>
-              <input 
-                className="cashAdvInput" 
-                id="firstName" 
-                type="text" 
-                {...register('firstName', { required: 'First name is required' })} 
-                placeholder="First Name" 
+              <input
+                className="cashAdvInput"
+                id="firstName"
+                type="text"
+                {...register('firstName', { required: 'First name is required' })}
+                placeholder="First Name"
               />
               {errors.firstName && <span className="error">{errors.firstName.message}</span>}
             </div>
+
+            {/* LAST NAME */}
             <div className="form-group">
               <label htmlFor="lastName">Last Name:</label>
-              <input 
-                className="cashAdvInput" 
-                id="lastName" 
-                type="text" 
-                {...register('lastName', { required: 'Last name is required' })} 
-                placeholder="Last Name" 
+              <input
+                className="cashAdvInput"
+                id="lastName"
+                type="text"
+                {...register('lastName', { required: 'Last name is required' })}
+                placeholder="Last Name"
               />
               {errors.lastName && <span className="error">{errors.lastName.message}</span>}
             </div>
+
+            {/* ACCOUNT NAME */}
             <div className="form-group">
               <label htmlFor="accountName">Account Name</label>
-              <input 
-                placeholder="Account name of the request is displayed here.." 
-                disabled className="cashAdvInput" id="liquidationId" type="text" readOnly />
+              <input
+                placeholder="Account name of the request is displayed here.."
+                disabled className="cashAdvInput" id="accountName" type="text" readOnly />
             </div>
 
+            {/* ACTIVITY */}
             <div className="form-group">
               <label htmlFor="activity">Activity:</label>
-              <textarea 
+              <textarea
                 disabled
-                className="cashAdvInput" 
-                id="activity" 
-                {...register('activity')} 
-                placeholder="Activity of the request is displayed here.." 
+                className="cashAdvInput"
+                id="activity"
+                {...register('activity')}
+                placeholder="Activity of the request is displayed here.."
                 rows="3"
                 readOnly
               />
               {errors.activity && <span className="error">{errors.activity.message}</span>}
             </div>
+
+            {/* DATE FIELD */}
+            <div className="form-group">
+              <label htmlFor="date">Date:</label>
+              <input
+                className="cashAdvInput"
+                id="date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+
+            {/* CASH ADVANCE */}
             <div className="form-group">
               <label htmlFor="cashAdvanceId">Cash Advance:</label>
               <select
+                style={{width: '350px'}}
                 className="cashAdvInput"
                 id="cashAdvanceId"
                 value={cashAdvanceId || ""}
@@ -174,16 +224,14 @@ const LiquidationReport = () => {
                 </option>
                 {availableCashAdvances.map(cashAdvance => (
                   <option key={cashAdvance.id} value={cashAdvance.id}>
-                    {`ID: ${cashAdvance.id} - Amount: ${cashAdvance.amount}`}
+                    {`ID: ${cashAdvance.id}`}
                   </option>
                 ))}
               </select>
             </div>
-            <button type="button" className="btnRequest" onClick={handleCashAdvanceRequest}>
-              Request Cash Advance
-            </button>
           </div>
 
+          {/* RECEIPT UPLOAD */}
           <div className="form-right">
             <label>Upload a photo of receipt</label>
             <div {...getRootProps()} className="dropzone">
@@ -194,37 +242,50 @@ const LiquidationReport = () => {
                 <p>Drag and drop file here</p>
               )}
             </div>
-            <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove</button>
+            <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove File</button>
+
+            {/* CASH AMOUNT */}
+            <div className="form-group">
+              <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
+              <input
+                disabled
+                className="cashAdvInput"
+                id="cashAdvAmount"
+                type="number"
+                value={cashAdvAmount}
+                readOnly
+              />
+            </div>
+
+            {/* TOTAL AMOUNT SPENT */}
             <div className="form-group">
               <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
-              <input 
-                className="cashAdvInput" 
-                id="totalAmountSpent" 
-                type="number" 
-                {...register('totalAmountSpent', { required: 'Total amount is required' })} 
-                placeholder="Total Amount Spent" 
+              <input
+                className="cashAdvInput"
+                id="totalAmountSpent"
+                type="number"
+                {...register('totalAmountSpent', { required: 'This field is required' })}
+                placeholder="Total Amount Spent"
               />
               {errors.totalAmountSpent && <span className="error">{errors.totalAmountSpent.message}</span>}
             </div>
+
+            {/* EXCESS / FOR REFUND */}
             <div className="form-group">
-              <label htmlFor="excessRefund">Excess/For Refund:</label>
-              <input disabled className="cashAdvInput" id="excessRefund" type="number" value={excessRefund} readOnly />
+              <label htmlFor="excessRefund">Excess Refund:</label>
+              <input
+                className="cashAdvInput"
+                id="excessRefund"
+                type="number"
+                value={excessRefund || 0}
+                readOnly
+              />
             </div>
-            <div className="buttons">
-              <button type="submit" className="btnSave">Save</button>
-              <button type="button" className="btnCancel" onClick={() => reset()}>Cancel</button>
-            </div>
+            <button type="submit" className="btnSubmit">Submit Report</button>
           </div>
         </div>
       </form>
-
-      {isCashAdvanceOpen && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <CashAdvance onCancel={closeCashAdvanceForm} />
-          </div>
-        </div>
-      )}
+      <Footer />
     </>
   );
 };

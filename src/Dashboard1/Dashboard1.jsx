@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
-import db from "../firebase"; // Import your Firebase configuration
+import db from "../firebase";
 import './Dashboard1.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Footer from '../NavBarAndFooter/footer.jsx'; 
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import ReasonForRejecting from '../ReasonforRejecting/ReasonforRejecting.jsx'; // Import the component
+import ReasonForRejecting from '../ReasonforRejecting/ReasonforRejecting.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 
 const Dashboard1 = () => {
   const { register, handleSubmit, setValue } = useForm();
   const navigate = useNavigate();
-
-  const [records, setRecords] = useState([]); // State to store records
-  const [selectedRecordId, setSelectedRecordId] = useState(null); // Store selected record id for updating
-  const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false); // Popup state
+  const [records, setRecords] = useState([]);
+  const [selectedRecordId, setSelectedRecordId] = useState(null); 
+  const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false); 
 
   useEffect(() => {
-    // Fetch records from the "Cash Advance" collection
+    // Listen to Cash Advance collection
     const cashAdvanceUnsubscribe = onSnapshot(
       collection(db, "Cash Advance"),
       (snapshot) => {
@@ -26,8 +25,7 @@ const Dashboard1 = () => {
           id: doc.id,
           ...doc.data(),
         }));
-
-        // Fetch records from the "Liquidation Report" collection
+  
         const liquidationUnsubscribe = onSnapshot(
           collection(db, "Liquidation"),
           (snapshot) => {
@@ -35,8 +33,7 @@ const Dashboard1 = () => {
               id: doc.id,
               ...doc.data(),
             }));
-
-            // Merge Cash Advance and Liquidation data based on liquidationId
+  
             const mergedRecords = fetchedCashAdvRecords.map((cashAdvRecord) => {
               const relatedLiquidation = fetchedLiquidationRecords.find(
                 (liquidation) => liquidation.liquidationID === cashAdvRecord.liquidationId
@@ -46,30 +43,23 @@ const Dashboard1 = () => {
                 liquidationDetails: relatedLiquidation || {},
               };
             });
-
-            setRecords(mergedRecords); // Set merged records to state
+  
+            setRecords(mergedRecords);
           },
           (error) => {
             console.error("Error fetching Liquidation records: ", error);
           }
         );
-
-        // Cleanup for Liquidation listener
-        return () => {
-          cashAdvanceUnsubscribe();
-          liquidationUnsubscribe();
-        };
+  
+        return () => liquidationUnsubscribe();
       },
       (error) => {
         console.error("Error fetching Cash Advance records: ", error);
       }
     );
-
-    // Cleanup function for Cash Advance listener
-    return () => {
-      cashAdvanceUnsubscribe();
-    };
-  }, []);
+  
+    return () => cashAdvanceUnsubscribe();
+  }, []);  
 
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
@@ -78,13 +68,18 @@ const Dashboard1 = () => {
   ];
 
   const onSubmit = (data) => {
-    if (selectedRecordId) {
-      const updatedRecord = records.find((record) => record.id === selectedRecordId);
-      const updatedCashAdvAmount = data.cashAdvAmount;
-
-      // Update the selected record with the new cash advance amount
-      updateRecord(selectedRecordId, updatedCashAdvAmount);
+    if (!selectedRecordId) {
+      alert("No record selected.");
+      return;
     }
+  
+    const updatedCashAdvAmount = data.cashAdvAmount;
+    if (isNaN(updatedCashAdvAmount) || updatedCashAdvAmount <= 0) {
+      alert("Please enter a valid cash advance amount.");
+      return;
+    }
+  
+    updateRecord(selectedRecordId, updatedCashAdvAmount);
   };
 
   const updateRecord = async (recordId, newAmount) => {
@@ -103,21 +98,21 @@ const Dashboard1 = () => {
       alert("No record selected. Please select a record to approve.");
       return;
     }
-
+  
     const selectedRecord = records.find((record) => record.id === selectedRecordId);
-
+  
     if (!selectedRecord || !selectedRecord.cashAdvAmount) {
       alert("Please set a valid Cash Advance Amount before approving.");
       return;
     }
-
+  
     try {
       const docRef = doc(db, "Cash Advance", selectedRecordId);
-      await updateDoc(docRef, { status: "Approved" });
-      setRecords((prevRecords) =>
-        prevRecords.filter((record) => record.id !== selectedRecordId)
-      );
-
+      await updateDoc(docRef, { 
+        status: "Approved",
+        isApproved: true, 
+      });
+  
       alert("Record approved successfully!");
       navigate("/dashboard2"); 
     } catch (error) {
@@ -126,20 +121,27 @@ const Dashboard1 = () => {
     }
   };
 
-  const handleReject = () => {
-    if (!selectedRecordId) {
-      alert("No record selected. Please select a record to reject.");
-      return; 
-    }
-
-    setIsRejectPopupOpen(true); 
+  const handleRejectSubmit = (reason) => {
+    updateDoc(doc(db, "Cash Advance", selectedRecordId), {
+      status: 'Rejected',
+      isApproved: false,
+      rejectionReason: reason,
+    })
+      .then(() => {
+        setIsRejectPopupOpen(false);
+        alert("Record rejected successfully.");
+        navigate("/dashboard3");
+      })
+      .catch((error) => {
+        console.error("Error rejecting the record: ", error);
+        alert("Failed to reject the record. Please try again.");
+      });
   };
 
   const handleRecordSelect = (recordId) => {
     setSelectedRecordId(recordId);
     const record = records.find((r) => r.id === recordId);
 
-    // Set form fields with selected record details
     setValue("liquidationId", record.liquidationId || ""); 
     setValue("cashAdvAmount", record.cashAdvAmount || "");
     setValue("cashAdvanceId", record.cashAdvanceId || "");  
@@ -150,48 +152,20 @@ const Dashboard1 = () => {
     setIsRejectPopupOpen(false);
   };
 
-  const handleRejectSubmit = (reason) => {
-    updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-      status: 'Rejected',
-      rejectionReason: reason,
-    })
-      .then(() => {
-        setIsRejectPopupOpen(false);
-        alert("Record rejected successfully.");
-        navigate("/dashboard3"); 
-      })
-      .catch((error) => {
-        console.error("Error rejecting the record: ", error);
-        alert("Failed to reject the record. Please try again.");
-      });
-  };
-
-  // Filter out approved and rejected records
   const filteredRecords = records.filter(
-    (record) => record.status !== "Approved" && record.status !== "Rejected"
-  );
-
+    (record) => record.isApproved === null || record.isApproved === undefined
+  );  
+  
   return (
     <div>
       <Navbar />
       <Breadcrumbs links={breadcrumbsLinks} />
       <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
 
-      {/* Left Side */}
+      {/* Left Side Form */}
       <div className="dashboard-container">
-        <div className="dashboard-left ">
+        <div className="dashboard-left">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="dashboard-group">
-              <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input
-                disabled={true}
-                className="dashBoardInput"
-                id="liquidationId"
-                type="text"
-                {...register("liquidationId")}
-                readOnly
-              />
-            </div>
 
             <div className="dashboard-group">
               <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
@@ -235,7 +209,7 @@ const Dashboard1 = () => {
               </div>
             )}
             <div className="dashboard1-buttons">
-              <button type="button" className="btn reject" onClick={handleReject}>Reject</button>
+              <button type="button" className="btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
               <button type="button" className="btn approve" onClick={handleApprove}>Approve</button>
             </div>
           </form>
@@ -243,12 +217,11 @@ const Dashboard1 = () => {
       </div>
 
       {/* Table to display filtered records */}
-      <div className="content" style={{ margin: "30px" }}>
-        <div className="tables">
+      <div className="content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
+        <div className="tables" >
           <table className="dashboard-table">
             <thead>
               <tr>
-                <th>Liquidation ID</th>
                 <th>Cash Advance ID</th>
                 <th>Account Name</th>
                 <th>Activity</th>
@@ -260,7 +233,6 @@ const Dashboard1 = () => {
               {filteredRecords.length > 0 ? (
                 filteredRecords.map((record) => (
                   <tr key={record.id}>
-                    <td>{record.liquidationDetails.liquidationID}</td>
                     <td>{record.cashAdvanceId}</td>
                     <td>{record.accountName}</td>
                     <td>{record.activity}</td>
@@ -269,7 +241,6 @@ const Dashboard1 = () => {
                       <button
                         type="button"
                         className="btnEdit"
-                        style={{ justifyContent: "flex-end" }}
                         onClick={() => handleRecordSelect(record.id)}
                       >
                         Select Row
@@ -279,26 +250,22 @@ const Dashboard1 = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center" }}>No records to show.</td>
+                  <td colSpan="6" style={{ textAlign: "center" }}>No records found.</td>
                 </tr>
               )}
             </tbody>
-
           </table>
         </div>
       </div>
 
+      {/* Rejection Reason Popup */}
       {isRejectPopupOpen && (
-        <div className="popup-overlay">
-          <div className="popup-content">
-            <ReasonForRejecting
-              onCancel={closeRejectPopup}
-              selectedRecord={records.find((record) => record.id === selectedRecordId)}
-              onReject={handleRejectSubmit}  
-            />
-          </div>
-        </div>
+        <ReasonForRejecting
+          onClose={closeRejectPopup}
+          onSubmit={handleRejectSubmit}
+        />
       )}
+
       <Footer />
     </div>
   );

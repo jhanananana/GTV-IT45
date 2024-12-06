@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
-    padding: 10px; /* Add some padding to ensure spacing on smaller screens */
-    box-sizing: border-box; /* Ensure padding does not affect width calculation */
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box; 
 }
 
 /* Form Styles */

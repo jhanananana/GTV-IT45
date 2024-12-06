@@ -169,3 +169,23 @@ td {
     color: black;
     background-color: #E3E3E3;
 }
+
+.status {
+    font-weight: bold;
+    text-align: center;
+}
+
+.status.closed-approved {
+    background-color: #27ae60;
+    color: white;
+}
+
+.status.closed-declined {
+    background-color: #c0392b;
+    color: white;
+}
+
+.status.open {
+    background-color: #f1c40f;
+    color:white;
+}
