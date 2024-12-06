@@ -25,7 +25,9 @@ const Dashboard2 = () => {
             }));
     
             // Filter out approved or rejected records
-            const filteredRecords = fetchedRecords.filter(record => record.isApproved !== true && record.isApproved !== false);
+            const filteredRecords = fetchedRecords.filter(
+                record => record.isApproved === true && record.isGMApproved === null
+            );
             setRecords(filteredRecords);
         });
     
@@ -37,62 +39,56 @@ const Dashboard2 = () => {
             alert("No record selected. Please select a record to approve.");
             return;
         }
-        
+    
         try {
             await updateDoc(doc(db, "Cash Advance", selectedRecord.id), {
-                status: "OPEN (Approved)", 
-                isApproved: true, 
+                status: "OPEN (GM Approved)", // Updated status
+                isGMApproved: true,          // Approved by GM
                 isAttached: false,
             });
     
-            // Refetch records after updating the status
-            const unsubscribe = onSnapshot(collection(db, "Cash Advance"), (snapshot) => {
-                const fetchedRecords = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+            alert("Record approved by GM!");
     
-                const approvedRecords = fetchedRecords.filter(record => record.isApproved === true && record.isAttached === false);
-                setRecords(approvedRecords);
-            });
+            // Remove approved record from the list
+            setRecords((prevRecords) =>
+                prevRecords.filter((record) => record.id !== selectedRecord.id)
+            );
     
-            alert("Record approved successfully!");
-            navigate("/dashboard2"); 
-    
-            return () => unsubscribe();
         } catch (error) {
             console.error("Error approving record:", error);
             alert("Failed to approve record.");
         }
-    };    
+    };
 
     const handleReject = async (reason) => {
         if (!selectedRecord) {
             alert("No record selected for rejection. Please select a record to reject.");
             return;
         }
-    
-        setIsRejectPopupOpen(true);
-    
+
+        if (!reason || reason.trim() === "") {
+            alert("Please provide a reason for rejection.");
+            return;
+        }
+
         try {
-            const updatedData = {
-                status: "Rejected",
-                rejectionReason: reason,
-                isApproved: false, 
-                isAttached: false, 
-            };
-    
-            await updateDoc(doc(db, "Cash Advance", selectedRecord.id), updatedData);
+            await updateDoc(doc(db, "Cash Advance", selectedRecord.id), {
+                status: "CLOSED (GM Rejected)", 
+                isGMApproved: false,           
+                rejectionReason: reason,       
+                isAttached: false,             
+            });
+
+            alert("Record rejected by GM!");
             setRecords((prevRecords) =>
                 prevRecords.filter((record) => record.id !== selectedRecord.id)
             );
-    
-            alert("Record rejected successfully!");
-            navigate("/dashboard3"); 
+            navigate("/dashboard3");
         } catch (error) {
             console.error("Error rejecting record:", error);
+            alert("Failed to reject record. Please try again.");
         }
-    };    
+    };
 
     const handleRecordSelect = (recordId) => {
         const record = records.find((r) => r.id === recordId);
@@ -130,7 +126,7 @@ const Dashboard2 = () => {
                             <input disabled className="dashBoardInput" {...register("cashAdvAmount")} readOnly />
                         </div>
                         <div className="dashboard1-buttons">
-                            <button type="button" className="btn reject" onClick={handleReject}>Reject</button>
+                            <button type="button" className="btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
                             <button type="button" className="btn approve" onClick={handleApprove}>Approve</button>
                         </div>
                     </form>

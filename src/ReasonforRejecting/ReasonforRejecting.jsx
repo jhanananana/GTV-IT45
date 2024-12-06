@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react';  // Ensure this is here
 import './ReasonForRejecting.css';
 import { useNavigate } from 'react-router-dom';
 
-const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => { 
-  const [reason, setReason] = useState("");
+const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => { 
+  const [reason, setReason] = useState("");  // Correct usage of useState
   const navigate = useNavigate();
+
+  if (!selectedRecord) {
+    return <div>Error: No record selected for rejection.</div>;
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();  
@@ -12,7 +16,7 @@ const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {
       alert("Please provide a reason for rejection.");
       return;
     }
-    onReject(reason);
+    onReject(reason); // Pass the reason to the parent component (Dashboard1.jsx)
   };
 
   return (
@@ -26,7 +30,7 @@ const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {
             <input
               id="cashAdvanceId"
               type="text"
-              value={selectedRecord.cashAdvanceId}
+              value={selectedRecord.cashAdvanceId || "N/A"}  // Display "N/A" if undefined
               readOnly
             />
           </div>
@@ -36,7 +40,7 @@ const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {
             <input
               id="accountName"
               type="text"
-              value={selectedRecord.accountName}
+              value={selectedRecord.accountName || "N/A"}  // Display "N/A" if undefined
               readOnly
             />
           </div>
@@ -45,7 +49,7 @@ const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {
             <label htmlFor="activity">Activity:</label>
             <textarea
               id="activity"
-              value={selectedRecord.activity || ""}
+              value={selectedRecord.activity || "No activity provided"}  // Display default message if undefined
               readOnly
             />
           </div>
@@ -60,7 +64,7 @@ const ReasonForRejecting = ({ onCancel, selectedRecord, onReject }) => {
           </div>
           
           <button type="submit" className="btnSubmit">Submit</button>
-          <button type="button" className="btnCancel" onClick={onCancel}>Cancel</button>
+          <button type="button" className="btnCancel" onClick={onClose}>Cancel</button>  {/* Use onClose instead of onCancel */}
         </form>
       </div>
     </div>

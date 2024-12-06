@@ -23,7 +23,7 @@ const LiquidationReport = () => {
       try {
         const querySnapshot = await getDocs(collection(db, "Cash Advance"));
         const available = querySnapshot.docs
-          .filter(doc => doc.data().isApproved && !doc.data().isAttached)
+          .filter(doc => doc.data().status === "OPEN (GM Approved)" && doc.data().isApproved && !doc.data().isAttached)
           .map(doc => ({ id: doc.id, ...doc.data() }));
         setAvailableCashAdvances(available);
       } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase";
 import './Dashboard3.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
@@ -21,18 +21,20 @@ const Dashboard3 = () => {
             // Update the status based on isApproved and isAttached
             const updatedRecords = fetchedRecords.map(record => {
                 let status = record.status;
-
-                if (record.isApproved && record.isAttached) {
+            
+                if (record.isApproved && record.isGMApproved && record.isAttached) {
                     status = "CLOSED (APPROVED)";
-                } else if (record.isApproved === true && record.isAttached === false) {
-                    status = "OPEN";
-                } else if (record.isApproved === false) {
-                    status = "CLOSED (DECLINED)";
+                } else if (record.isApproved && record.isGMApproved === true && !record.isAttached) {
+                    status = "OPEN (GM Approved)";
+                } else if (record.isApproved && record.isGMApproved === false) {
+                    status = "CLOSED (GM Rejected)";
+                } else if (record.isApproved && record.isGMApproved === null) {
+                    status = "Pending GM Review";
                 }
-
+            
                 return { ...record, status };
             });
-
+            
             setRecords(updatedRecords);
         });
 
@@ -64,10 +66,14 @@ const Dashboard3 = () => {
         switch (status.toUpperCase()) {
             case "CLOSED (APPROVED)":
                 return "closed-approved";
-            case "CLOSED (DECLINED)":
+            case "CLOSED (GM REJECTED)":
                 return "closed-declined";
-            case "OPEN":
+            case "OPEN (GM APPROVED)":
                 return "open";
+            case "PENDING GM REVIEW":
+                return "pending-gm";
+            case "CLOSED (REJECTED)":
+                return "closed-declined";
             default:
                 return "";
         }
@@ -76,9 +82,10 @@ const Dashboard3 = () => {
     // Legend for status indicators
     const Legend = () => (
         <div className="legend">
-            <span className="legend-item open">Open (Approved)</span>
+            <span className="legend-item open">Open (GM Approved)</span>
             <span className="legend-item closed-approved">Closed (Approved)</span>
             <span className="legend-item closed-declined">Closed (Declined)</span>
+            <span className="legend-item pending-gm">Pending GM Review</span>
         </div>
     );
 
@@ -124,7 +131,7 @@ const Dashboard3 = () => {
                                             <td className={`status ${getStatusClass(record.status)}`}>
                                                 {record.status}
                                             </td>
-                                            <td>{record.rejectionReason || " "}</td> 
+                                            <td>{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
                                         </tr>
                                     ))
                                 ) : (

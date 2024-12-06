@@ -95,48 +95,67 @@ const Dashboard1 = () => {
 
   const handleApprove = async () => {
     if (!selectedRecordId) {
-      alert("No record selected. Please select a record to approve.");
-      return;
+        alert("No record selected. Please select a record to approve.");
+        return;
     }
-  
-    const selectedRecord = records.find((record) => record.id === selectedRecordId);
-  
-    if (!selectedRecord || !selectedRecord.cashAdvAmount) {
-      alert("Please set a valid Cash Advance Amount before approving.");
-      return;
-    }
-  
-    try {
-      const docRef = doc(db, "Cash Advance", selectedRecordId);
-      await updateDoc(docRef, { 
-        status: "Approved",
-        isApproved: true, 
-      });
-  
-      alert("Record approved successfully!");
-      navigate("/dashboard2"); 
-    } catch (error) {
-      console.error("Error approving the record: ", error);
-      alert("Failed to approve the record. Please try again.");
-    }
-  };
 
-  const handleRejectSubmit = (reason) => {
-    updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-      status: 'Rejected',
-      isApproved: false,
-      rejectionReason: reason,
-    })
-      .then(() => {
-        setIsRejectPopupOpen(false);
-        alert("Record rejected successfully.");
-        navigate("/dashboard3");
-      })
-      .catch((error) => {
-        console.error("Error rejecting the record: ", error);
-        alert("Failed to reject the record. Please try again.");
-      });
-  };
+    const selectedRecord = records.find((record) => record.id === selectedRecordId);
+
+    if (!selectedRecord || !selectedRecord.cashAdvAmount) {
+        alert("Please set a valid Cash Advance Amount before approving.");
+        return;
+    }
+
+    try {
+        const docRef = doc(db, "Cash Advance", selectedRecordId);
+        await updateDoc(docRef, { 
+            status: "Pending GM Approval", // Updated status for GM review
+            isApproved: true, // Indicates Admin has approved
+            isGMApproved: null, // Initialize GM approval field
+        });
+
+        alert("Record approved successfully and sent for GM approval!");
+        navigate("/dashboard2"); 
+    } catch (error) {
+        console.error("Error approving the record: ", error);
+        alert("Failed to approve the record. Please try again.");
+    }
+};
+
+const handleRejectSubmit = (reason) => {
+  if (!selectedRecordId) {
+    alert("No record selected for rejection. Please select a record to reject.");
+    return;
+  }
+
+  if (!reason || reason.trim() === "") {
+    alert("Please provide a reason for rejection.");
+    return;
+  }
+
+  console.log("Submitting rejection for:", selectedRecordId);
+
+  // Proceed with updating Firestore
+  updateDoc(doc(db, "Cash Advance", selectedRecordId), {
+    status: "CLOSED (Rejected)", 
+    isApproved: false,
+    rejectionReason: reason,    
+    isAttached: false,
+  })
+  .then(() => {
+    console.log("Record rejected successfully!");
+    setIsRejectPopupOpen(false); // Close the rejection popup
+    alert("Record rejected successfully!"); // Notify user
+    setRecords((prevRecords) => 
+      prevRecords.filter((record) => record.id !== selectedRecordId)
+    ); 
+    navigate("/dashboard3"); // Optionally navigate
+  })
+  .catch((error) => {
+    console.error("Error rejecting the record: ", error);
+    alert("Failed to reject the record. Please try again.");
+  });
+};
 
   const handleRecordSelect = (recordId) => {
     setSelectedRecordId(recordId);
