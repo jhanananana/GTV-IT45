@@ -124,36 +124,34 @@ const Dashboard1 = () => {
 
 const handleRejectSubmit = (reason) => {
   if (!selectedRecordId) {
-    alert("No record selected for rejection. Please select a record to reject.");
-    return;
+      alert("No records selected for rejection. Please select a record to reject.");
+      return;
   }
 
   if (!reason || reason.trim() === "") {
-    alert("Please provide a reason for rejection.");
-    return;
+      alert("Please provide a reason for rejection.");
+      return;
   }
 
-  console.log("Submitting rejection for:", selectedRecordId);
-
-  // Proceed with updating Firestore
   updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-    status: "CLOSED (Rejected)", 
-    isApproved: false,
-    rejectionReason: reason,    
-    isAttached: false,
+      status: "CLOSED (Rejected)", 
+      isApproved: false,
+      rejectionReason: reason,    
+      isAttached: false,
   })
   .then(() => {
-    console.log("Record rejected successfully!");
-    setIsRejectPopupOpen(false); // Close the rejection popup
-    alert("Record rejected successfully!"); // Notify user
-    setRecords((prevRecords) => 
-      prevRecords.filter((record) => record.id !== selectedRecordId)
-    ); 
-    navigate("/dashboard3"); // Optionally navigate
+      alert("Record rejected successfully!");
+      setRecords((prevRecords) => {
+          const updatedRecords = prevRecords.filter((record) => record.id !== selectedRecordId);
+          console.log("After rejection update:", updatedRecords);
+          return updatedRecords;
+      });
+      setIsRejectPopupOpen(false);
+      navigate("/dashboard3");
   })
   .catch((error) => {
-    console.error("Error rejecting the record: ", error);
-    alert("Failed to reject the record. Please try again.");
+      console.error("Error rejecting the record:", error);
+      alert("Failed to reject the record. Please try again.");
   });
 };
 
@@ -278,13 +276,17 @@ const handleRejectSubmit = (reason) => {
       </div>
 
       {/* Rejection Reason Popup */}
-      {isRejectPopupOpen && (
-        <ReasonForRejecting
-          onClose={closeRejectPopup}
-          onSubmit={handleRejectSubmit}
-        />
+      {isRejectPopupOpen && selectedRecordId && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <ReasonForRejecting
+              onCancel={() => setIsRejectPopupOpen(false)}
+              selectedRecord={records.find((record) => record.id === selectedRecordId)} // Find the record using selectedRecordId
+              onReject={handleRejectSubmit}
+            />
+          </div>
+        </div>
       )}
-
       <Footer />
     </div>
   );
