@@ -36,18 +36,17 @@ const LiquidationReport = () => {
       try {
         const querySnapshot = await getDocs(collection(db, "Liquidation"));
         const docs = querySnapshot.docs;
-        
+    
         if (docs.length > 0) {
           const lastDocID = Math.max(
-            ...docs.map(doc => {
-              const match = doc.id.match(/#(\d+)$/);
+            ...docs.map((doc) => {
+              const match = doc.id.match(/(\d+)$/); // Match numbers at the end of the ID
               return match ? parseInt(match[1], 10) : 0;
             })
           );
-    
-          setLiquidationID(lastDocID + 1);
+          setLiquidationID(lastDocID + 1); // Set the next ID
         } else {
-          setLiquidationID(1000);
+          setLiquidationID(1000); // Start from 1000 if no records
         }
       } catch (error) {
         console.error("Error fetching last liquidation ID: ", error);
@@ -95,7 +94,7 @@ const LiquidationReport = () => {
     };
 
     try {
-      await setDoc(doc(db, "Liquidation", `Liquidation ${liquidationID}`), docData);
+      await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
       alert("Liquidation report submitted successfully!");
 
       setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
