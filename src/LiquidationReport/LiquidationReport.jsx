@@ -17,6 +17,7 @@ const LiquidationReport = () => {
   const [cashAdvAmount, setCashAdvAmount] = useState(0);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const [totalAmountSpent, setTotalAmountSpent] = useState(0); // Track Total Amount Spent
 
   useEffect(() => {
     const fetchAvailableCashAdvances = async () => {
@@ -70,47 +71,63 @@ const LiquidationReport = () => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*' });
 
   // Handle form submission
-  const onSubmit = async (data) => {
-    if (!cashAdvanceId) {
-      alert("Please select an OPEN Cash Advance Request to continue.");
-      return;
-    }
+  // Handle form submission
+const onSubmit = async (data) => {
+  if (!cashAdvanceId) {
+    alert("Please select an OPEN Cash Advance Request to continue.");
+    return;
+  }
 
-    const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
-    const cashAdvAmount = selectedCashAdvance.cashAdvAmount || 0;
-    const activity = selectedCashAdvance.activity || "N/A";
-    const accountName = selectedCashAdvance.accountName || "N/A";
+  if (!file) {
+    alert("Uploading a receipt is mandatory. Please upload a receipt to proceed.");
+    return;
+  }
 
-    const docData = {
-      ...data,
-      cashAdvanceId,
-      accountName,
-      activity,
-      cashAdvAmount,
-      liquidationID: liquidationID || 'N/A',
-      isAttached: true,
-      isApproved: true,
-      date: date
-    };
+  const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
+  const cashAdvAmount = selectedCashAdvance.cashAdvAmount || 0;
+  const activity = selectedCashAdvance.activity || "N/A";
+  const accountName = selectedCashAdvance.accountName || "N/A";
 
-    try {
-      await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
-      alert("Liquidation report submitted successfully!");
-
-      setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
-
-      const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId);
-      await updateDoc(cashAdvanceRef, { isAttached: true, isApproved: true });
-
-      setLiquidationID(prevID => prevID + 1);
-      reset();
-      setCashAdvanceId(null);
-      setFile(null);
-    } catch (error) {
-      console.error("Error submitting form: ", error);
-      alert("Failed to submit. Please try again.");
-    }
+  const docData = {
+    ...data,
+    cashAdvanceId,
+    accountName,
+    activity,
+    cashAdvAmount,
+    liquidationID: liquidationID || 'N/A',
+    isAttached: true,
+    isApproved: true,
+    date: date,
+    excessRefund,
+    receipt: file.name, // Save the file name or handle the file upload in storage
   };
+
+  try {
+    // Save the file to Firebase Storage if needed here (not included in this code)
+
+    await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
+    alert("Liquidation report submitted successfully!");
+
+    setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
+
+    const cashAdvanceRef = doc(db, "Cash Advance", cashAdvanceId);
+    await updateDoc(cashAdvanceRef, { isAttached: true, isApproved: true });
+
+    setLiquidationID(prevID => prevID + 1);
+    reset(); // Reset the form inputs
+    setCashAdvanceId(null); // Clear selected Cash Advance
+    setFile(null); // Clear the uploaded file
+
+    // Reset Cash Advance Amount, Total Amount Spent, and Excess Refund
+    setCashAdvAmount(0);
+    setTotalAmountSpent(0);
+    setExcessRefund(0);
+  } catch (error) {
+    console.error("Error submitting form: ", error);
+    alert("Failed to submit. Please try again.");
+  }
+};
+
 
   useEffect(() => {
     const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
@@ -126,6 +143,23 @@ const LiquidationReport = () => {
     }
   }, [cashAdvanceId, availableCashAdvances]);
 
+  useEffect(() => {
+    if (cashAdvAmount > 0) {
+      const refund = cashAdvAmount - totalAmountSpent;
+      setExcessRefund(refund >= 0 ? refund : 0); // Ensure no negative values
+    } else {
+      setExcessRefund(0); // Default if no cashAdvanceAmount
+    }
+  }, [cashAdvAmount, totalAmountSpent]);
+
+  useEffect(() => {
+    const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
+    if (selectedCashAdvance) {
+      setCashAdvAmount(selectedCashAdvance.cashAdvAmount || 0); // Use cashAdvAmount
+    }
+  }, [cashAdvanceId, availableCashAdvances]);
+  
+  
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
     { label: "Liquidation Report", path: "/liquidationreport" },
@@ -257,17 +291,35 @@ const LiquidationReport = () => {
             </div>
 
             {/* TOTAL AMOUNT SPENT */}
-            <div className="form-group">
+          <div className="form-group">
               <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
               <input
-                className="cashAdvInput"
-                id="totalAmountSpent"
-                type="number"
-                {...register('totalAmountSpent', { required: 'This field is required' })}
-                placeholder="Total Amount Spent"
+              className="cashAdvInput"
+              id="totalAmountSpent"
+              type="number"
+              value={totalAmountSpent}
+              onChange={(e) => {
+                const value = e.target.value;
+              // Allow the input to be a string while typing
+              setTotalAmountSpent(value);
+
+              // Calculate excess refund only when the input is a valid number
+              const numericValue = parseFloat(value);
+              if (!isNaN(numericValue)) {
+                const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
+              if (selectedCashAdvance) {
+                const refund = selectedCashAdvance.amount - numericValue;
+             setExcessRefund(refund >= 0 ? refund : 0);
+                } 
+              }
+            }}
+              placeholder="Total Amount Spent"
               />
               {errors.totalAmountSpent && <span className="error">{errors.totalAmountSpent.message}</span>}
-            </div>
+          </div>
+
+
+
 
             {/* EXCESS / FOR REFUND */}
             <div className="form-group">
