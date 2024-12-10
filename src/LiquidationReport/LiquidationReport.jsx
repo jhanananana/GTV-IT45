@@ -99,6 +99,7 @@ const onSubmit = async (data) => {
     isApproved: true,
     date: date,
     excessRefund,
+    totalAmountSpent,
     receipt: file.name, // Save the file name or handle the file upload in storage
   };
 
