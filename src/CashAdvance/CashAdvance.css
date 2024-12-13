@@ -1,5 +1,5 @@
 /* Center the Form */
-.cash-advance-container {
+.gtv_cash-advance-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,7 +9,7 @@
 }
 
 /* Form Styles */
-.cash-advance-form {
+.gtv_cash-advance-form {
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -21,7 +21,7 @@
 }
 
 /* Header Alignment */
-.cash-advance-header {
+.gtv_cash-advance-header {
     text-align: center;
     margin-bottom: 20px;
     color: black;
@@ -33,7 +33,7 @@
     background-color: #ffff;
 }
 
-.activity{
+.gtv_activity{
     background-color: #ffff;
     height: 400px;
 }
@@ -44,7 +44,7 @@ textarea {
 }
 
 /* Button Styles */
-.button-group {
+.gtv_button-group {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;

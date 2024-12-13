@@ -171,21 +171,21 @@ const onSubmit = async (data) => {
       <Navbar />
       <Breadcrumbs links={breadcrumbsLinks} />
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-container">
-          <div className="form-left">
+        <div className="gtv_form-container">
+          <div className="gtv_form-left">
             <h1 style={{ textAlign: 'right' }}>Liquidation Report</h1>
 
             {/* LIQUIDATION ID FIELD */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="liquidationId">Liquidation ID:</label>
-              <input disabled value={liquidationID} className="cashAdvInput" id="liquidationId" type="text" readOnly />
+              <input disabled value={liquidationID} className="gtv_cashAdvInput" id="liquidationId" type="text" readOnly />
             </div>
 
             {/* FIRST NAME */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="firstName">First Name:</label>
               <input
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="firstName"
                 type="text"
                 {...register('firstName', { required: 'First name is required' })}
@@ -195,10 +195,10 @@ const onSubmit = async (data) => {
             </div>
 
             {/* LAST NAME */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="lastName">Last Name:</label>
               <input
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="lastName"
                 type="text"
                 {...register('lastName', { required: 'Last name is required' })}
@@ -208,19 +208,19 @@ const onSubmit = async (data) => {
             </div>
 
             {/* ACCOUNT NAME */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="accountName">Account Name</label>
               <input
                 placeholder="Account name of the request is displayed here.."
-                disabled className="cashAdvInput" id="accountName" type="text" readOnly />
+                disabled className="gtv_cashAdvInput" id="accountName" type="text" readOnly />
             </div>
 
             {/* ACTIVITY */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="activity">Activity:</label>
               <textarea
                 disabled
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="activity"
                 {...register('activity')}
                 placeholder="Activity of the request is displayed here.."
@@ -231,10 +231,10 @@ const onSubmit = async (data) => {
             </div>
 
             {/* DATE FIELD */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="date">Date:</label>
               <input
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="date"
                 type="date"
                 value={date}
@@ -243,11 +243,11 @@ const onSubmit = async (data) => {
             </div>
 
             {/* CASH ADVANCE */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="cashAdvanceId">Cash Advance:</label>
               <select
                 style={{width: '350px'}}
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="cashAdvanceId"
                 value={cashAdvanceId || ""}
                 onChange={(e) => setCashAdvanceId(e.target.value)}
@@ -266,9 +266,9 @@ const onSubmit = async (data) => {
           </div>
 
           {/* RECEIPT UPLOAD */}
-          <div className="form-right">
+          <div className="gtv_form-right">
             <label>Upload a photo of receipt</label>
-            <div {...getRootProps()} className="dropzone">
+            <div {...getRootProps()} className="gtv_dropzone">
               <input {...getInputProps()} />
               {file ? (
                 <img src={URL.createObjectURL(file)} alt="Uploaded Receipt" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
@@ -276,14 +276,14 @@ const onSubmit = async (data) => {
                 <p>Drag and drop file here</p>
               )}
             </div>
-            <button type="button" className="btnRemove" onClick={() => setFile(null)}>Remove File</button>
+            <button type="button" className="gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
 
             {/* CASH AMOUNT */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
               <input
                 disabled
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="cashAdvAmount"
                 type="number"
                 value={cashAdvAmount}
@@ -292,10 +292,10 @@ const onSubmit = async (data) => {
             </div>
 
             {/* TOTAL AMOUNT SPENT */}
-          <div className="form-group">
+          <div className="gtv_form-group">
               <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
               <input
-              className="cashAdvInput"
+              className="gtv_cashAdvInput"
               id="totalAmountSpent"
               type="number"
               value={totalAmountSpent}
@@ -323,17 +323,17 @@ const onSubmit = async (data) => {
 
 
             {/* EXCESS / FOR REFUND */}
-            <div className="form-group">
+            <div className="gtv_form-group">
               <label htmlFor="excessRefund">Excess Refund:</label>
               <input
-                className="cashAdvInput"
+                className="gtv_cashAdvInput"
                 id="excessRefund"
                 type="number"
                 value={excessRefund || 0}
                 readOnly
               />
             </div>
-            <button type="submit" className="btnSubmit">Submit Report</button>
+            <button type="submit" className="gtv_btnSubmit">Submit Report</button>
           </div>
         </div>
       </form>

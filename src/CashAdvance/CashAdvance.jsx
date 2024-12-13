@@ -67,12 +67,12 @@ const CashAdvance = () => {
   return (
     <div>
     <Navbar />
-    <div className="cash-advance-container">
-      <div className="cash-advance-form">
+    <div className="gtv_cash-advance-container">
+      <div className="gtv_cash-advance-form">
         <form onSubmit={handleSubmit}>
-          <h1 className="cash-advance-header">Cash Advance Request</h1>
+          <h1 className="gtv_cash-advance-header">Cash Advance Request</h1>
 
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
             <input
               id="cashAdvanceId"
@@ -84,7 +84,7 @@ const CashAdvance = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="accountName">Account Name:</label>
             <input
               id="accountName"
@@ -95,7 +95,7 @@ const CashAdvance = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="activity">Activity:</label>
             <textarea
               id="activity"
@@ -106,7 +106,7 @@ const CashAdvance = () => {
           </div>
 
           <div>
-            <button type="submit" className="btnSubmit">Submit Request</button>
+            <button type="submit" className="gtv_btnSubmit">Submit Request</button>
           </div>
         </form>
       </div>
