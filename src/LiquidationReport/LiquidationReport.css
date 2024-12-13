@@ -51,12 +51,8 @@ body {
   margin-top: 10px;
 }
 
-h1 {
-  text-align: center;
-}
-
 /* Button Styling */
-button {
+.gtv_buttonLF {
   border-radius: 30px;
   border: none;
   margin: 3px;
@@ -67,37 +63,38 @@ button {
   color: white;
   background-color: #263146;
   transition: background-color 0.25s;
+  cursor: pointer;
 }
 
-button.gtv_btnSave {
+.gtv_buttonLF.gtv_btnSave {
   background-color: #263146;
   width: 150px;
 }
 
-button.gtv_btnSubmit {
+.gtv_buttonLF.gtv_btnSubmit {
   background-color: #263146;
   width: 200px;
 }
 
-button.gtv_btnUpdate {
+.gtv_buttonLF.gtv_btnUpdate {
   background-color: #505050;
   width: 150px;
 }
 
-button.gtv_btnCancel {
+.gtv_buttonLF.gtv_btnCancel {
   color: black;
   background-color: #E3E3E3;
   width: 150px;
 }
 
 /* Label Styling */
-label {
+.gtv_label {
   font-size: large;
   text-align: right;
 }
 
 /* Dropzone Styling */
-.gtvdropzone {
+.gtv_dropzone {
   border: 1px dashed #ccc;
   background-color: #e3e3e3;
   padding: 10px;

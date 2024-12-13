@@ -1,4 +1,3 @@
-
 .gtv_reject-form {
   display: flex;
   flex-direction: column;
@@ -8,46 +7,50 @@
   width: 90%;
   max-width: 600px;
 }
-  
-  /* Form Group for Horizontal Label-Input Layout */
-  .gtv_form-group {
-    display: flex;
-    align-items: center; /* Align label and input vertically center */
-    margin-bottom: 15px;
-  }
-  
-  .gtv_form-group label {
-    color: black;
-    font-size: 1rem;
-    font-weight: 500;
-    width: 120px; /* Set a fixed width for labels */
-    margin-right: 10px; /* Add space between label and input */
-    text-align: right; /* Align text to the right side of the label */
-  }
-  
-  .gtv_form-group input,
-  .gtv_form-group textarea {
-    flex: 1;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #FFFFFF;
-  }
-  
-  .gtv_form-group input[readonly],
-  .gtv_form-group textarea[readonly] {
-    background-color: #e0e0e0; 
-  }
-  
-  textarea {
-    resize: none;
-    height: 80px;
-  }
-  
-  /* Button Styles */
-  .gtv_button-group {
-    display: flex;
-    margin-top: 20px;
-    margin-left: 295px;  
-  }
+
+/* Form Group for Horizontal Label-Input Layout */
+.gtv_form-group {
+  display: flex;
+  align-items: center;
+  /* Align label and input vertically center */
+  margin-bottom: 15px;
+}
+
+.gtv_form-group label {
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 120px;
+  /* Set a fixed width for labels */
+  margin-right: 10px;
+  /* Add space between label and input */
+  text-align: right;
+  /* Align text to the right side of the label */
+}
+
+.gtv_form-group input,
+.gtv_form-group textarea {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+}
+
+.gtv_form-group input[readonly],
+.gtv_form-group textarea[readonly] {
+  background-color: #e0e0e0;
+}
+
+.gtv_textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* Button Styles */
+.gtv_button-group {
+  display: flex;
+  margin-top: 20px;
+  margin-left: 295px;
+}

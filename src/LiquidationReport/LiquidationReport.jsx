@@ -177,13 +177,13 @@ const onSubmit = async (data) => {
 
             {/* LIQUIDATION ID FIELD */}
             <div className="gtv_form-group">
-              <label htmlFor="liquidationId">Liquidation ID:</label>
+              <label className="gtv_label" htmlFor="liquidationId">Liquidation ID:</label>
               <input disabled value={liquidationID} className="gtv_cashAdvInput" id="liquidationId" type="text" readOnly />
             </div>
 
             {/* FIRST NAME */}
             <div className="gtv_form-group">
-              <label htmlFor="firstName">First Name:</label>
+              <label className="gtv_label" htmlFor="firstName">First Name:</label>
               <input
                 className="gtv_cashAdvInput"
                 id="firstName"
@@ -196,7 +196,7 @@ const onSubmit = async (data) => {
 
             {/* LAST NAME */}
             <div className="gtv_form-group">
-              <label htmlFor="lastName">Last Name:</label>
+              <label className="gtv_label" htmlFor="lastName">Last Name:</label>
               <input
                 className="gtv_cashAdvInput"
                 id="lastName"
@@ -209,7 +209,7 @@ const onSubmit = async (data) => {
 
             {/* ACCOUNT NAME */}
             <div className="gtv_form-group">
-              <label htmlFor="accountName">Account Name</label>
+              <label className="gtv_label" htmlFor="accountName">Account Name</label>
               <input
                 placeholder="Account name of the request is displayed here.."
                 disabled className="gtv_cashAdvInput" id="accountName" type="text" readOnly />
@@ -217,7 +217,7 @@ const onSubmit = async (data) => {
 
             {/* ACTIVITY */}
             <div className="gtv_form-group">
-              <label htmlFor="activity">Activity:</label>
+              <label className="gtv_label" htmlFor="activity">Activity:</label>
               <textarea
                 disabled
                 className="gtv_cashAdvInput"
@@ -267,7 +267,7 @@ const onSubmit = async (data) => {
 
           {/* RECEIPT UPLOAD */}
           <div className="gtv_form-right">
-            <label>Upload a photo of receipt</label>
+            <label className="gtv_label">Upload a photo of receipt</label>
             <div {...getRootProps()} className="gtv_dropzone">
               <input {...getInputProps()} />
               {file ? (
@@ -276,11 +276,11 @@ const onSubmit = async (data) => {
                 <p>Drag and drop file here</p>
               )}
             </div>
-            <button type="button" className="gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
+            <button type="button" className="gtv_buttonLF gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
 
             {/* CASH AMOUNT */}
             <div className="gtv_form-group">
-              <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
+              <label className="gtv_label" htmlFor="cashAdvAmount">Cash Advance Amount:</label>
               <input
                 disabled
                 className="gtv_cashAdvInput"
@@ -293,7 +293,7 @@ const onSubmit = async (data) => {
 
             {/* TOTAL AMOUNT SPENT */}
           <div className="gtv_form-group">
-              <label htmlFor="totalAmountSpent">Total Amount Spent:</label>
+              <label className="gtv_label" htmlFor="totalAmountSpent">Total Amount Spent:</label>
               <input
               className="gtv_cashAdvInput"
               id="totalAmountSpent"
@@ -324,7 +324,7 @@ const onSubmit = async (data) => {
 
             {/* EXCESS / FOR REFUND */}
             <div className="gtv_form-group">
-              <label htmlFor="excessRefund">Excess Refund:</label>
+              <label className="gtv_label" htmlFor="excessRefund">Excess Refund:</label>
               <input
                 className="gtv_cashAdvInput"
                 id="excessRefund"
@@ -333,7 +333,7 @@ const onSubmit = async (data) => {
                 readOnly
               />
             </div>
-            <button type="submit" className="gtv_btnSubmit">Submit Report</button>
+            <button type="submit" className="gtv_buttonLF gtv_btnSubmit">Submit Report</button>
           </div>
         </div>
       </form>

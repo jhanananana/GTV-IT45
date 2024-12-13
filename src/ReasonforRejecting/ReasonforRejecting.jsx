@@ -30,6 +30,7 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
             <input
               id="cashAdvanceId"
               type="text"
+              className ="gtv_textarea"
               value={selectedRecord.cashAdvanceId || "N/A"}  // Display "N/A" if undefined
               readOnly
             />
@@ -63,8 +64,8 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
             />
           </div>
           
-          <button type="submit" className="btnSubmit">Submit</button>
-          <button type="button" className="btnCancel" onClick={onClose}>Cancel</button>  {/* Use onClose instead of onCancel */}
+          <button type="submit" className="gtv_buttonLF gtv_btnSubmit">Submit</button>
+          <button type="button" className="gtv_buttonLF gtv_btnCancel" onClick={onClose}>Cancel</button>  {/* Use onClose instead of onCancel */}
         </form>
       </div>
     </div>

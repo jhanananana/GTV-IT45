@@ -76,6 +76,18 @@
     gap: 10px;
 }
 
+.gtv_btnDB {
+    border-radius: 30px;
+    border: none;
+    margin: 3px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: white;
+    background-color: #263146;
+    transition: background-color 0.25s;  
+}
 .gtv_btn {
     padding: 10px 20px;
     font-size: 16px;

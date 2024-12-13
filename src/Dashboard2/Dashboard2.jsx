@@ -152,7 +152,7 @@ const Dashboard2 = () => {
                                     <td className="gtv_td">
                                         <button
                                             type="button"
-                                            className="gtv_btnEdit"
+                                            className="gtv_btnDB gtv_btnEdit"
                                             onClick={() => handleRecordSelect(record.id)}
                                         >
                                             Select Row

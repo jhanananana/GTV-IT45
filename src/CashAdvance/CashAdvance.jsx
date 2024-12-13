@@ -106,7 +106,7 @@ const CashAdvance = () => {
           </div>
 
           <div>
-            <button type="submit" className="gtv_btnSubmit">Submit Request</button>
+            <button type="submit" className="gtv_buttonLF gtv_btnSubmit" style={{margin: "0 160px"}}>Submit Request</button>
           </div>
         </form>
       </div>

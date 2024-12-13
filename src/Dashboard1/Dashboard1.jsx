@@ -221,7 +221,7 @@ const Dashboard1 = () => {
                 />
 
                 {selectedRecordId && (
-                  <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnEdit">Set Amount</button>
+                  <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnDB gtv_btnEdit">Set Amount</button>
                 )}
               </div>
             )}
@@ -257,7 +257,7 @@ const Dashboard1 = () => {
                     <td className="gtv_td">
                       <button
                         type="button"
-                        className="gtv_btnEdit"
+                        className="gtv_btnDB gtv_btnEdit"
                         onClick={() => handleRecordSelect(record.id)}
                       >
                         Select Row
