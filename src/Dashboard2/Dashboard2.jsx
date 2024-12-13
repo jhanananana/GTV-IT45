@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import db from "../firebase";
-import './Dashboard2.css';
+import '../Dashboard1/Dashboard.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Footer from '../NavBarAndFooter/footer.jsx';
 import { useForm } from "react-hook-form";
@@ -23,37 +23,37 @@ const Dashboard2 = () => {
                 id: doc.id,
                 ...doc.data(),
             }));
-    
+
             // Filter out approved or rejected records
             const filteredRecords = fetchedRecords.filter(
                 record => record.isApproved === true && record.isGMApproved === null
             );
             setRecords(filteredRecords);
         });
-    
+
         return () => unsubscribe();
-    }, []);    
+    }, []);
 
     const handleApprove = async () => {
         if (!selectedRecord) {
             alert("No record selected. Please select a record to approve.");
             return;
         }
-    
+
         try {
             await updateDoc(doc(db, "Cash Advance", selectedRecord.id), {
                 status: "OPEN (GM Approved)", // Updated status
                 isGMApproved: true,          // Approved by GM
                 isAttached: false,
             });
-    
+
             alert("Record approved by GM!");
-    
+
             // Remove approved record from the list
             setRecords((prevRecords) =>
                 prevRecords.filter((record) => record.id !== selectedRecord.id)
             );
-    
+
         } catch (error) {
             console.error("Error approving record:", error);
             alert("Failed to approve record.");
@@ -73,10 +73,10 @@ const Dashboard2 = () => {
 
         try {
             await updateDoc(doc(db, "Cash Advance", selectedRecord.id), {
-                status: "CLOSED (GM Rejected)", 
-                isGMApproved: false,           
-                rejectionReason: reason,       
-                isAttached: false,             
+                status: "CLOSED (GM Rejected)",
+                isGMApproved: false,
+                rejectionReason: reason,
+                isAttached: false,
             });
 
             alert("Record rejected by GM!");
@@ -110,49 +110,49 @@ const Dashboard2 = () => {
             <Navbar />
             <Breadcrumbs links={breadcrumbsLinks} />
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
-            <div className="dashboard-container">
-                <div className="dashboard-left">
+            <div className="gtv_dashboard-container">
+                <div className="gtv_dashboard-left">
                     <form>
-                        <div className="dashboard-group">
+                        <div className="gtv_dashboard-group">
                             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-                            <input disabled className="dashBoardInput" {...register("cashAdvanceId")} readOnly />
+                            <input disabled className="gtv_dashBoardInput" {...register("cashAdvanceId")} readOnly />
                         </div>
-                        <div className="dashboard-group">
+                        <div className="gtv_dashboard-group">
                             <label htmlFor="accountName">Account Name:</label>
-                            <input disabled className="dashBoardInput" {...register("accountName")} readOnly />
+                            <input disabled className="gtv_dashBoardInput" {...register("accountName")} readOnly />
                         </div>
-                        <div className="dashboard-group">
+                        <div className="gtv_dashboard-group">
                             <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
-                            <input disabled className="dashBoardInput" {...register("cashAdvAmount")} readOnly />
+                            <input disabled className="gtv_dashBoardInput" {...register("cashAdvAmount")} readOnly />
                         </div>
-                        <div className="dashboard1-buttons">
-                            <button type="button" className="btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
-                            <button type="button" className="btn approve" onClick={handleApprove}>Approve</button>
+                        <div className="gtv_dashboard1-buttons">
+                            <button type="button" className="gtv_btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
+                            <button type="button" className="gtv_btn approve" onClick={handleApprove}>Approve</button>
                         </div>
                     </form>
                 </div>
             </div>
-            <div className="content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
-                <table className="dashboard-table">
+            <div className="gtv_content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
                     <thead>
                         <tr>
-                            <th>Cash Advance ID</th>
-                            <th>Account Name</th>
-                            <th>Cash Advance Amount</th>
-                            <th>Action</th>
+                            <th className="gtv_th">Cash Advance ID</th>
+                            <th className="gtv_th">Account Name</th>
+                            <th className="gtv_th">Cash Advance Amount</th>
+                            <th className="gtv_th">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {records.length > 0 ? (
                             records.map((record) => (
                                 <tr key={record.id}>
-                                    <td>{record.cashAdvanceId}</td>
-                                    <td>{record.accountName}</td>
-                                    <td>{record.cashAdvAmount}</td>
-                                    <td>
+                                    <td className="gtv_td">{record.cashAdvanceId}</td>
+                                    <td className="gtv_td">{record.accountName}</td>
+                                    <td className="gtv_td">{record.cashAdvAmount}</td>
+                                    <td className="gtv_td">
                                         <button
                                             type="button"
-                                            className="btnEdit"
+                                            className="gtv_btnEdit"
                                             onClick={() => handleRecordSelect(record.id)}
                                         >
                                             Select Row
@@ -168,9 +168,10 @@ const Dashboard2 = () => {
                     </tbody>
                 </table>
             </div>
+            <Footer />
             {isRejectPopupOpen && selectedRecord && (
-                <div className="popup-overlay">
-                    <div className="popup-content">
+                <div className="gtv_popup-overlay" onClick={() => setIsRejectPopupOpen(false)}>
+                    <div className="gtv_popup-content">
                         <ReasonForRejecting
                             onCancel={() => setIsRejectPopupOpen(false)}
                             selectedRecord={selectedRecord}
@@ -179,7 +180,6 @@ const Dashboard2 = () => {
                     </div>
                 </div>
             )}
-            <Footer />
         </div>
     );
 };

@@ -1,0 +1,309 @@
+.gtv_title {
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+.gtv_navlinks .gtv_link {
+    color: black;
+    text-decoration: underline;
+}
+
+.gtv_section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gtv_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gtv_th,
+.gtv_td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.gtv_th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.gtv_td {
+    background-color: #f5f5f5;
+    height: 40px;
+}
+
+.gtv_dashBoardInput {
+    margin-top: 5px;
+    font-size: medium;
+    font-family: inherit;
+    padding: 8px;
+    border-radius: 5px;
+    width: 100px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.gtv_dashboard-group {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    margin-bottom: 10px;
+}
+
+.gtv_dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 40px;
+    border-radius: 8px;
+}
+
+.gtv_dashboard-left,
+.gtv_dashboard-right {
+    width: 50%;
+    padding: 20px;
+}
+
+.gtv_dashboard-buttons {
+    margin: 20px;
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+}
+
+.gtv_btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    width: 200px;
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.gtv_btn.cancel {
+    color: black;
+    background-color: #E3E3E3;
+}
+
+.gtv_btn.reject {
+    border: 2px solid #840303;
+    background-color: #840303;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.gtv_btn.reject:hover {
+    color: #840303;
+    border: 2px solid #840303;
+    background-color: white;
+}
+
+.gtv_btn.approve {
+    border: 2px solid #6AAD36;
+    background-color: #6AAD36;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.gtv_btn.approve:hover {
+    color: #6AAD36;
+    border: 2px solid #6AAD36;
+    background-color: white;
+}
+
+.gtv_btnEdit,
+.gtv_btnSet {
+    color: #545454;
+    background-color: #e0e0e0;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.gtv_btnEdit:hover,
+.gtv_btnSet:hover {
+    color: white;
+    background-color: #2c3e50;
+}
+
+.gtv_popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gtv_popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gtv_popup-content h2 {
+    margin-bottom: 10px;
+}
+
+.gtv_popup-content p {
+    margin-bottom: 20px;
+}
+
+.gtv_dashboard1-group {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.gtv_dashBoard1Input {
+    width: 50%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.gtv_dashboard1-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.gtv_dashboard-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gtv_button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+
+.gtv_dashboard-group input[readonly] {
+    background-color: #e0e0e0;
+}
+
+.gtv_legend {
+    display: flex;
+    justify-content: left;
+    margin: 0px 40px;
+}
+
+.gtv_legend-item {
+    padding: 15px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    color: white;
+    margin-right: 15px;
+}
+
+.gtv_legend-item.gtv_open {
+    background-color: #f1c40f;
+}
+
+.gtv_legend-item.gtv_closed-approved {
+    background-color: #27ae60;
+}
+
+.gtv_legend-item.gtv_closed-declined {
+    background-color: #c0392b;
+}
+
+.gtv_legend-item.gtv_pending-gm {
+    color: black;
+    font-weight: bold;
+    background-color: #f5f5f5;
+}
+
+.gtv_section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.gtv_section h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.gtv_dashBoardInput {
+    margin-top: 5px;
+    font-size: medium;
+    font-family: inherit;
+    padding: 8px;
+    border-radius: 5px;
+    width: 300px;
+    border: 1px solid #ddd;
+}
+
+.gtv_dashboard-group label {
+    margin-right: 10px;
+    color: black;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.gtv_dashboard-group input {
+    width: 50%;
+    margin-top: 5px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+}
+
+.gtv_dashboard-container {
+    display: flex;
+    margin: 0px;
+    border-radius: 8px;
+}
+
+.gtv_dashboard-left, .gtv_dashboard-right {
+    flex: 1;
+}
+
+.gtv_dashboard-fields {
+    display: flex;
+    flex-direction: column;
+}
+
+.gtv_dashboard-left label,
+.gtv_dashboard-right label {
+    width: 30%;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.gtv_status {
+    font-weight: bold;
+    text-align: center;
+}
+
+.gtv_status.closed-approved {
+    background-color: #27ae60;
+    color: white;
+}
+
+.gtv_status.closed-declined {
+    background-color: #c0392b;
+    color: white;
+}
+
+.gtv_status.pending-gm {
+    background-color: #f3f3f3;
+    color: black;
+}
+
+.gtv_status.open {
+    background-color: #f1c40f;
+    color: white;
+}

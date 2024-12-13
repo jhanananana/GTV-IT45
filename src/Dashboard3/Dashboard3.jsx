@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import db from "../firebase";
-import './Dashboard3.css';
+import '../Dashboard1/Dashboard.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Footer from '../NavBarAndFooter/footer.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
@@ -29,7 +29,7 @@ const Dashboard3 = () => {
                 } else if (record.isApproved && record.isGMApproved === false) {
                     status = "CLOSED (GM Rejected)";
                 } else if (record.isApproved && record.isGMApproved === null) {
-                    status = "Pending GM Review";
+                    status = "Pending (GM Review)";
                 }
             
                 return { ...record, status };
@@ -70,7 +70,7 @@ const Dashboard3 = () => {
                 return "closed-declined";
             case "OPEN (GM APPROVED)":
                 return "open";
-            case "PENDING GM REVIEW":
+            case "PENDING (GM REVIEW)":
                 return "pending-gm";
             case "CLOSED (REJECTED)":
                 return "closed-declined";
@@ -81,11 +81,11 @@ const Dashboard3 = () => {
 
     // Legend for status indicators
     const Legend = () => (
-        <div className="legend">
-            <span className="legend-item open">Open (GM Approved)</span>
-            <span className="legend-item closed-approved">Closed (Approved)</span>
-            <span className="legend-item closed-declined">Closed (Declined)</span>
-            <span className="legend-item pending-gm">Pending GM Review</span>
+        <div className="gtv_legend">
+            <span className="gtv_legend-item gtv_open">Open (GM Approved)</span>
+            <span className="gtv_legend-item gtv_closed-approved">Closed (Approved)</span>
+            <span className="gtv_legend-item gtv_closed-declined">Closed (Declined)</span>
+            <span className="gtv_legend-item gtv_pending-gm">Pending (GM Review)</span>
         </div>
     );
 
@@ -104,39 +104,39 @@ const Dashboard3 = () => {
             <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Status Dashboard</h1>
 
             <Legend />
-            <div className="dashboard-container">
-                <div className="dashboard-left">
-                    <div className="content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
-                        <table className="dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+            <div className="gtv_dashboard-container">
+                <div className="gtv_dashboard-left">
+                    <div className="gtv_content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
+                        <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
                             <thead>
                                 <tr>
-                                    <th>Liquidation ID</th> {/* New column for Liquidation ID */}
-                                    <th>Cash Advance ID</th>
-                                    <th>Account Name</th>
-                                    <th>Cash Advance Amount</th>
-                                    <th>Status</th>
-                                    <th>Reason (For Rejected Requests)</th> 
+                                    <th className="gtv_th">Liquidation ID</th> {/* New column for Liquidation ID */}
+                                    <th className="gtv_th">Cash Advance ID</th>
+                                    <th className="gtv_th">Account Name</th>
+                                    <th className="gtv_th">Cash Advance Amount</th>
+                                    <th className="gtv_th">Status</th>
+                                    <th className="gtv_th">Reason (For Rejected Requests)</th> 
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.length > 0 ? (
                                     records.map((record) => (
                                         <tr key={record.id}>
-                                            <td>
+                                            <td className="gtv_td">
                                                 {liquidationIds[record.cashAdvanceId] || "N/A"} {/* Match Cash Advance ID to Liquidation ID */}
                                             </td>
-                                            <td>{record.cashAdvanceId}</td>
-                                            <td>{record.accountName}</td>
-                                            <td>{record.cashAdvAmount}</td>
-                                            <td className={`status ${getStatusClass(record.status)}`}>
+                                            <td className="gtv_td">{record.cashAdvanceId}</td>
+                                            <td className="gtv_td">{record.accountName}</td>
+                                            <td className="gtv_td">{record.cashAdvAmount}</td>
+                                            <td className={`gtv_status ${getStatusClass(record.status)}`}>
                                                 {record.status}
                                             </td>
-                                            <td>{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
+                                            <td className="gtv_td">{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="6" style={{textAlign: 'center'}}>No records to display.</td>
+                                        <td className="gtv_td" colSpan="6" style={{textAlign: 'center'}}>No records to display.</td>
                                     </tr>
                                 )}
                             </tbody>

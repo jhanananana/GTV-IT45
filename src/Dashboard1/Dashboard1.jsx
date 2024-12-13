@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import db from "../firebase";
-import './Dashboard1.css';
+import '../Dashboard1/Dashboard.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
-import Footer from '../NavBarAndFooter/footer.jsx'; 
+import Footer from '../NavBarAndFooter/footer.jsx';
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import ReasonForRejecting from '../ReasonforRejecting/ReasonforRejecting.jsx';
@@ -13,8 +13,8 @@ const Dashboard1 = () => {
   const { register, handleSubmit, setValue } = useForm();
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const [selectedRecordId, setSelectedRecordId] = useState(null); 
-  const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false); 
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false);
 
   useEffect(() => {
     // Listen to Cash Advance collection
@@ -25,7 +25,7 @@ const Dashboard1 = () => {
           id: doc.id,
           ...doc.data(),
         }));
-  
+
         const liquidationUnsubscribe = onSnapshot(
           collection(db, "Liquidation"),
           (snapshot) => {
@@ -33,7 +33,7 @@ const Dashboard1 = () => {
               id: doc.id,
               ...doc.data(),
             }));
-  
+
             const mergedRecords = fetchedCashAdvRecords.map((cashAdvRecord) => {
               const relatedLiquidation = fetchedLiquidationRecords.find(
                 (liquidation) => liquidation.liquidationID === cashAdvRecord.liquidationId
@@ -43,23 +43,23 @@ const Dashboard1 = () => {
                 liquidationDetails: relatedLiquidation || {},
               };
             });
-  
+
             setRecords(mergedRecords);
           },
           (error) => {
             console.error("Error fetching Liquidation records: ", error);
           }
         );
-  
+
         return () => liquidationUnsubscribe();
       },
       (error) => {
         console.error("Error fetching Cash Advance records: ", error);
       }
     );
-  
+
     return () => cashAdvanceUnsubscribe();
-  }, []);  
+  }, []);
 
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
@@ -72,13 +72,13 @@ const Dashboard1 = () => {
       alert("No record selected.");
       return;
     }
-  
+
     const updatedCashAdvAmount = data.cashAdvAmount;
     if (isNaN(updatedCashAdvAmount) || updatedCashAdvAmount <= 0) {
       alert("Please enter a valid cash advance amount.");
       return;
     }
-  
+
     updateRecord(selectedRecordId, updatedCashAdvAmount);
   };
 
@@ -95,74 +95,74 @@ const Dashboard1 = () => {
 
   const handleApprove = async () => {
     if (!selectedRecordId) {
-        alert("No record selected. Please select a record to approve.");
-        return;
+      alert("No record selected. Please select a record to approve.");
+      return;
     }
 
     const selectedRecord = records.find((record) => record.id === selectedRecordId);
 
     if (!selectedRecord || !selectedRecord.cashAdvAmount) {
-        alert("Please set a valid Cash Advance Amount before approving.");
-        return;
+      alert("Please set a valid Cash Advance Amount before approving.");
+      return;
     }
 
     try {
-        const docRef = doc(db, "Cash Advance", selectedRecordId);
-        await updateDoc(docRef, { 
-            status: "Pending GM Approval", // Updated status for GM review
-            isApproved: true, // Indicates Admin has approved
-            isGMApproved: null, // Initialize GM approval field
-        });
+      const docRef = doc(db, "Cash Advance", selectedRecordId);
+      await updateDoc(docRef, {
+        status: "Pending GM Approval", // Updated status for GM review
+        isApproved: true, // Indicates Admin has approved
+        isGMApproved: null, // Initialize GM approval field
+      });
 
-        alert("Record approved successfully and sent for GM approval!");
-        navigate("/dashboard2"); 
+      alert("Record approved successfully and sent for GM approval!");
+      navigate("/dashboard2");
     } catch (error) {
-        console.error("Error approving the record: ", error);
-        alert("Failed to approve the record. Please try again.");
+      console.error("Error approving the record: ", error);
+      alert("Failed to approve the record. Please try again.");
     }
-};
+  };
 
-const handleRejectSubmit = (reason) => {
-  if (!selectedRecordId) {
+  const handleRejectSubmit = (reason) => {
+    if (!selectedRecordId) {
       alert("No records selected for rejection. Please select a record to reject.");
       return;
-  }
+    }
 
-  if (!reason || reason.trim() === "") {
+    if (!reason || reason.trim() === "") {
       alert("Please provide a reason for rejection.");
       return;
-  }
+    }
 
-  updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-      status: "CLOSED (Rejected)", 
+    updateDoc(doc(db, "Cash Advance", selectedRecordId), {
+      status: "CLOSED (Rejected)",
       isApproved: false,
-      rejectionReason: reason,    
+      rejectionReason: reason,
       isAttached: false,
-  })
-  .then(() => {
-      alert("Record rejected successfully!");
-      setRecords((prevRecords) => {
+    })
+      .then(() => {
+        alert("Record rejected successfully!");
+        setRecords((prevRecords) => {
           const updatedRecords = prevRecords.filter((record) => record.id !== selectedRecordId);
           console.log("After rejection update:", updatedRecords);
           return updatedRecords;
+        });
+        setIsRejectPopupOpen(false);
+        navigate("/dashboard3");
+      })
+      .catch((error) => {
+        console.error("Error rejecting the record:", error);
+        alert("Failed to reject the record. Please try again.");
       });
-      setIsRejectPopupOpen(false);
-      navigate("/dashboard3");
-  })
-  .catch((error) => {
-      console.error("Error rejecting the record:", error);
-      alert("Failed to reject the record. Please try again.");
-  });
-};
+  };
 
   const handleRecordSelect = (recordId) => {
     setSelectedRecordId(recordId);
     const record = records.find((r) => r.id === recordId);
 
-    setValue("liquidationId", record.liquidationId || ""); 
+    setValue("liquidationId", record.liquidationId || "");
     setValue("cashAdvAmount", record.cashAdvAmount || "");
-    setValue("cashAdvanceId", record.cashAdvanceId || "");  
-    setValue("accountName", record.accountName || ""); 
+    setValue("cashAdvanceId", record.cashAdvanceId || "");
+    setValue("accountName", record.accountName || "");
   };
 
   const closeRejectPopup = () => {
@@ -171,8 +171,8 @@ const handleRejectSubmit = (reason) => {
 
   const filteredRecords = records.filter(
     (record) => record.isApproved === null || record.isApproved === undefined
-  );  
-  
+  );
+
   return (
     <div>
       <Navbar />
@@ -180,15 +180,15 @@ const handleRejectSubmit = (reason) => {
       <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
 
       {/* Left Side Form */}
-      <div className="dashboard-container">
-        <div className="dashboard-left">
+      <div className="gtv_dashboard-container">
+        <div className="gtv_dashboard-left">
           <form onSubmit={handleSubmit(onSubmit)}>
 
-            <div className="dashboard-group">
+            <div className="gtv_dashboard-group">
               <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
               <input
                 disabled={true}
-                className="dashBoardInput"
+                className="gtv_dashBoardInput"
                 id="cashAdvanceId"
                 type="text"
                 {...register("cashAdvanceId")}
@@ -196,11 +196,11 @@ const handleRejectSubmit = (reason) => {
               />
             </div>
 
-            <div className="dashboard-group">
+            <div className="gtv_dashboard-group">
               <label htmlFor="accountName">Account Name:</label>
               <input
                 disabled={true}
-                className="dashBoardInput"
+                className="gtv_dashBoardInput"
                 id="accountName"
                 type="text"
                 {...register("accountName")}
@@ -210,10 +210,10 @@ const handleRejectSubmit = (reason) => {
 
             {/* Cash Advance Amount */}
             {selectedRecordId && (
-              <div className="dashboard-group">
+              <div className="gtv_dashboard-group">
                 <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
                 <input
-                  className="dashBoardInput" style={{ width: '250px' }}
+                  className="gtv_dashBoardInput" style={{ width: '250px' }}
                   id="cashAdvAmount"
                   type="number"
                   {...register("cashAdvAmount")}
@@ -221,43 +221,43 @@ const handleRejectSubmit = (reason) => {
                 />
 
                 {selectedRecordId && (
-                  <button type="submit" style={{ marginLeft: "10px" }} className="btnEdit">Set Amount</button>
+                  <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnEdit">Set Amount</button>
                 )}
               </div>
             )}
-            <div className="dashboard1-buttons">
-              <button type="button" className="btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
-              <button type="button" className="btn approve" onClick={handleApprove}>Approve</button>
+            <div className="gtv_dashboard1-buttons">
+              <button type="button" className="gtv_btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
+              <button type="button" className="gtv_btn approve" onClick={handleApprove}>Approve</button>
             </div>
           </form>
         </div>
       </div>
 
       {/* Table to display filtered records */}
-      <div className="content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
-        <div className="tables" >
-          <table className="dashboard-table">
+      <div className="gtv_content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+        <div className="gtv_table" >
+          <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
             <thead>
               <tr>
-                <th>Cash Advance ID</th>
-                <th>Account Name</th>
-                <th>Activity</th>
-                <th>Cash Advance Amount</th>
-                <th>Action</th>
+                <th className="gtv_th">Cash Advance ID</th>
+                <th className="gtv_th">Account Name</th>
+                <th className="gtv_th">Activity</th>
+                <th className="gtv_th">Cash Advance Amount</th>
+                <th className="gtv_th">Action</th>
               </tr>
             </thead>
             <tbody>
               {filteredRecords.length > 0 ? (
                 filteredRecords.map((record) => (
                   <tr key={record.id}>
-                    <td>{record.cashAdvanceId}</td>
-                    <td>{record.accountName}</td>
-                    <td>{record.activity}</td>
-                    <td>{record.cashAdvAmount}</td>
-                    <td>
+                    <td className="gtv_td">{record.cashAdvanceId}</td>
+                    <td className="gtv_td">{record.accountName}</td>
+                    <td className="gtv_td">{record.activity}</td>
+                    <td className="gtv_td">{record.cashAdvAmount}</td>
+                    <td className="gtv_td">
                       <button
                         type="button"
-                        className="btnEdit"
+                        className="gtv_btnEdit"
                         onClick={() => handleRecordSelect(record.id)}
                       >
                         Select Row
@@ -274,11 +274,11 @@ const handleRejectSubmit = (reason) => {
           </table>
         </div>
       </div>
-
+      <Footer />
       {/* Rejection Reason Popup */}
       {isRejectPopupOpen && selectedRecordId && (
-        <div className="popup-overlay">
-          <div className="popup-content">
+        <div className="gtv_popup-overlay" onClick={() => setIsRejectPopupOpen(false)}>
+          <div className="gtv_popup-content">
             <ReasonForRejecting
               onCancel={() => setIsRejectPopupOpen(false)}
               selectedRecord={records.find((record) => record.id === selectedRecordId)} // Find the record using selectedRecordId
@@ -287,7 +287,6 @@ const handleRejectSubmit = (reason) => {
           </div>
         </div>
       )}
-      <Footer />
     </div>
   );
 };
