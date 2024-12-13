@@ -16,7 +16,7 @@ body {
   margin: 0;
 }
 
-.form-container {
+.gtv_form-container {
   display: flex;
   padding: 40px;
   border-radius: 8px;
@@ -27,27 +27,27 @@ body {
 }
 
 /* Left and Right Columns */
-.form-left {
+.gtv_form-left {
   flex: 1;
 }
 
-.form-right {
+.gtv_form-right {
   padding-top: 30px;
   flex: 1;
 }
 
 /* Left Fields */
-.form-fields {
+.gtv_form-fields {
   display: flex;
   flex-direction: column;
 }
 
-.form-group {
+.gtv_form-group {
   margin-bottom: 20px;
 }
 
-.form-left label,
-.form-right label {
+.gtv_form-left label,
+.gtv_form-right label {
   margin-top: 10px;
 }
 
@@ -69,22 +69,22 @@ button {
   transition: background-color 0.25s;
 }
 
-button.btnSave {
+button.gtv_btnSave {
   background-color: #263146;
   width: 150px;
 }
 
-button.btnSubmit {
+button.gtv_btnSubmit {
   background-color: #263146;
   width: 200px;
 }
 
-button.btnUpdate {
+button.gtv_btnUpdate {
   background-color: #505050;
   width: 150px;
 }
 
-button.btnCancel {
+button.gtv_btnCancel {
   color: black;
   background-color: #E3E3E3;
   width: 150px;
@@ -97,7 +97,7 @@ label {
 }
 
 /* Dropzone Styling */
-.dropzone {
+.gtvdropzone {
   border: 1px dashed #ccc;
   background-color: #e3e3e3;
   padding: 10px;
@@ -109,14 +109,14 @@ label {
 }
 
 /* Button Container */
-.buttons {
+.gtv_buttons {
   display: flex;
   margin-top: 35px;
   gap: 10px;
 }
 
 /* Input Fields Styling */
-.cashAdvInput {
+.gtv_cashAdvInput {
   margin-top: 5px;
   font-size: medium;
   font-family: inherit;
@@ -127,28 +127,28 @@ label {
   border: 1px solid #e0e0e0;
 }
 
-.cashAdvInput.field-disabled {
+.gtv_cashAdvInput.field-disabled {
   background-color: black;
 }
 
-.form-group input[readonly] {
+.gtv_form-group input[readonly] {
   background-color: #e0e0e0;
 }
 
 /* Flexbox for Label Input Alignment */
-.rejectForm-group {
+.gtv_rejectForm-group {
   display: flex;
   flex-direction: row; /* Align label and input horizontally */
   align-items: center; /* Vertically center */
   margin-bottom: 10px;
 }
 
-.rejectForm-group label {
+.gtv_rejectForm-group label {
   width: 100%; /* Label width */
   margin-right: 10px; /* Space between label and input */
 }
 
-.rejectForm-group input {
+.gtv_rejectForm-group input {
   width: 50%; /* Reduce input width */
   margin-top: 5px;
   padding: 8px;
@@ -156,7 +156,7 @@ label {
   border: 1px solid #e0e0e0;
 }
 
-.popup-overlay {
+.gtv_popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -168,7 +168,7 @@ label {
   align-items: center;
 }
 
-.popup-content {
+.gtv_popup-content {
   background: white;
   padding: 20px;
   border-radius: 8px;
@@ -176,10 +176,10 @@ label {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.popup-content h2 {
+.gtv_popup-content h2 {
   margin-bottom: 10px;
 }
 
-.popup-content p {
+.gtv_popup-content p {
   margin-bottom: 20px;
 }

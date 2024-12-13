@@ -21,11 +21,11 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
 
   return (
     <div className="reject-container">
-      <div className="reject-form">
+      <div className="gtv_reject-form">
         <form onSubmit={handleSubmit}>
           <h1 className="reject-header">Reason For Rejecting</h1>
           
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
             <input
               id="cashAdvanceId"
@@ -35,7 +35,7 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="accountName">Account Name:</label>
             <input
               id="accountName"
@@ -45,7 +45,7 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="activity">Activity:</label>
             <textarea
               id="activity"
@@ -54,7 +54,7 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
             />
           </div>
           
-          <div className="form-group">
+          <div className="gtv_form-group">
             <label htmlFor="reason">Reason:</label>
             <textarea
               id="reason"

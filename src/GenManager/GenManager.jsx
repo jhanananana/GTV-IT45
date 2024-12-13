@@ -6,19 +6,19 @@ import Footer from '../NavBarAndFooter/footer.jsx';
 
 const GenManager = () => {
     return (
-        <div className="home">
+        <div className="gtv_home">
             <Navbar />
             <h1 style={{marginTop: '215px'}}>General Manager</h1>
-            <div className="page-container">
-                <div className="content">
-                    <div className="links">
-                        <Link to="/" className="link">List of Quotation</Link>
-                        <Link to="/" className="link">Job Order Form</Link>
-                        <Link to="/" className="link">Bill of Materials</Link>
-                        <Link to="/" className="link">Job Order Cost Sheet</Link>
-                        <Link to="/" className="link">Purchase Requisition Form</Link>
-                        <Link to="/" className="link">Purchase Order</Link>
-                        <Link to="/" className="link">Request for Payment</Link>
+            <div className="gtv_page-container">
+                <div className="gtv_content">
+                    <div className="gtv_links">
+                        <Link to="/" className="gtv_link">List of Quotation</Link>
+                        <Link to="/" className="gtv_link">Job Order Form</Link>
+                        <Link to="/" className="gtv_link">Bill of Materials</Link>
+                        <Link to="/" className="gtv_link">Job Order Cost Sheet</Link>
+                        <Link to="/" className="gtv_link">Purchase Requisition Form</Link>
+                        <Link to="/" className="gtv_link">Purchase Order</Link>
+                        <Link to="/" className="gtv_link">Request for Payment</Link>
                     </div>
                 </div>
             </div>
