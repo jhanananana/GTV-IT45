@@ -23,7 +23,7 @@ export const Navbar = () => {
               <img className="logo" src="/images/logo.png" alt="Logo" />
             </a>
             <a href="/home" className="shop-name">
-              Galanter & Jones
+              Galanter and Jones
             </a>
           </div>
         </div>

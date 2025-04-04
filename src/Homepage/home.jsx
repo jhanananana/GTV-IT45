@@ -37,6 +37,13 @@ const Home = () => {
                         <Link to="/dashboard3" className="gtv_link-card">Dashboard 3 (Display)
                             <p>Status of Requests (Prop Custodian)</p>
                         </Link>
+                        <Link to="/receivingreport" className="gtv_link-card">Receiving Report
+                            {/* <p>Status of Requests (Prop Custodian)</p> */}
+                        </Link>
+
+                        <Link to="/validationpage" className="gtv_link-card">Validation Page
+                            {/* <p>Status of Requests (Prop Custodian)</p> */}
+                        </Link>
                     </div>
                 </div>
             </div>
