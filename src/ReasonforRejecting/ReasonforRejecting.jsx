@@ -19,9 +19,14 @@ const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
     onReject(reason); // Pass the reason to the parent component (Dashboard1.jsx)
   };
 
+    const handleFormClick = (event) => {
+    event.stopPropagation();
+  };
+
+
   return (
     <div className="reject-container">
-      <div className="gtv_reject-form">
+      <div className="gtv_reject-form" onClick={handleFormClick}>
         <form onSubmit={handleSubmit}>
           <h1 className="reject-header">Reason For Rejecting</h1>
           

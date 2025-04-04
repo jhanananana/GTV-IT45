@@ -1,45 +1,137 @@
-.gtv_home .gtv_page-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 500px;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* Global Styles */
+.gtv_home {
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.gtv_home .gtv_content {
-    width: 100%;
-    max-width: 1080px;
-    margin: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: "Poppins", sans-serif;
-    height: 100vh;
+.gtv_page-container {
+  flex: 1;
+  padding: 1rem;
 }
 
+body {
+  background-color: #f5f5f5;
+}
+
+.gtv_content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.gtv_home h1 {
+  font-size: 1.5rem; /* Adjusted to match your example */
+  font-weight: 600;
+  color: #263145;
+  margin: 0;
+  text-align: center;
+}
+
+/* Module Section Styling */
 .gtv_links {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    text-align: center;
-    width: 100%;
-    justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  text-align: center;
+  width: 100%;
+  justify-items: center;
 }
 
-.gtv_links .gtv_link {
+/* Link Cards */
+.gtv_link {
+  background-color: #263145;
+  color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.gtv_link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gtv_link h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.gtv_link p {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+.gtv_link-card {
     background-color: #263145;
     color: white;
-    padding: 20px;
-    height: 60px;
-    border-radius: 20px;
-    width: 180px;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     text-decoration: none;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  }
+
+  .gtv_link-card {
+    background-color: #263145;
+    color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+  }
+  
+  .gtv_link-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .gtv_link-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .gtv_link-card p {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin: 0;
+  }
+  
+  .gtv_links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .gtv_page-container {
+    padding: 0.5rem;
+  }
+
+  .gtv_content {
+    padding: 1rem 0.5rem;
+  }
+
+  .gtv_links {
+    grid-template-columns: 1fr;
+  }
 }
 
-.gtv_links .gtv_link:hover {
-    background-color: #1e2a3a;
+@media (miin-width: 769px) and (max-width: 1024px) {
+  .gtv_links {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

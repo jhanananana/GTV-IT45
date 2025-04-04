@@ -1,6 +1,5 @@
 .gtv_title {
     margin-left: 10px;
-    font-size: 18px;
 }
 
 .gtv_navlinks .gtv_link {
@@ -8,51 +7,68 @@
     text-decoration: underline;
 }
 
-.gtv_section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.gtv_dashboard-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start;  
+  /* max-width: 1200px;    */
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #f6f6f6;
+  box-shadow: 0 2px 4px rgba(77, 77, 77, 0.1);
+  padding: 20px;               
 }
 
+.gtv_full-container {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+/* body .gtv_dashboard-container {
+    margin: 0 auto;
+}*/
+
+/* Updated table styles */
 .gtv_table {
-    width: 100%;
     border-collapse: collapse;
 }
 
+h1 {
+    font-size: 1.5rem; /* Adjusted to match your example */
+    font-weight: 600;
+    color: #263145;
+    margin: 0;
+    text-align: center;
+  }
+
 .gtv_th,
 .gtv_td {
-    padding: 12px;
-    border: 1px solid #ddd;
+    padding: 12px 16px; /* Added more padding for better readability */
     text-align: left;
+    font-size: 14px;
+    width: 100%;
 }
 
 .gtv_th {
-    background-color: #2c3e50;
-    color: white;
+    background-color: #f9fafb; /* Darker background for headers */
+    color: #515563;
+    font-weight: 600;
 }
 
 .gtv_td {
-    background-color: #f5f5f5;
-    height: 40px;
+    background-color: #ffffff;
+    height: 48px; 
 }
 
 .gtv_dashBoardInput {
     margin-top: 5px;
-    font-size: medium;
+    /* font-size: medium; */
     font-family: inherit;
     padding: 8px;
     border-radius: 5px;
     width: 100px;
     border: 1px solid #ddd;
     margin-bottom: 20px;
-}
-
-.gtv_dashboard-group {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    align-items: left;
-    margin-bottom: 10px;
 }
 
 .gtv_dashboard-container {
@@ -85,17 +101,18 @@
     font-weight: 500;
     font-family: inherit;
     color: white;
+    cursor: pointer;
     background-color: #263146;
     transition: background-color 0.25s;  
 }
 .gtv_btn {
     padding: 10px 20px;
-    font-size: 16px;
     color: white;
     border: none;
     width: 200px;
     border-radius: 100px;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .gtv_btn.cancel {
@@ -104,34 +121,34 @@
 }
 
 .gtv_btn.reject {
-    border: 2px solid #840303;
-    background-color: #840303;
+    background-color: #fee2e2;
+    color: #ab3437;
     transition: color 0.3s, background-color 0.3s;
 }
 
 .gtv_btn.reject:hover {
-    color: #840303;
-    border: 2px solid #840303;
-    background-color: white;
+    color: #fee2e2;
+    background-color: #ab3437;
 }
 
 .gtv_btn.approve {
-    border: 2px solid #6AAD36;
-    background-color: #6AAD36;
+    background-color: #d1fae5;
+    color: #065f46;
     transition: color 0.3s, background-color 0.3s;
 }
 
 .gtv_btn.approve:hover {
-    color: #6AAD36;
-    border: 2px solid #6AAD36;
-    background-color: white;
+    color: #d1fae5;
+    background-color: #065f46;
 }
 
 .gtv_btnEdit,
 .gtv_btnSet {
+    font-size: 14px;
     color: #545454;
     background-color: #e0e0e0;
     transition: color 0.3s, background-color 0.3s;
+    height: 2.5rem;
 }
 
 .gtv_btnEdit:hover,
@@ -185,6 +202,7 @@
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin: 10px;
 }
 
 .gtv_dashboard-right {
@@ -199,58 +217,69 @@
     width: 60%;
 }
 
-.gtv_dashboard-group input[readonly] {
-    background-color: #e0e0e0;
-}
-
 .gtv_legend {
     display: flex;
     justify-content: left;
-    margin: 0px 40px;
 }
 
 .gtv_legend-item {
-    padding: 15px 10px;
+    padding: 10px 10px;
     border-radius: 3px;
     font-size: 14px;
+    font-weight: 500;
     color: white;
     margin-right: 15px;
 }
 
 .gtv_legend-item.gtv_open {
-    background-color: #f1c40f;
+    background-color: #fff5cb;
+    color: #e6a029;
 }
 
 .gtv_legend-item.gtv_closed-approved {
-    background-color: #27ae60;
+    background-color: #d1fae5;
+    color: #065f46;
 }
 
 .gtv_legend-item.gtv_closed-declined {
-    background-color: #c0392b;
+    background-color: #fee2e2;
+    color: #ab3437;
 }
 
 .gtv_legend-item.gtv_pending-gm {
-    color: black;
-    font-weight: bold;
+    color: #4b4b4b;
     background-color: #f5f5f5;
 }
 
-.gtv_section {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
+.gtv_status {
+    font-weight: 500;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 14px;
+    padding: 8px;
 }
 
-.gtv_section h3 {
-    margin-top: 0;
-    font-size: 18px;
+.gtv_status.closed-approved {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.gtv_status.closed-declined {
+    background-color: #fee2e2;
+    color: #ab3437;
+}
+
+.gtv_status.pending-gm {
+    background-color: #f3f3f3;
+    color: #4b4b4b;
+}
+
+.gtv_status.open {
+    background-color: #fff5cb;
+    color: #e6a029;
 }
 
 .gtv_dashBoardInput {
-    margin-top: 5px;
-    font-size: medium;
     font-family: inherit;
     padding: 8px;
     border-radius: 5px;
@@ -258,17 +287,27 @@
     border: 1px solid #ddd;
 }
 
+.gtv_dashboard-group input[readonly] {
+    background-color: #e0e0e0;
+}
+
+.gtv_dashboard-group {
+    /* justify-items: center; */
+    display: flex;
+    /* flex-direction: row; */
+    /* align-items: left; */
+}
+
 .gtv_dashboard-group label {
     margin-right: 10px;
-    color: black;
-    font-size: 1rem;
+    color: #6b7280;
     font-weight: 500;
+    font-size: 14px;    
 }
 
 .gtv_dashboard-group input {
     width: 50%;
-    margin-top: 5px;
-    padding: 8px;
+    padding: 7px;
     border-radius: 5px;
     border: 1px solid #e0e0e0;
 }
@@ -293,29 +332,4 @@
     width: 30%;
     margin-top: 10px;
     text-align: right;
-}
-
-.gtv_status {
-    font-weight: bold;
-    text-align: center;
-}
-
-.gtv_status.closed-approved {
-    background-color: #27ae60;
-    color: white;
-}
-
-.gtv_status.closed-declined {
-    background-color: #c0392b;
-    color: white;
-}
-
-.gtv_status.pending-gm {
-    background-color: #f3f3f3;
-    color: black;
-}
-
-.gtv_status.open {
-    background-color: #f1c40f;
-    color: white;
 }

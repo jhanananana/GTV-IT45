@@ -70,7 +70,7 @@ const CashAdvance = () => {
     <div className="gtv_cash-advance-container">
       <div className="gtv_cash-advance-form">
         <form onSubmit={handleSubmit}>
-          <h1 className="gtv_cash-advance-header">Cash Advance Request</h1>
+          <h1>Cash Advance Request</h1><br></br>
 
           <div className="gtv_form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
@@ -111,7 +111,7 @@ const CashAdvance = () => {
         </form>
       </div>
     </div>
-     <Footer />
+     {/* <Footer /> */}
      </div>
   );
 };

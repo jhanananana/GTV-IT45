@@ -20,8 +20,8 @@ body {
   display: flex;
   padding: 40px;
   border-radius: 8px;
-  margin: auto;
-  width: 70%;
+  margin: 20px 0px;
+  background-color: white;
   gap: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for emphasis */
 }
@@ -53,11 +53,11 @@ body {
 
 /* Button Styling */
 .gtv_buttonLF {
-  border-radius: 30px;
+  border-radius: 8px;
   border: none;
   margin: 3px;
   padding: 10px 20px;
-  font-size: 1em;
+  font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   color: white;
@@ -68,17 +68,14 @@ body {
 
 .gtv_buttonLF.gtv_btnSave {
   background-color: #263146;
-  width: 150px;
 }
 
 .gtv_buttonLF.gtv_btnSubmit {
   background-color: #263146;
-  width: 200px;
 }
 
 .gtv_buttonLF.gtv_btnUpdate {
   background-color: #505050;
-  width: 150px;
 }
 
 .gtv_buttonLF.gtv_btnCancel {

@@ -11,7 +11,7 @@ const Breadcrumbs = ({ links }) => {
                     ) : (
                         <span>{link.label}</span>
                     )}
-                    {index < links.length - 1 && <span className="gtv_breadcrumb-separator"> / </span>}
+                    {index < links.length - 1 && <span className="gtv_breadcrumb-separator">›</span>}
                 </span>
             ))}
         </nav>

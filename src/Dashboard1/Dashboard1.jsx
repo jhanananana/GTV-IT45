@@ -176,105 +176,110 @@ const Dashboard1 = () => {
   return (
     <div>
       <Navbar />
-      <Breadcrumbs links={breadcrumbsLinks} />
-      <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Amount Records</h1>
 
-      {/* Left Side Form */}
-      <div className="gtv_dashboard-container">
-        <div className="gtv_dashboard-left">
-          <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="gtv_full-container">
+          <Breadcrumbs links={breadcrumbsLinks} />
 
-            <div className="gtv_dashboard-group">
-              <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-              <input
-                disabled={true}
-                className="gtv_dashBoardInput"
-                id="cashAdvanceId"
-                type="text"
-                {...register("cashAdvanceId")}
-                readOnly
-              />
-            </div>
+        {/* Left Side Form */}
+        <div className="gtv_dashboard-container">
+          <div className="gtv_dashboard-left">
+            <h1 style={{ textAlign: 'left'}}>Cash Advance Amount Records</h1>
+            <br></br>
+            <form onSubmit={handleSubmit(onSubmit)}>
 
-            <div className="gtv_dashboard-group">
-              <label htmlFor="accountName">Account Name:</label>
-              <input
-                disabled={true}
-                className="gtv_dashBoardInput"
-                id="accountName"
-                type="text"
-                {...register("accountName")}
-                readOnly
-              />
-            </div>
-
-            {/* Cash Advance Amount */}
-            {selectedRecordId && (
               <div className="gtv_dashboard-group">
-                <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
+                <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
                 <input
-                  className="gtv_dashBoardInput" style={{ width: '250px' }}
-                  id="cashAdvAmount"
-                  type="number"
-                  {...register("cashAdvAmount")}
-                  placeholder="Enter cash advance amount..."
+                  disabled={true}
+                  className="gtv_dashBoardInput"
+                  id="cashAdvanceId"
+                  type="text"
+                  {...register("cashAdvanceId")}
+                  readOnly
                 />
-
-                {selectedRecordId && (
-                  <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnDB gtv_btnEdit">Set Amount</button>
-                )}
               </div>
-            )}
-            <div className="gtv_dashboard1-buttons">
-              <button type="button" className="gtv_btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
-              <button type="button" className="gtv_btn approve" onClick={handleApprove}>Approve</button>
+
+              <div className="gtv_dashboard-group">
+                <label htmlFor="accountName">Account Name:</label>
+                <input
+                  disabled={true}
+                  className="gtv_dashBoardInput"
+                  id="accountName"
+                  type="text"
+                  {...register("accountName")}
+                  readOnly
+                />
+              </div>
+
+              {/* Cash Advance Amount */}
+              {selectedRecordId && (
+                <div className="gtv_dashboard-group">
+                  <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
+                  <input
+                    className="gtv_dashBoardInput" style={{ width: '250px' }}
+                    id="cashAdvAmount"
+                    type="number"
+                    {...register("cashAdvAmount")}
+                    placeholder="Enter cash advance amount..."
+                  />
+
+                  {selectedRecordId && (
+                    <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnDB gtv_btnEdit">Set Amount</button>
+                  )}
+                </div>
+              )}
+              <div className="gtv_dashboard1-buttons">
+                <button type="button" className="gtv_btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
+                <button type="button" className="gtv_btn approve" onClick={handleApprove}>Approve</button>
+              </div>
+            </form>
+
+            {/* Display Records */}
+            <div className="gtv_content" style={{width: '100%'}}>
+              <div className="gtv_table">
+                <table style={{ tableLayout: 'fixed', width: '100%' }}>
+                  <thead>
+                    <tr>
+                      <th className="gtv_th">Cash Advance ID</th>
+                      <th className="gtv_th">Account Name</th>
+                      <th className="gtv_th">Activity</th>
+                      <th className="gtv_th">Cash Advance Amount</th>
+                      <th className="gtv_th">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRecords.length > 0 ? (
+                      filteredRecords.map((record) => (
+                        <tr key={record.id}>
+                          <td className="gtv_td">{record.cashAdvanceId}</td>
+                          <td className="gtv_td">{record.accountName}</td>
+                          <td className="gtv_td">{record.activity}</td>
+                          <td className="gtv_td">{record.cashAdvAmount}</td>
+                          <td className="gtv_td">
+                            <button
+                              type="button"
+                              className="gtv_btnDB gtv_btnEdit"
+                              onClick={() => handleRecordSelect(record.id)}
+                            >
+                              Select Row
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" style={{ textAlign: "center" }}>No records found.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
 
-      {/* Table to display filtered records */}
-      <div className="gtv_content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-        <div className="gtv_table" >
-          <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-            <thead>
-              <tr>
-                <th className="gtv_th">Cash Advance ID</th>
-                <th className="gtv_th">Account Name</th>
-                <th className="gtv_th">Activity</th>
-                <th className="gtv_th">Cash Advance Amount</th>
-                <th className="gtv_th">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRecords.length > 0 ? (
-                filteredRecords.map((record) => (
-                  <tr key={record.id}>
-                    <td className="gtv_td">{record.cashAdvanceId}</td>
-                    <td className="gtv_td">{record.accountName}</td>
-                    <td className="gtv_td">{record.activity}</td>
-                    <td className="gtv_td">{record.cashAdvAmount}</td>
-                    <td className="gtv_td">
-                      <button
-                        type="button"
-                        className="gtv_btnDB gtv_btnEdit"
-                        onClick={() => handleRecordSelect(record.id)}
-                      >
-                        Select Row
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: "center" }}>No records found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <Footer />
+      {/* <Footer /> */}
       {/* Rejection Reason Popup */}
       {isRejectPopupOpen && selectedRecordId && (
         <div className="gtv_popup-overlay" onClick={() => setIsRejectPopupOpen(false)}>

@@ -21,7 +21,7 @@ const Dashboard3 = () => {
             // Update the status based on isApproved and isAttached
             const updatedRecords = fetchedRecords.map(record => {
                 let status = record.status;
-            
+
                 if (record.isApproved && record.isGMApproved && record.isAttached) {
                     status = "CLOSED (APPROVED)";
                 } else if (record.isApproved && record.isGMApproved === true && !record.isAttached) {
@@ -31,10 +31,10 @@ const Dashboard3 = () => {
                 } else if (record.isApproved && record.isGMApproved === null) {
                     status = "Pending (GM Review)";
                 }
-            
+
                 return { ...record, status };
             });
-            
+
             setRecords(updatedRecords);
         });
 
@@ -100,51 +100,52 @@ const Dashboard3 = () => {
     return (
         <div>
             <Navbar />
-            <Breadcrumbs links={breadcrumbsLinks} /> 
-            <h1 style={{ textAlign: 'left', marginLeft: '40px' }}>Cash Advance Status Dashboard</h1>
-
-            <Legend />
-            <div className="gtv_dashboard-container">
-                <div className="gtv_dashboard-left">
-                    <div className="gtv_content" style={{ margin: "30px", boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
-                        <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-                            <thead>
-                                <tr>
-                                    <th className="gtv_th">Liquidation ID</th> {/* New column for Liquidation ID */}
-                                    <th className="gtv_th">Cash Advance ID</th>
-                                    <th className="gtv_th">Account Name</th>
-                                    <th className="gtv_th">Cash Advance Amount</th>
-                                    <th className="gtv_th">Status</th>
-                                    <th className="gtv_th">Reason (For Rejected Requests)</th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {records.length > 0 ? (
-                                    records.map((record) => (
-                                        <tr key={record.id}>
-                                            <td className="gtv_td">
-                                                {liquidationIds[record.cashAdvanceId] || "N/A"} {/* Match Cash Advance ID to Liquidation ID */}
-                                            </td>
-                                            <td className="gtv_td">{record.cashAdvanceId}</td>
-                                            <td className="gtv_td">{record.accountName}</td>
-                                            <td className="gtv_td">{record.cashAdvAmount}</td>
-                                            <td className={`gtv_status ${getStatusClass(record.status)}`}>
-                                                {record.status}
-                                            </td>
-                                            <td className="gtv_td">{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
-                                        </tr>
-                                    ))
-                                ) : (
+            <div className="gtv_full-container">
+                <Breadcrumbs links={breadcrumbsLinks} />
+                <div className="gtv_dashboard-container">
+                    <div className="gtv_dashboard-left">
+                    <h1 style={{ textAlign: 'left'}}>Cash Advance Status Dashboard</h1>
+                    <br></br><Legend />
+                        <div className="gtv_content">
+                            <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+                                <thead>
                                     <tr>
-                                        <td className="gtv_td" colSpan="6" style={{textAlign: 'center'}}>No records to display.</td>
+                                        <th className="gtv_th">Liquidation ID</th> {/* New column for Liquidation ID */}
+                                        <th className="gtv_th">Cash Advance ID</th>
+                                        <th className="gtv_th">Account Name</th>
+                                        <th className="gtv_th">Cash Advance Amount</th>
+                                        <th className="gtv_th">Status</th>
+                                        <th className="gtv_th">Reason (For Rejected Requests)</th>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {records.length > 0 ? (
+                                        records.map((record) => (
+                                            <tr key={record.id}>
+                                                <td className="gtv_td">
+                                                    {liquidationIds[record.cashAdvanceId] || "N/A"} {/* Match Cash Advance ID to Liquidation ID */}
+                                                </td>
+                                                <td className="gtv_td">{record.cashAdvanceId}</td>
+                                                <td className="gtv_td">{record.accountName}</td>
+                                                <td className="gtv_td">{record.cashAdvAmount}</td>
+                                                <td className={`gtv_status ${getStatusClass(record.status)}`}>
+                                                    {record.status}
+                                                </td>
+                                                <td className="gtv_td">{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td className="gtv_td" colSpan="6" style={{ textAlign: 'center' }}>No records to display.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };

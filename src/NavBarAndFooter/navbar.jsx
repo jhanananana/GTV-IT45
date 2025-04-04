@@ -10,28 +10,22 @@ export const Navbar = () => {
 
   return (
     <>
-      <header>
-        <div>
-          <ul>
-            <li>
-              <img
-                onClick={toggleSidebar}
-                className="hamburger"
-                src="/images/hamburger.png"
-                alt="hamburger"
-              />
-            </li>
-            <li>
-              <a href="/home">
-                <img className="logo" src="/images/logo.png" alt="Logo" />
-              </a>
-            </li>
-            <li>
-              <a href="/home" className="shopName">
-                Galanter & Jones SEA. INC. 
-              </a>
-            </li>
-          </ul>
+      <header className="navbar">
+        <div className="navbar-container">
+          <div className="navbar-logo">
+            <img
+              onClick={toggleSidebar}
+              className="hamburger"
+              src="/images/hamburger.png"
+              alt="hamburger"
+            />
+            <a href="/home">
+              <img className="logo" src="/images/logo.png" alt="Logo" />
+            </a>
+            <a href="/home" className="shop-name">
+              Galanter & Jones
+            </a>
+          </div>
         </div>
       </header>
       {isSidebarVisible && <Sidebar />}

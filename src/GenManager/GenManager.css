@@ -1,4 +1,4 @@
-.gtv_home .gtv_page-container {
+/* .gtv_home .gtv_page-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@
     align-items: center;
     font-family: "Poppins", sans-serif;
     height: 100vh;
-}
+} */
 
 .gtv_links {
     display: grid;

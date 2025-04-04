@@ -8,22 +8,39 @@ const Home = () => {
     return (
         <div className="gtv_home">
             <Navbar />
-            <h1 style={{marginTop: '215px'}}>GTV: Liquidation Report Forms</h1>
+            <h1 style={{marginTop: '120px', textAlign: 'center'}}>GTV: Liquidation Report Forms</h1>
             <div className="gtv_page-container">
                 <div className="gtv_content">
-                    <div className="gtv_links">
-                        <Link to="/home" className="gtv_link">Home</Link>
-                        <Link to="/genmanager" className="gtv_link">General Manager (Dashboard)</Link>
-                        <Link to="/cashadvance" className="gtv_link">Cash Advance Request</Link>
-                        <Link to="/liquidationreport" className="gtv_link">Liquidation Report</Link>
-                        <Link to="/dashboard1" className="gtv_link">Dashboard 1</Link>
-                        <Link to="/dashboard1" className="gtv_link">Dashboard 2</Link>
-                        <Link to="/dashboard3" className="gtv_link">Dashboard 3 (Display)</Link>
-                        
+                    <div className="gtv_links-grid">
+                        <Link to="/home" className="gtv_link-card">Home
+                        </Link>
+
+                        <Link to="/genmanager" className="gtv_link-card">General Manager
+                            <p>Dashboard</p>
+                        </Link>
+
+                        <Link to="/cashadvance" className="gtv_link-card">Cash Advance Request
+                            <p>Cash Request Form (Prop Custodian)</p>
+                        </Link>
+
+                        <Link to="/liquidationreport" className="gtv_link-card">Liquidation Report
+                            <p>Sending of Report (Prop Custodian)</p>
+                        </Link>
+
+                        <Link to="/dashboard1" className="gtv_link-card">Dashboard 1
+                            <p>Approval of pending requests (Admin)</p>
+                        </Link>
+
+                        <Link to="/dashboard2" className="gtv_link-card">Dashboard 2
+                            <p>Approval of initially approved requests</p>
+                        </Link>
+                        <Link to="/dashboard3" className="gtv_link-card">Dashboard 3 (Display)
+                            <p>Status of Requests (Prop Custodian)</p>
+                        </Link>
                     </div>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 };
