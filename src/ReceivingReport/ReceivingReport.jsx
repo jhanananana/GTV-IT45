@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
+import db from "../firebase";
+import { collection, addDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 const ReceivingReport = () => {
     const [items, setItems] = useState([]);
@@ -19,23 +21,62 @@ const ReceivingReport = () => {
         setCurrentDate(today);
     }, []);
 
-    // Generate Receiving Report No on page load
+    // Generate the Receiving Report No on page load
     useEffect(() => {
-        const generateReportNo = () => {
-            const randomNum = Math.floor(100000 + Math.random() * 900000);
-            setReceivingReportNo(randomNum.toString());
+        const fetchLastReportNo = async () => {
+            try {
+                const reportQuery = query(
+                    collection(db, "Receiving Report"),
+                    orderBy("receivingReportNo", "desc"),
+                    limit(1)
+                );
+                const querySnapshot = await getDocs(reportQuery);
+                if (!querySnapshot.empty) {
+                    const lastReport = querySnapshot.docs[0].data();
+                    const lastReportNo = parseInt(lastReport.receivingReportNo, 10);
+                    setReceivingReportNo((lastReportNo + 1).toString());
+                } else {
+                    setReceivingReportNo("1000");  // Set starting number if no previous report exists
+                }
+            } catch (error) {
+                console.error("Error fetching last report number:", error);
+            }
         };
-        generateReportNo();
+
+        fetchLastReportNo();
     }, []);
 
-    const addItem = () => {
+    const addItem = async () => {
         const totalCost = quantityAccepted * unitCost;
-        setItems([...items, { itemName, quantityAccepted, unit, unitCost, totalCost, description }]);
+        const newItem = { itemName, quantityAccepted, unit, unitCost, totalCost, description };
+
+        // Update local state
+        setItems([...items, newItem]);
+
+        // Reset fields
         setItemName('');
         setQuantityAccepted('');
         setUnitCost('');
         setUnit('Pc');
         setDescription('');
+
+        // Save to Firebase Firestore
+        try {
+            await addDoc(collection(db, "Receiving Report"), {
+                receivingReportNo,
+                itemName,
+                quantityAccepted,
+                unit,
+                unitCost,
+                totalCost,
+                description,
+                currentDate
+            });
+            alert('Item added and saved to Firestore!');
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert('Error saving to Firestore');
+        }
     };
 
     const handleValidation = () => {
@@ -45,15 +86,13 @@ const ReceivingReport = () => {
     const breadcrumbsLinks = [
         { label: "Home", path: "/home" },
         { label: "Receiving Report", path: "/receivingreport" },
-      ];
+    ];
 
     return (
         <div>
-            <Navbar /> {/* Navbar is now properly wrapped in a div with the rest of the content */}
-
+            <Navbar />
             <div className="gtv_full-container">
-            <Breadcrumbs links={breadcrumbsLinks} />
-                {/* Content Section */}
+                <Breadcrumbs links={breadcrumbsLinks} />
                 <div className="gtv_dashboard-container">
                     <div className="gtv_dashboard-left">
                         <h1 style={{ textAlign: 'left' }}>RECEIVING REPORT</h1>
@@ -83,23 +122,21 @@ const ReceivingReport = () => {
                         </div>
 
                         <div className="gtv_dashboard-group">
-                        <label htmlFor="others">Others:</label>
-                        <input className="gtv_dashBoardInput" type="text" id="others" />
+                            <label htmlFor="others">Others:</label>
+                            <input className="gtv_dashBoardInput" type="text" id="others" />
 
-                        {/* Item Details */}
+                            {/* Item Details */}
+                            <label htmlFor="itemName">Item Name:</label>
+                            <input className="gtv_dashBoardInput" type="text" id="itemName" value={itemName} onChange={(e) => setItemName(e.target.value)} />
 
-                        <label htmlFor="itemName">Item Name:</label>
-                        <input className="gtv_dashBoardInput" type="text" id="itemName" value={itemName} onChange={(e) => setItemName(e.target.value)} />
-
-                        <label htmlFor="quantityAccepted">Quantity Accepted:</label>
-                        <input
-                            type="number"
-                            className="gtv_dashBoardInput"
-                            id="quantityAccepted"
-                            value={quantityAccepted}
-                            onChange={(e) => setQuantityAccepted(e.target.value)}
-                        />
-
+                            <label htmlFor="quantityAccepted">Quantity Accepted:</label>
+                            <input
+                                type="number"
+                                className="gtv_dashBoardInput"
+                                id="quantityAccepted"
+                                value={quantityAccepted}
+                                onChange={(e) => setQuantityAccepted(e.target.value)}
+                            />
                         </div>
                         <div className="gtv_dashboard-group">
                             <label htmlFor="unitCost">Unit Cost:</label>
@@ -118,10 +155,8 @@ const ReceivingReport = () => {
                         <br></br>
                         <hr></hr>
                         <br></br>
-                        {/* Add Item Button */}
                         <button className="gtv_btnDB" onClick={addItem}>Add</button>
 
-                        {/* Display Items Table */}
                         <div className="gtv_content">
                             <div className="gtv_table">
                                 <table style={{ tableLayout: 'fixed', width: '100%' }}>
@@ -146,11 +181,9 @@ const ReceivingReport = () => {
                                 </table>
                             </div>
                         </div>
-                        {/* Next Button */}
                         <div className="next-button-container">
                             <button className="gtv_btnDB" onClick={handleValidation}>Next</button>
                         </div>
-                        {/* </div> */}
                     </div>
                 </div>
             </div>
