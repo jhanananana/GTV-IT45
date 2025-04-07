@@ -3,7 +3,7 @@ import './styles.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 import db from "../firebase";
-import { collection, addDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, doc, setDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
 
 const ReceivingReport = () => {
     const [items, setItems] = useState([]);
@@ -15,72 +15,68 @@ const ReceivingReport = () => {
     const [receivingReportNo, setReceivingReportNo] = useState('');
     const [currentDate, setCurrentDate] = useState('');
 
+
     // Set the current date on page load
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
         setCurrentDate(today);
     }, []);
 
+    const fetchLastReportNo = async () => {
+        try {
+            const reportQuery = query(
+                collection(db, "Receiving Report"),
+                orderBy("receivingReportNo", "desc"),
+                limit(1)
+            );
+            const querySnapshot = await getDocs(reportQuery);
+            if (!querySnapshot.empty) {
+                const lastReport = querySnapshot.docs[0].data();
+                const lastReportNo = parseInt(lastReport.receivingReportNo, 10);
+                setReceivingReportNo((lastReportNo + 1).toString());
+            } else {
+                setReceivingReportNo("1000");  // Set starting number if no previous report exists
+            }
+        } catch (error) {
+            console.error("Error fetching last report number:", error);
+        }
+    };
+
     // Generate the Receiving Report No on page load
     useEffect(() => {
-        const fetchLastReportNo = async () => {
-            try {
-                const reportQuery = query(
-                    collection(db, "Receiving Report"),
-                    orderBy("receivingReportNo", "desc"),
-                    limit(1)
-                );
-                const querySnapshot = await getDocs(reportQuery);
-                if (!querySnapshot.empty) {
-                    const lastReport = querySnapshot.docs[0].data();
-                    const lastReportNo = parseInt(lastReport.receivingReportNo, 10);
-                    setReceivingReportNo((lastReportNo + 1).toString());
-                } else {
-                    setReceivingReportNo("1000");  // Set starting number if no previous report exists
-                }
-            } catch (error) {
-                console.error("Error fetching last report number:", error);
-            }
-        };
-
         fetchLastReportNo();
     }, []);
 
-    const addItem = async () => {
+    const addItem = () => {
         const totalCost = quantityAccepted * unitCost;
         const newItem = { itemName, quantityAccepted, unit, unitCost, totalCost, description };
-
-        // Update local state
-        setItems([...items, newItem]);
-
-        // Reset fields
+    
+        setItems(prevItems => [...prevItems, newItem]);
+    
         setItemName('');
         setQuantityAccepted('');
         setUnitCost('');
         setUnit('Pc');
         setDescription('');
-
-        // Save to Firebase Firestore
-        try {
-            await addDoc(collection(db, "Receiving Report"), {
-                receivingReportNo,
-                itemName,
-                quantityAccepted,
-                unit,
-                unitCost,
-                totalCost,
-                description,
-                currentDate
-            });
-            alert('Item added and saved to Firestore!');
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            alert('Error saving to Firestore');
-        }
     };
 
-    const handleValidation = () => {
-        alert('Next step clicked');
+    const handleSubmit = async () => {
+        const data = {
+            receivingReportNo,
+            items,
+            currentDate,
+            status: "Pending"
+        };
+    
+        try {
+            await setDoc(doc(db, "Receiving Report", receivingReportNo), data);
+            alert("Receiving Report saved successfully!");
+            setItems([]);
+            await fetchLastReportNo();
+        } catch (error) {
+            console.error("Error saving document: ", error);
+            alert("Error saving to Firestore");
+        }
     };
 
     const breadcrumbsLinks = [
@@ -88,6 +84,13 @@ const ReceivingReport = () => {
         { label: "Receiving Report", path: "/receivingreport" },
     ];
 
+    const preventInvalidNumberInput = (e) => {
+        if (["e", "E", "+", "-"].includes(e.key)) {
+            e.preventDefault();
+        }
+    };
+    
+    
     return (
         <div>
             <Navbar />
@@ -136,11 +139,12 @@ const ReceivingReport = () => {
                                 id="quantityAccepted"
                                 value={quantityAccepted}
                                 onChange={(e) => setQuantityAccepted(e.target.value)}
+                                onKeyDown={preventInvalidNumberInput}
                             />
                         </div>
                         <div className="gtv_dashboard-group">
                             <label htmlFor="unitCost">Unit Cost:</label>
-                            <input type="number" id="unitCost" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} />
+                            <input type="number" id="unitCost" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} onKeyDown={preventInvalidNumberInput}/>
 
                             <label htmlFor="unit">Unit:</label>
                             <select className="gtv_cashAdvInput" id="unit" value={unit} onChange={(e) => setUnit(e.target.value)}>
@@ -150,12 +154,12 @@ const ReceivingReport = () => {
                             </select>
 
                             <label htmlFor="description">Description:</label>
-                            <input className="gtv_dashBoardInput" type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                            <input className="gtv_dashBoardInput" type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)}/>
                         </div>
                         <br></br>
                         <hr></hr>
                         <br></br>
-                        <button className="gtv_btnDB" onClick={addItem}>Add</button>
+                        <button className="gtv_btnDB" onClick={addItem}>Add Item</button>
 
                         <div className="gtv_content">
                             <div className="gtv_table">
@@ -182,7 +186,7 @@ const ReceivingReport = () => {
                             </div>
                         </div>
                         <div className="next-button-container">
-                            <button className="gtv_btnDB" onClick={handleValidation}>Next</button>
+                            <button className="gtv_btnDB" onClick={handleSubmit}>Submit</button>
                         </div>
                     </div>
                 </div>
