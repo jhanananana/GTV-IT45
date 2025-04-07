@@ -4,12 +4,15 @@ import { useLocation } from 'react-router-dom';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 import db from "../firebase";
+import { useEffect } from 'react';
+
 
 const ValidationPage = () => {
   const [purchaseOrderNo, setPurchaseOrderNo] = useState("");
   const [purchaseOrderItems, setPurchaseOrderItems] = useState([]);
   const [receivingReportNo, setReceivingReportNo] = useState("");  // State for receiving report number search
   const [receivingReportItems, setReceivingReportItems] = useState([]);
+  const [allReceivingReports, setAllReceivingReports] = useState([]);
   const location = useLocation();
 
   const breadcrumbsLinks = [
@@ -17,22 +20,72 @@ const ValidationPage = () => {
     { label: "Validation", path: "/validation" },
   ];
 
+  useEffect(() => {
+    const fetchAllReceivingReports = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Receiving Report"));
+        const allItems = [];
+  
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          if (data.items) {
+            allItems.push(...data.items);
+          }
+        });
+  
+        setAllReceivingReports(allItems);
+        setReceivingReportItems(allItems); // Show all items by default
+      } catch (error) {
+        console.error("Error fetching all Receiving Reports:", error);
+      }
+    };
+  
+    fetchAllReceivingReports();
+  }, []);
+
+  useEffect(() => {
+    const fetchAllPurchaseOrders = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Purchase Order"));
+        const allPOs = [];
+  
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          allPOs.push({ id: docSnap.id, ...data });
+        });
+  
+        setPurchaseOrderItems(allPOs);
+      } catch (error) {
+        console.error("Error fetching all Purchase Orders:", error);
+      }
+    };
+  
+    fetchAllPurchaseOrders();
+  }, []);
+  
+
   // Function to search for receiving reports by the receiving report number
+  console.log("Receiving Report No:", receivingReportNo);
+console.log("Purchase Order No:", purchaseOrderNo);
+
   const handleSearchReceivingReport = async () => {
-    if (!receivingReportNo) {
+    const trimmedReportNo = receivingReportNo.trim();
+    
+    if (!trimmedReportNo) {
       alert("Please enter a Receiving Report Number.");
       return;
     }
   
     try {
-      const reportRef = doc(db, "Receiving Report", receivingReportNo); // Directly reference the document by its ID
+      const reportRef = doc(db, "Receiving Report", trimmedReportNo);
       const reportSnap = await getDoc(reportRef);
   
       if (reportSnap.exists()) {
         const reportData = reportSnap.data();
-        setReceivingReportItems(reportData.items || []); // Assuming the items are stored in the 'items' field of the document
+        console.log("Fetched data:", reportData); // <-- Check structure
+        setReceivingReportItems(reportData.items || []); // Or change 'items' to the correct key
       } else {
-        alert("No Receiving Report found with this number.");
+        alert(`No Receiving Report found with number: ${trimmedReportNo}`);
         setReceivingReportItems([]);
       }
     } catch (error) {
@@ -40,6 +93,7 @@ const ValidationPage = () => {
       alert("Error fetching the Receiving Report.");
     }
   };
+  
   
 
   const handleFetch = async () => {
@@ -155,43 +209,47 @@ const ValidationPage = () => {
               </div>
 
               <div className="gtv_content" style={{ width: '100%' }}>
-                <table className="gtv_table">
-                  <thead>
-                    <tr>
-                      <th className="gtv_th">Item Name</th>
-                      <th className="gtv_th">Qty Accepted</th>
-                      <th className="gtv_th">Unit</th>
-                      <th className="gtv_th">Unit Cost</th>
-                      <th className="gtv_th">Total Cost</th>
-                      <th className="gtv_th">Description</th>
-                      <th className="gtv_th">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {receivingReportItems.length > 0 ? (
-                      receivingReportItems.map((item, index) => (
-                        <tr key={index}>
-                          <td className="gtv_td">{item.itemName}</td>
-                          <td className="gtv_td">{item.quantityAccepted}</td>
-                          <td className="gtv_td">{item.unit}</td>
-                          <td className="gtv_td">{item.unitCost}</td>
-                          <td className="gtv_td">{item.totalCost}</td>
-                          <td className="gtv_td">{item.description}</td>
-                          <td>
-                            <select value={item.status || ''} onChange={(e) => handleReceivingReportChange(index, e.target.value)}>
-                              <option value="">Select Status</option>
-                              <option value="In Progress">In Progress</option>
-                              <option value="Completed">Completed</option>
-                              <option value="Pending">Pending</option>
-                            </select>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr><td colSpan="7" className="gtv_td">No items found</td></tr>
-                    )}
-                  </tbody>
-                </table>
+                
+              <table className="gtv_table">
+  <thead>
+    <tr>
+      <th className="gtv_th">Receiving Report No</th> {/* New Column */}
+      <th className="gtv_th">Item Name</th>
+      <th className="gtv_th">Qty Accepted</th>
+      <th className="gtv_th">Unit</th>
+      <th className="gtv_th">Unit Cost</th>
+      <th className="gtv_th">Total Cost</th>
+      <th className="gtv_th">Description</th>
+      <th className="gtv_th">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {receivingReportItems.length > 0 ? (
+      receivingReportItems.map((item, index) => (
+        <tr key={index}>
+          <td className="gtv_td">{receivingReportNo}</td> {/* New Cell */}
+          <td className="gtv_td">{item.itemName}</td>
+          <td className="gtv_td">{item.quantityAccepted}</td>
+          <td className="gtv_td">{item.unit}</td>
+          <td className="gtv_td">{item.unitCost}</td>
+          <td className="gtv_td">{item.totalCost}</td>
+          <td className="gtv_td">{item.description}</td>
+          <td>
+            <select value={item.status || ''} onChange={(e) => handleReceivingReportChange(index, e.target.value)}>
+              <option value="">Select Status</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr><td colSpan="8" className="gtv_td">No items found</td></tr>
+    )}
+  </tbody>
+</table>
+
               </div>
 
               {/* Purchase Order Section */}
@@ -208,42 +266,45 @@ const ValidationPage = () => {
               </div>
 
               <div className="gtv_content" style={{ width: '100%' }}>
-  <table className="gtv_table">
-    <thead>
-      <tr>
-        <th className="gtv_th">Item Name</th>
-        <th className="gtv_th">Qty Ordered</th>
-        <th className="gtv_th">Unit</th>
-        <th className="gtv_th">Unit Cost</th>
-        <th className="gtv_th">Total Cost</th>
-        <th className="gtv_th">Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      {purchaseOrderItems.length > 0 ? (
-        purchaseOrderItems.map((po, index) => (
-          po.items && po.items.length > 0 ? (
-            po.items.map((item, itemIndex) => (
-              <tr key={itemIndex}>
-                <td className="gtv_td">{item.particulars}</td> {/* Assuming 'particulars' is the item name */}
-                <td className="gtv_td">{item.quantity}</td>
-                <td className="gtv_td">{item.unit}</td>
-                <td className="gtv_td">{item.cost}</td> {/* Assuming 'cost' is the unit cost */}
-                <td className="gtv_td">{item.totalCost}</td>
-                <td className="gtv_td">{item.gradeDescription}</td> {/* Assuming 'gradeDescription' as description */}
-              </tr>
-            ))
-          ) : (
-            <tr key={index}>
-              <td colSpan="6" className="gtv_td">No items found in this PO</td>
+              <table className="gtv_table">
+  <thead>
+    <tr>
+      <th className="gtv_th">Purchase Order No</th> {/* New Column */}
+      <th className="gtv_th">Item Name</th>
+      <th className="gtv_th">Qty Ordered</th>
+      <th className="gtv_th">Unit</th>
+      <th className="gtv_th">Unit Cost</th>
+      <th className="gtv_th">Total Cost</th>
+      <th className="gtv_th">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {purchaseOrderItems.length > 0 ? (
+      purchaseOrderItems.map((po, index) => (
+        po.items && po.items.length > 0 ? (
+          po.items.map((item, itemIndex) => (
+            <tr key={itemIndex}>
+              <td className="gtv_td">{purchaseOrderNo}</td> {/* New Cell */}
+              <td className="gtv_td">{item.particulars}</td>
+              <td className="gtv_td">{item.quantity}</td>
+              <td className="gtv_td">{item.unit}</td>
+              <td className="gtv_td">{item.cost}</td>
+              <td className="gtv_td">{item.totalCost}</td>
+              <td className="gtv_td">{item.gradeDescription}</td>
             </tr>
-          )
-        ))
-      ) : (
-        <tr><td colSpan="6" className="gtv_td">No Purchase Orders found</td></tr>
-      )}
-    </tbody>
-  </table>
+          ))
+        ) : (
+          <tr key={index}>
+            <td colSpan="7" className="gtv_td">No items found in this PO</td>
+          </tr>
+        )
+      ))
+    ) : (
+      <tr><td colSpan="7" className="gtv_td">No Purchase Orders found</td></tr>
+    )}
+  </tbody>
+</table>
+
 </div>
 
 
