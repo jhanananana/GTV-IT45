@@ -24,6 +24,10 @@
     max-width: 1000px;
 }
 
+.gtv_dashboard3-container {
+    margin: 0 auto;
+    max-width: 1500px;
+}
 /* body .gtv_dashboard-container {
     margin: 0 auto;
 }*/
@@ -248,7 +252,7 @@ h1 {
 
 .gtv_legend-item.gtv_pending-gm {
     color: #4b4b4b;
-    background-color: #f5f5f5;
+    background-color: #ff4c4c;
 }
 
 .gtv_status {
@@ -256,7 +260,8 @@ h1 {
     text-align: center;
     border-radius: 3px;
     font-size: 14px;
-    padding: 8px;
+    padding: 3px;
+    margin-right: 15px;
 }
 
 .gtv_status.closed-approved {
@@ -269,9 +274,9 @@ h1 {
     color: #ab3437;
 }
 
-.gtv_status.pending-gm {
-    background-color: #f3f3f3;
-    color: #4b4b4b;
+.gtv_status.pending {
+    background-color: #dfdfdf;
+    color: #2e2e2e;
 }
 
 .gtv_status.open {
@@ -333,3 +338,170 @@ h1 {
     margin-top: 10px;
     text-align: right;
 }
+
+.gtv_tab-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.gtv_filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px; /* Adjust the gap between buttons */
+    justify-content: left; /* Center the buttons horizontally */
+}
+
+.gtv_tab {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align to the left */
+    padding: 10px 0px;
+    margin-right: auto;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+  .gtv_tab:hover {
+    color: #111827;
+  }
+  
+  .gtv_tab-active {
+    color: #111827;
+    border-bottom: 2px solid #263146;
+  }
+
+  .nq-table {
+    margin-top: 2rem;
+    width: 100%;
+    table-layout: fixed;  /* This forces all columns to have equal width */
+  }
+  
+  .nq-table-header {
+    display: flex;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 30px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #4b5563;
+  }
+  
+  .nq-table-row {
+    display: flex;
+    padding: 16px 30px;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .nq-table-row:hover {
+    background-color: #f9fafb;
+  }
+  
+  .nq-table-body {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+  
+  /* Equal-width columns */
+  .nq-col {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: break-word;
+  }
+  
+  .nq-col-status {
+    margin-right: 35px;
+    width: 13%;  
+    min-width: 100px;  
+  }
+  
+  .nq-col-liquidationId {
+    width: 17%; 
+    min-width: 140px; 
+    font-weight: 500;
+  }
+  
+  .nq-col-cashAdvId {
+    width: 13%; 
+    min-width: 120px;
+    font-weight: 500;
+  }
+
+  .nq-col-name {
+    width: 17%; 
+    min-width: 100px; 
+  }
+  
+  .nq-col-amount {
+    width: 10%; 
+    min-width: 120px; 
+  }
+  
+  .nq-col-message {
+    width: 25%; 
+    color: #6b7280;
+    min-width: 120px; 
+  }
+  
+  
+/* Search section */
+.nq-search-section {
+    margin-top: 30px;
+    padding: 16px 30px;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: white;
+  }
+  
+  /* Search box styles */
+  .nq-search-box-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .nq-search-box-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  
+  .nq-search-box-input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1f2937;
+    background-color: white;
+    transition: border-color 0.2s ease;
+    font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  
+  .nq-search-box-input:focus {
+    outline: none;
+    border-color: #263146;
+    box-shadow: 0 0 0 2px rgba(38, 49, 70, 0.1);
+  }
+  
+  .nq-search-box-input::placeholder {
+    color: #9ca3af;
+  }
+  

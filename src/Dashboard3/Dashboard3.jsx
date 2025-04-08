@@ -9,6 +9,9 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 const Dashboard3 = () => {
     const [records, setRecords] = useState([]);
     const [liquidationIds, setLiquidationIds] = useState({});
+    const [filteredRecords, setFilteredRecords] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeStatusFilter, setActiveStatusFilter] = useState('ALL');
 
     useEffect(() => {
         // Fetch Cash Advance records
@@ -18,42 +21,39 @@ const Dashboard3 = () => {
                 ...doc.data(),
             }));
 
-            // Update the status based on isApproved and isAttached
             const updatedRecords = fetchedRecords.map(record => {
-                let status = record.status;
+                let status = record.status || 'ALL'; // Default to 'ALL' if status is missing
 
                 if (record.isApproved && record.isGMApproved && record.isAttached) {
                     status = "CLOSED (APPROVED)";
                 } else if (record.isApproved && record.isGMApproved === true && !record.isAttached) {
-                    status = "OPEN (GM Approved)";
-                } else if (record.isApproved && record.isGMApproved === false) {
-                    status = "CLOSED (GM Rejected)";
-                } else if (record.isApproved && record.isGMApproved === null) {
-                    status = "Pending (GM Review)";
+                    status = "OPEN (GM APPROVED)";
+                } else if (!record.isApproved && !record.isGMApproved) {
+                    status = "CLOSED (GM REJECTED)";
+                } else if (record.isApproved && record.isAttached === false) {
+                    status = "CLOSED (REJECTED)";
+                } else if (record.isApproved === null || record.isGMApproved === null) {
+                    status = "PENDING";
                 }
 
                 return { ...record, status };
             });
 
             setRecords(updatedRecords);
+            setFilteredRecords(updatedRecords);  // Initially, all records are shown
         });
 
         // Fetch Liquidation records and map the Liquidation ID to Cash Advance ID
         const unsubscribeLiquidation = onSnapshot(collection(db, "Liquidation"), (snapshot) => {
-            const liquidationRecords = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-
-            // Create a mapping of Cash Advance ID to Liquidation ID
-            const liquidationMap = liquidationRecords.reduce((acc, record) => {
-                if (record.cashAdvanceId) {
-                    acc[record.cashAdvanceId] = record.id;
+            const liquidationMap = {};
+            snapshot.docs.forEach((doc) => {
+                const data = doc.data();
+                const caId = data.cashAdvanceId;
+                if (caId) {
+                    liquidationMap[caId] = doc.id;  // Map: cashAdvanceId -> liquidation doc ID
                 }
-                return acc;
-            }, {});
-
-            setLiquidationIds(liquidationMap);
+            });
+            setLiquidationIds(liquidationMap); // 👈 You should have this in useState
         });
 
         return () => {
@@ -70,8 +70,8 @@ const Dashboard3 = () => {
                 return "closed-declined";
             case "OPEN (GM APPROVED)":
                 return "open";
-            case "PENDING (GM REVIEW)":
-                return "pending-gm";
+            case "PENDING":
+                return "pending";
             case "CLOSED (REJECTED)":
                 return "closed-declined";
             default:
@@ -79,13 +79,85 @@ const Dashboard3 = () => {
         }
     };
 
-    // Legend for status indicators
+    const tabColors = {
+        "ALL": "#4F46E5",
+        "OPEN (GM APPROVED)": "#FACC15",
+        "CLOSED (APPROVED)": "#22C55E",
+        "CLOSED (GM REJECTED)": "#EF4444",
+        "CLOSED (REJECTED)": "#EF4444",
+        "PENDING": "#9CA3AF",
+    };
+
+    const filterRecords = (status) => {
+        return records.filter((record) => {
+            const isCashAdvance = !record.source || record.source === "cashAdvance"; // Assuming 'source' is undefined for Cash Advance
+            const statusMatches = (status === "ALL" || (isCashAdvance && record.status === status));
+            return statusMatches;
+        });
+    };
+
+
+    const SearchBox = ({ placeholder, value, onChange }) => {
+        return (
+            <div className="nq-search-box-container">
+                <div className="nq-search-box-icon">
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                            stroke="#6B7280"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </div>
+                <input
+                    type="text"
+                    className="nq-search-box-input"
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                />
+            </div>
+        );
+    };
+
+    const handleFilterChange = (status) => {
+        setActiveStatusFilter(status);  // Update the selected filter
+
+        // Filter records based on the selected status
+        const filteredData = filterRecords(status);
+        setFilteredRecords(filteredData);  // Update the filtered records list
+    };
+
     const Legend = () => (
-        <div className="gtv_legend">
-            <span className="gtv_legend-item gtv_open">Open (GM Approved)</span>
-            <span className="gtv_legend-item gtv_closed-approved">Closed (Approved)</span>
-            <span className="gtv_legend-item gtv_closed-declined">Closed (Declined)</span>
-            <span className="gtv_legend-item gtv_pending-gm">Pending (GM Review)</span>
+        <div>
+            <div className="gtv_filter-tabs">
+                {Object.entries(tabColors).map(([status, color]) => (
+                    <button
+                        key={status}
+                        className={`gtv_tab ${status === activeStatusFilter ? "gtv_tab-active" : ""}`}
+                        onClick={() => handleFilterChange(status)} // Only handle status filtering
+                    >
+                        <span
+                            className="gtv_tab-indicator"
+                            style={{ backgroundColor: color }}
+                        ></span>
+                        {status === "ALL" && "All"}
+                        {status === "PENDING" && "Pending"}
+                        {status === "OPEN (GM APPROVED)" && "Open (GM Approved)"}
+                        {status === "CLOSED (APPROVED)" && "Closed (Approved)"}
+                        {status === "CLOSED (GM REJECTED)" && "Closed (GM Rejected)"}
+                        {status === "CLOSED (REJECTED)" && "Closed (Rejected)"}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 
@@ -97,55 +169,65 @@ const Dashboard3 = () => {
         { label: "Dashboard 3", path: "/dashboard3" },
     ];
 
+
     return (
         <div>
             <Navbar />
-            <div className="gtv_full-container">
+            <div className="gtv_dashboard3-container">
                 <Breadcrumbs links={breadcrumbsLinks} />
                 <div className="gtv_dashboard-container">
                     <div className="gtv_dashboard-left">
-                    <h1 style={{ textAlign: 'left'}}>Cash Advance Status Dashboard</h1>
-                    <br></br><Legend />
-                        <div className="gtv_content">
-                            <table className="gtv_dashboard-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-                                <thead>
-                                    <tr>
-                                        <th className="gtv_th">Liquidation ID</th> {/* New column for Liquidation ID */}
-                                        <th className="gtv_th">Cash Advance ID</th>
-                                        <th className="gtv_th">Account Name</th>
-                                        <th className="gtv_th">Cash Advance Amount</th>
-                                        <th className="gtv_th">Status</th>
-                                        <th className="gtv_th">Reason (For Rejected Requests)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records.length > 0 ? (
-                                        records.map((record) => (
-                                            <tr key={record.id}>
-                                                <td className="gtv_td">
-                                                    {liquidationIds[record.cashAdvanceId] || "N/A"} {/* Match Cash Advance ID to Liquidation ID */}
-                                                </td>
-                                                <td className="gtv_td">{record.cashAdvanceId}</td>
-                                                <td className="gtv_td">{record.accountName}</td>
-                                                <td className="gtv_td">{record.cashAdvAmount}</td>
-                                                <td className={`gtv_status ${getStatusClass(record.status)}`}>
+                        <h1 style={{ textAlign: 'left' }}>Cash Advance Status Dashboard</h1>
+                        <Legend />
+
+                        {/* <div className="nq-search-section">
+                            <SearchBox
+                            placeholder="Search by Quotation ID or customer name..."
+                            // value={searchTerm}
+                            // onChange={setSearchTerm}
+                            />
+                        </div> */}
+                        <div className="nq-table">
+                            <div className="nq-table-header">
+                                <div className="nq-col nq-col-status">Status</div>
+                                <div className="nq-col nq-col-liquidationId">Liquidation ID</div>
+                                <div className="nq-col nq-col-cashAdvId">Cash Advance ID</div>
+                                <div className="nq-col nq-col-name">Account Name</div>
+                                <div className="nq-col nq-col-amount">Amount ($)</div>
+                                <div className="nq-col nq-col-message" >Reason (For Rejected Requests)</div>
+                            </div>
+                            <div className="nq-table-body">
+                                {filteredRecords.length > 0 ? (
+                                    filteredRecords.map((record) => {
+                                        const liquidationId = liquidationIds[record.cashAdvanceId] || "N/A";  // Default to "N/A" if no liquidationId is found
+
+                                        return (
+                                            <div key={record.id} className="nq-table-row">
+                                                <td className={`nq-col nq-col-status gtv_status ${getStatusClass(record.status)}`}>
                                                     {record.status}
                                                 </td>
-                                                <td className="gtv_td">{record.rejectionReason || " "}</td> {/* Display rejection reason if exists */}
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td className="gtv_td" colSpan="6" style={{ textAlign: 'center' }}>No records to display.</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                                <div className="nq-col nq-col-liquidationId">
+                                                    {liquidationId}  {/* Always display liquidationId (or "N/A" if not available) */}
+                                                </div>
+                                                <div className="nq-col nq-col-cashAdvId">{record.cashAdvanceId}</div>
+                                                <div className="nq-col nq-col-name">{record.accountName}</div>
+                                                <div className="nq-col nq-col-amount">$ {record.cashAdvAmount}</div>
+                                                <div className="nq-col nq-col-message">{record.rejectionReason || " "}</div>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="nq-table-row">
+                                        <div className="nq-col" colSpan="6" style={{ textAlign: 'center' }}>
+                                            No records to display.
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* <Footer /> */}
         </div>
     );
 };
