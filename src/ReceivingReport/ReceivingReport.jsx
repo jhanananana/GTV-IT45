@@ -3,7 +3,7 @@ import './styles.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
 import db from "../firebase";
-import { collection, doc, setDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, doc, setDoc, query, orderBy, limit, getDoc, getDocs } from "firebase/firestore";
 
 const ReceivingReport = () => {
     const [items, setItems] = useState([]);
@@ -14,7 +14,11 @@ const ReceivingReport = () => {
     const [description, setDescription] = useState('');
     const [receivingReportNo, setReceivingReportNo] = useState('');
     const [currentDate, setCurrentDate] = useState('');
-
+    const [assetType, setAssetType] = useState('');
+    const [department, setDepartment] = useState('');
+    const [modeOfAcquisition, setModeOfAcquisition] = useState('Purchase');
+    const [others, setOthers] = useState('');
+    const [purchaseOrderNo, setPurchaseOrderNo] = useState('');
 
     // Set the current date on page load
     useEffect(() => {
@@ -49,7 +53,18 @@ const ReceivingReport = () => {
 
     const addItem = () => {
         const totalCost = quantityAccepted * unitCost;
-        const newItem = { itemName, quantityAccepted, unit, unitCost, totalCost, description };
+        const newItem = {
+            itemName,
+            quantityAccepted,
+            unit,
+            unitCost,
+            totalCost,
+            description,
+            assetType,
+            department,
+            modeOfAcquisition,
+            others
+        };
     
         setItems(prevItems => [...prevItems, newItem]);
     
@@ -58,20 +73,39 @@ const ReceivingReport = () => {
         setUnitCost('');
         setUnit('Pc');
         setDescription('');
+        setAssetType('');
+        setDepartment('');
+        setModeOfAcquisition('Purchase');
+        setOthers('');
     };
 
     const handleSubmit = async () => {
-        const data = {
-            receivingReportNo,
-            items,
-            currentDate,
-            status: "Pending"
-        };
-    
+        if (!purchaseOrderNo) {
+            alert("Please enter a Purchase Order No.");
+            return;
+        }
+
         try {
+            const poDocRef = doc(db, "Purchase Order", purchaseOrderNo);
+            const poDocSnap = await getDoc(poDocRef);
+    
+            if (!poDocSnap.exists()) {
+                alert(`Purchase Order No "${purchaseOrderNo}" not found in the database.`);
+                return;
+            }
+    
+            const data = {
+                receivingReportNo,
+                purchaseOrderNo,
+                items,
+                currentDate,
+                status: "Pending"
+            };
+
             await setDoc(doc(db, "Receiving Report", receivingReportNo), data);
             alert("Receiving Report saved successfully!");
             setItems([]);
+            setPurchaseOrderNo('');
             await fetchLastReportNo();
         } catch (error) {
             console.error("Error saving document: ", error);
@@ -84,7 +118,13 @@ const ReceivingReport = () => {
         { label: "Receiving Report", path: "/receivingreport" },
     ];
 
-    const preventInvalidNumberInput = (e) => {
+    const preventNumberInput = (e) => {
+        if (!isNaN(e.key) && e.key !== ' ') {
+            e.preventDefault();
+        }
+    };
+    
+    const preventInvalidInput = (e) => {
         if (["e", "E", "+", "-"].includes(e.key)) {
             e.preventDefault();
         }
@@ -110,14 +150,16 @@ const ReceivingReport = () => {
                         </div>
 
                         <div className="gtv_dashboard-group">
+                            <label htmlFor="purchaseOrderNo">Purchase Order No:</label>
+                            <input className="gtv_dashBoardInput" type="text" id="purchaseOrderNo" value={purchaseOrderNo} onChange={(e) => setPurchaseOrderNo(e.target.value)} />
                             <label htmlFor="assetType">Asset Type:</label>
-                            <input className="gtv_dashBoardInput" type="text" id="assetType" />
+                            <input className="gtv_dashBoardInput" type="text" id="assetType" value={assetType} onChange={(e) => setAssetType(e.target.value)} onKeyDown={preventNumberInput} />
 
                             <label htmlFor="department">Department:</label>
-                            <input className="gtv_dashBoardInput" type="text" id="department" />
+                            <input className="gtv_dashBoardInput" type="text" id="department" value={department} onChange={(e) => setDepartment(e.target.value)} onKeyDown={preventNumberInput} />
 
                             <label htmlFor="modeOfAcquisition">Mode of Acquisition:</label>
-                            <select id="modeOfAcquisition" className="gtv_cashAdvInput">
+                            <select id="modeOfAcquisition" className="gtv_cashAdvInput" value={modeOfAcquisition} onChange={(e) => { const value = e.target.value; setModeOfAcquisition(value); if (value !== "Other") { setOthers(''); } }} >
                                 <option value="Purchase">Purchase</option>
                                 <option value="Donation">Donation</option>
                                 <option value="Other">Other</option>
@@ -126,7 +168,7 @@ const ReceivingReport = () => {
 
                         <div className="gtv_dashboard-group">
                             <label htmlFor="others">Others:</label>
-                            <input className="gtv_dashBoardInput" type="text" id="others" />
+                            <input className="gtv_dashBoardInput" type="text" id="others" value={others} onChange={(e) => setOthers(e.target.value)} onKeyDown={preventNumberInput} disabled={modeOfAcquisition !== "Other"} />
 
                             {/* Item Details */}
                             <label htmlFor="itemName">Item Name:</label>
@@ -139,12 +181,12 @@ const ReceivingReport = () => {
                                 id="quantityAccepted"
                                 value={quantityAccepted}
                                 onChange={(e) => setQuantityAccepted(e.target.value)}
-                                onKeyDown={preventInvalidNumberInput}
+                                onKeyDown={preventInvalidInput}
                             />
                         </div>
                         <div className="gtv_dashboard-group">
                             <label htmlFor="unitCost">Unit Cost:</label>
-                            <input type="number" id="unitCost" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} onKeyDown={preventInvalidNumberInput}/>
+                            <input type="number" id="unitCost" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} onKeyDown={preventInvalidInput}/>
 
                             <label htmlFor="unit">Unit:</label>
                             <select className="gtv_cashAdvInput" id="unit" value={unit} onChange={(e) => setUnit(e.target.value)}>
