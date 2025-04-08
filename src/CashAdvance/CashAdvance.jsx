@@ -69,9 +69,9 @@ const CashAdvance = () => {
     <Navbar />
     <div className="gtv_cash-advance-container">
       <div className="gtv_cash-advance-form">
-        <form onSubmit={handleSubmit}>
-          <h1>Cash Advance Request</h1><br></br>
-
+      <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Request Form
+      </h1>
+        <form className="gtv_cashAdvForm"onSubmit={handleSubmit} >
           <div className="gtv_form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
             <input
@@ -105,8 +105,8 @@ const CashAdvance = () => {
             />
           </div>
 
-          <div>
-            <button type="submit" className="gtv_buttonLF gtv_btnSubmit" style={{margin: "0 160px"}}>Submit Request</button>
+          <div className="gtv_rrBtnBg">
+          <button type="submit" className="gtv_buttonLF gtv_rrBtn">Submit</button>
           </div>
         </form>
       </div>

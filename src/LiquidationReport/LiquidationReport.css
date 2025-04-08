@@ -20,7 +20,7 @@ body {
   display: flex;
   padding: 40px;
   border-radius: 8px;
-  margin: 20px 0px;
+  margin: 0px 0px;
   background-color: white;
   gap: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for emphasis */
@@ -32,7 +32,6 @@ body {
 }
 
 .gtv_form-right {
-  padding-top: 30px;
   flex: 1;
 }
 
@@ -43,12 +42,14 @@ body {
 }
 
 .gtv_form-group {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+  color: #6b7280;
 }
 
 .gtv_form-left label,
 .gtv_form-right label {
   margin-top: 10px;
+  color: #3d3d3d;
 }
 
 /* Button Styling */
@@ -86,13 +87,15 @@ body {
 
 /* Label Styling */
 .gtv_label {
-  font-size: large;
+  color: #4b4b4b;
+  font-size: 16x;
+  font-weight: 500;
   text-align: right;
 }
 
 /* Dropzone Styling */
 .gtv_dropzone {
-  border: 1px dashed #ccc;
+  border: 3px dashed #ccc;
   background-color: #e3e3e3;
   padding: 10px;
   margin: 14px 0;
@@ -176,4 +179,15 @@ body {
 
 .gtv_popup-content p {
   margin-bottom: 20px;
+}
+
+.gtv_btnRemove {
+  margin-left: 0px;
+  font-size: 15px;
+}
+
+.gtv_fileText {
+  margin: 100px auto;
+  color: #888;
+  font-size: 18px;
 }

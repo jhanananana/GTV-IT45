@@ -110,10 +110,9 @@ const Dashboard2 = () => {
             <Navbar />
             <div className="gtv_full-container">
                 <Breadcrumbs links={breadcrumbsLinks} />
+                <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Amount Records (General Manager)</h1>
                 <div className="gtv_dashboard-container">
                     <div className="gtv_dashboard-left">
-                        <h1 style={{ textAlign: 'left' }}>Cash Advance Amount Records</h1>
-                        <br></br>
                         <form>
                             <div className="gtv_dashboard-group">
                                 <label htmlFor="cashAdvanceId">Cash Advance ID:</label>

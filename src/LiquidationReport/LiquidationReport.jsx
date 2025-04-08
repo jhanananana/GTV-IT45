@@ -171,12 +171,13 @@ const LiquidationReport = () => {
       <Navbar />
       <div className="gtv_full-container">
         <Breadcrumbs links={breadcrumbsLinks} />
+        <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Liquidation Report</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="gtv_form-container">
             <div className="gtv_form-left">
-              <h1 style={{ textAlign: 'left' }}>Liquidation Report</h1>
-              
-              <br></br>
+              <div className="gtv_rrReport">
+                <h3 className="gtv_formTitle">Report Details</h3>
+              </div>
 
               {/* LIQUIDATION ID FIELD */}
               <div className="gtv_form-group">
@@ -214,7 +215,7 @@ const LiquidationReport = () => {
               <div className="gtv_form-group">
                 <label className="gtv_label" htmlFor="accountName">Account Name</label>
                 <input
-                  placeholder="Account name of the request is displayed here.."
+                  placeholder="Account name of the request"
                   disabled className="gtv_cashAdvInput" id="accountName" type="text" readOnly />
               </div>
 
@@ -226,7 +227,7 @@ const LiquidationReport = () => {
                   className="gtv_cashAdvInput"
                   id="activity"
                   {...register('activity')}
-                  placeholder="Activity of the request is displayed here.."
+                  placeholder="Activity of the request"
                   rows="3"
                   readOnly
                 />
@@ -270,16 +271,19 @@ const LiquidationReport = () => {
 
             {/* RECEIPT UPLOAD */}
             <div className="gtv_form-right">
-              <label className="gtv_label">Upload a photo of receipt</label>
+              <div className="gtv_rrReport">
+                <h3 className="gtv_formTitle">Upload Photo of Receipt</h3>
+              </div>
+              <button type="button" className="gtv_buttonLF gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
+
               <div {...getRootProps()} className="gtv_dropzone">
                 <input {...getInputProps()} />
                 {file ? (
                   <img src={URL.createObjectURL(file)} alt="Uploaded Receipt" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 ) : (
-                  <p>Drag and drop file here</p>
+                  <p className='gtv_fileText'>Drag/drop the file here</p>
                 )}
               </div>
-              <button type="button" className="gtv_buttonLF gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
 
               {/* CASH AMOUNT */}
               <div className="gtv_form-group">
@@ -324,7 +328,7 @@ const LiquidationReport = () => {
 
               {/* EXCESS / FOR REFUND */}
               <div className="gtv_form-group">
-                <label className="gtv_label" htmlFor="excessRefund">Excess Refund:</label>
+                <label className="gtv_label" htmlFor="excessRefund">Excess/Refund:</label>
                 <input
                   className="gtv_cashAdvInput"
                   id="excessRefund"
@@ -333,12 +337,15 @@ const LiquidationReport = () => {
                   readOnly
                 />
               </div>
-              <button type="submit" className="gtv_buttonLF gtv_btnSubmit">Submit Report</button>
+
             </div>
           </div>
+          <div className="gtv_rrBtnBg" style={{ border: '1px solid #dfdfdf' }}>
+            <button type="submit" className="gtv_buttonLF gtv_rrBtn">Submit Report</button>
+          </div>
+
         </form>
       </div>
-      <Footer />
     </>
   );
 };

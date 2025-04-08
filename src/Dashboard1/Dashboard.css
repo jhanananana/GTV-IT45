@@ -28,6 +28,7 @@
     margin: 0 auto;
     max-width: 1500px;
 }
+
 /* body .gtv_dashboard-container {
     margin: 0 auto;
 }*/
@@ -35,15 +36,27 @@
 /* Updated table styles */
 .gtv_table {
     border-collapse: collapse;
+    padding: 20px 0;
 }
 
 h1 {
-    font-size: 1.5rem; /* Adjusted to match your example */
+    font-size: 1.7rem; /* Adjusted to match your example */
     font-weight: 600;
     color: #263145;
     margin: 0;
+    padding: 0;
     text-align: center;
   }
+
+.gtv_rrHeader {
+    background-color: #1e293b;
+    color: white;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;  
+    border-radius: 15px 15px 0 0 ;
+}
 
 .gtv_th,
 .gtv_td {
@@ -64,6 +77,13 @@ h1 {
     height: 48px; 
 }
 
+.gtv_name {
+    width: 300px;
+}
+
+.gtv-desc {
+    width: 200px;
+}
 .gtv_dashBoardInput {
     margin-top: 5px;
     /* font-size: medium; */
@@ -109,6 +129,46 @@ h1 {
     background-color: #263146;
     transition: background-color 0.25s;  
 }
+
+.gtv_rrBtn {
+    border-radius: 8px;
+    border: none;
+    margin: 20px 40px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: white;
+    cursor: pointer;
+    width: 160px;
+    background-color: #263146;
+    transition: background-color 0.25s;
+    float: right; /* This will align the button to the right */
+}
+
+.gtv_rrBtnBg {
+    border-top: 1px solid #e2e2e2;
+    background-color: #f9fafb;
+    height: 100px;
+    margin: 0px 0;
+    align-content: center;
+}
+
+.gtv_vrBtn {
+    border-radius: 8px;
+    border: none;
+    margin: 10px ;
+    padding: 8px 10px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: white;
+    cursor: pointer;
+    width: 100px;
+    background-color: #263146;
+    transition: background-color 0.25s;
+}
+
 .gtv_btn {
     padding: 10px 20px;
     color: white;
@@ -159,6 +219,19 @@ h1 {
 .gtv_btnSet:hover {
     color: white;
     background-color: #2c3e50;
+}
+
+.gtv_emptyMsg {
+    padding: 30px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #3b3b3b;
+}
+
+.gtv_noItems {
+    text-align: center;
+    font-size: 16px;
+    color: #888888;
 }
 
 .gtv_popup-overlay {
@@ -255,6 +328,38 @@ h1 {
     background-color: #ff4c4c;
 }
 
+.gtv_vrStatus-select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+}
+
+.gtv_vrStatus.in-progress {
+    background-color: #fff5cb;
+    color: #e6a029;
+}
+
+.gtv_vrStatus.completed {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.gtv_vrStatus.pending {
+    background-color: #fee2e2;
+    color: #ab3437;
+}
+
+.gtv_vrStatus-Input {
+    padding: 10px 12px 10px 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 600;
+    background-color: white;
+}
+
 .gtv_status {
     font-weight: 500;
     text-align: center;
@@ -297,7 +402,8 @@ h1 {
 }
 
 .gtv_dashboard-group {
-    /* justify-items: center; */
+    /* justify-items: left; */
+    padding-top: 5px;
     display: flex;
     /* flex-direction: row; */
     /* align-items: left; */
@@ -323,13 +429,13 @@ h1 {
     border-radius: 8px;
 }
 
-.gtv_dashboard-left, .gtv_dashboard-right {
-    flex: 1;
-}
-
 .gtv_dashboard-fields {
     display: flex;
     flex-direction: column;
+}
+
+.gtv_dashboard-left, .gtv_dashboard-right {
+    flex: 1;
 }
 
 .gtv_dashboard-left label,
@@ -337,6 +443,65 @@ h1 {
     width: 30%;
     margin-top: 10px;
     text-align: right;
+}
+
+h3 {
+    color: #363636;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+.gtv_rrReport {
+    flex: 1;
+}
+
+
+.gtv_rrReport h3 {
+    color: #1e293b;
+    font-weight: 600;
+    padding: 0;
+}
+
+.gtv_rrReport .gtv_formTitle {
+    /* margin-left: 30px; */
+    padding-left: 10px;  /* Add padding between the line and the text */
+    border-left: 3px solid rgb(65, 65, 65);
+    font-weight: bold; /* Optional, for better emphasis */
+    color: #1e293b; /* Optional, for text color */
+}
+
+.gtv_rrReport label {
+    /* width: 50px; */
+    margin-top: 14px;
+    text-align: left;
+
+}
+
+.gtv_rrReport input {
+    background-color: rgb(255, 255, 255);
+    /* font-weight: 600;s */
+    width: 190px;
+    margin-right: 30px;
+    
+}
+
+.gtv_rrReport input:disabled {
+    background-color: rgb(245, 245, 245); /* Lighter color for disabled state */
+    color: rgb(150, 150, 150); /* Lighter text color */
+    border: 1px solid rgb(200, 200, 200); /* Lighter border */
+    cursor: not-allowed; /* Change cursor to indicate that it's disabled */
+}
+
+.gtv_qtyInput {
+    margin-top: 5px;
+    /* font-size: medium; */
+    font-family: inherit;
+    padding: 8px;
+    border-radius: 5px;
+    width: 80px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    
 }
 
 .gtv_tab-indicator {
@@ -505,3 +670,14 @@ h1 {
     color: #9ca3af;
   }
   
+  .gtv_input-group label {
+    font-weight: 500;
+    padding-right: 20px;
+    font-size: 16px;
+  }
+
+  .gtv_input-group {
+    border-top: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+  }
+

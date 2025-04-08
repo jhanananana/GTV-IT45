@@ -175,9 +175,12 @@ const Dashboard3 = () => {
             <Navbar />
             <div className="gtv_dashboard3-container">
                 <Breadcrumbs links={breadcrumbsLinks} />
+                <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Status Dashboard</h1>
                 <div className="gtv_dashboard-container">
                     <div className="gtv_dashboard-left">
-                        <h1 style={{ textAlign: 'left' }}>Cash Advance Status Dashboard</h1>
+                        <div className="gtv_rrReport">
+                            <h3 className="gtv_formTitle">Request Status</h3>
+                        </div>
                         <Legend />
 
                         {/* <div className="nq-search-section">

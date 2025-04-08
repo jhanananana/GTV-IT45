@@ -8,9 +8,11 @@ const Home = () => {
     return (
         <div className="gtv_home">
             <Navbar />
-            <h1 style={{marginTop: '120px', textAlign: 'center'}}>GTV: Liquidation Report Forms</h1>
             <div className="gtv_page-container">
+                
                 <div className="gtv_content">
+                <h1 className="gtv_rrHeader" style={{marginTop: '120px', textAlign: 'center'}}>GTV: Liquidation & Receiving Report Forms</h1>
+
                     <div className="gtv_links-grid">
                         <Link to="/home" className="gtv_link-card">Home
                         </Link>

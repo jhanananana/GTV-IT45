@@ -179,12 +179,11 @@ const Dashboard1 = () => {
 
       <div className="gtv_full-container">
           <Breadcrumbs links={breadcrumbsLinks} />
+          <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Amount Records (Admin)</h1>
 
         {/* Left Side Form */}
         <div className="gtv_dashboard-container">
           <div className="gtv_dashboard-left">
-            <h1 style={{ textAlign: 'left'}}>Cash Advance Amount Records</h1>
-            <br></br>
             <form onSubmit={handleSubmit(onSubmit)}>
 
               <div className="gtv_dashboard-group">
