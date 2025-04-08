@@ -29,8 +29,13 @@ const ValidationPage = () => {
         querySnapshot.forEach((docSnap) => {
           const data = docSnap.data();
           if (data.items) {
-            allItems.push(...data.items);
+            const itemsWithReportNo = data.items.map(item => ({
+              ...item,
+              receivingReportNo: docSnap.id,
+            }));
+            allItems.push(...itemsWithReportNo);
           }
+          
         });
   
         setAllReceivingReports(allItems);
@@ -83,7 +88,12 @@ console.log("Purchase Order No:", purchaseOrderNo);
       if (reportSnap.exists()) {
         const reportData = reportSnap.data();
         console.log("Fetched data:", reportData); // <-- Check structure
-        setReceivingReportItems(reportData.items || []); // Or change 'items' to the correct key
+        const itemsWithReportNo = (reportData.items || []).map(item => ({
+          ...item,
+          receivingReportNo: trimmedReportNo,
+        }));
+        setReceivingReportItems(itemsWithReportNo);
+        
       } else {
         alert(`No Receiving Report found with number: ${trimmedReportNo}`);
         setReceivingReportItems([]);
@@ -154,6 +164,8 @@ console.log("Purchase Order No:", purchaseOrderNo);
               totalCost: item.totalCost,
               description: item.description,
               status: item.status,
+            receivingReportNo: receivingReportNo, // <- Add this line
+
             }),
           }, { merge: true });
   
@@ -227,7 +239,7 @@ console.log("Purchase Order No:", purchaseOrderNo);
     {receivingReportItems.length > 0 ? (
       receivingReportItems.map((item, index) => (
         <tr key={index}>
-          <td className="gtv_td">{receivingReportNo}</td> {/* New Cell */}
+<td className="gtv_td">{item.receivingReportNo || receivingReportNo}</td>
           <td className="gtv_td">{item.itemName}</td>
           <td className="gtv_td">{item.quantityAccepted}</td>
           <td className="gtv_td">{item.unit}</td>
@@ -279,30 +291,31 @@ console.log("Purchase Order No:", purchaseOrderNo);
     </tr>
   </thead>
   <tbody>
-    {purchaseOrderItems.length > 0 ? (
-      purchaseOrderItems.map((po, index) => (
-        po.items && po.items.length > 0 ? (
-          po.items.map((item, itemIndex) => (
-            <tr key={itemIndex}>
-              <td className="gtv_td">{purchaseOrderNo}</td> {/* New Cell */}
-              <td className="gtv_td">{item.particulars}</td>
-              <td className="gtv_td">{item.quantity}</td>
-              <td className="gtv_td">{item.unit}</td>
-              <td className="gtv_td">{item.cost}</td>
-              <td className="gtv_td">{item.totalCost}</td>
-              <td className="gtv_td">{item.gradeDescription}</td>
-            </tr>
-          ))
-        ) : (
-          <tr key={index}>
-            <td colSpan="7" className="gtv_td">No items found in this PO</td>
+  {purchaseOrderItems.length > 0 ? (
+    purchaseOrderItems.map((po, index) => (
+      po.items && po.items.length > 0 ? (
+        po.items.map((item, itemIndex) => (
+          <tr key={`${index}-${itemIndex}`}>
+            <td className="gtv_td">{po.id}</td> {/* Shows actual PO Number from document ID */}
+            <td className="gtv_td">{item.particulars}</td>
+            <td className="gtv_td">{item.quantity}</td>
+            <td className="gtv_td">{item.unit}</td>
+            <td className="gtv_td">{item.cost}</td>
+            <td className="gtv_td">{item.totalCost}</td>
+            <td className="gtv_td">{item.gradeDescription}</td>
           </tr>
-        )
-      ))
-    ) : (
-      <tr><td colSpan="7" className="gtv_td">No Purchase Orders found</td></tr>
-    )}
-  </tbody>
+        ))
+      ) : (
+        <tr key={index}>
+          <td className="gtv_td">{po.id}</td>
+          <td className="gtv_td" colSpan="6">No items found in this PO</td>
+        </tr>
+      )
+    ))
+  ) : (
+    <tr><td colSpan="7" className="gtv_td">No Purchase Orders found</td></tr>
+  )}
+</tbody>
 </table>
 
 </div>
