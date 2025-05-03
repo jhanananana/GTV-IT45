@@ -172,7 +172,7 @@ const LiquidationReport = () => {
       <div className="gtv_full-container">
         <Breadcrumbs links={breadcrumbsLinks} />
         <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Liquidation Report</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
           <div className="gtv_form-container">
             <div className="gtv_form-left">
               <div className="gtv_rrReport">

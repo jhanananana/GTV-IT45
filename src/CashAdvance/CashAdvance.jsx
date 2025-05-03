@@ -71,7 +71,7 @@ const CashAdvance = () => {
       <div className="gtv_cash-advance-form">
       <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Request Form
       </h1>
-        <form className="gtv_cashAdvForm"onSubmit={handleSubmit} >
+        <form className="gtv_cashAdvForm"onSubmit={handleSubmit} autoComplete='off' >
           <div className="gtv_form-group">
             <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
             <input
