@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import './genmanager.css';
+import './GenManager.css';
 import Navbar from '../NavBarAndFooter/navbar.jsx'; 
 import Footer from '../NavBarAndFooter/footer.jsx'; 
 
