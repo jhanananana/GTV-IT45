@@ -1,5 +1,5 @@
 import React, { useState } from 'react';  // Ensure this is here
-import './ReasonForRejecting.css';
+import './ReasonforRejecting.css';
 import { useNavigate } from 'react-router-dom';
 
 const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => { 
