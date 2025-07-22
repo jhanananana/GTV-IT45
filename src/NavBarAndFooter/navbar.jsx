@@ -16,11 +16,11 @@ export const Navbar = () => {
             <img
               onClick={toggleSidebar}
               className="hamburger"
-              src="/images/hamburger.png"
+              src="/hamburger.png"
               alt="hamburger"
             />
             <a href="/home">
-              <img className="logo" src="/images/logo.png" alt="Logo" />
+              <img className="logo" src="/logo.png" alt="Logo" />
             </a>
             <a href="/home" className="shop-name">
               Galanter and Jones
