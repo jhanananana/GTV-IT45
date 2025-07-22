@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LiquidationReport from './src/LiquidationReport/LiquidationReport';
 import Home from './src/Homepage/home.jsx';
 import GenManager from './src/GenManager/GenManager.jsx';
@@ -26,6 +26,7 @@ function App() {
           <Route path="/reason-for-rejecting" element={<ReasonForRejecting />} />
           <Route path="/receivingreport" element={<ReceivingReport />} />
           <Route path="/validationpage" element={<ValidationPage/>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </BrowserRouter>
