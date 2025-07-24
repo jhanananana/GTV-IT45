@@ -22,13 +22,14 @@ body {
   border-radius: 8px;
   margin: 0px 0px;
   background-color: white;
-  gap: 20px;
+  /* gap: 20px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for emphasis */
 }
 
 /* Left and Right Columns */
 .gtv_form-left {
   flex: 1;
+  margin: -20px;
 }
 
 .gtv_form-right {
@@ -42,13 +43,16 @@ body {
 }
 
 .gtv_form-group {
-  margin-bottom: 0px;
-  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+   /* border: 1px solid red; */
+  margin-bottom: 15px;
+  padding: 100px;
 }
 
 .gtv_form-left label,
 .gtv_form-right label {
-  margin-top: 10px;
+  margin-top: 5px;
   color: #3d3d3d;
 }
 
@@ -87,7 +91,7 @@ body {
 
 /* Label Styling */
 .gtv_label {
-  color: #4b4b4b;
+  color: #7c7e83;
   font-size: 16x;
   font-weight: 500;
   text-align: right;
@@ -98,10 +102,8 @@ body {
   border: 3px dashed #ccc;
   background-color: #e3e3e3;
   padding: 10px;
-  margin: 14px 0;
-  height: 275px;
   margin: 10px 0;
-  height: 280px;
+  height: 230px;
   text-align: center;
 }
 
@@ -120,7 +122,7 @@ body {
   margin-bottom: 5px;
   padding: 8px;
   border-radius: 5px;
-  width: 140px;
+  width: 100%;
   border: 1px solid #e0e0e0;
 }
 

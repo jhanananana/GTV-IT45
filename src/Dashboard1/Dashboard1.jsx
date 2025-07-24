@@ -8,16 +8,21 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import ReasonForRejecting from '../ReasonforRejecting/ReasonforRejecting.jsx';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs.jsx';
+import { CheckCircle, XCircle, Edit, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard1 = () => {
   const { register, handleSubmit, setValue } = useForm();
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
+
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   const [isRejectPopupOpen, setIsRejectPopupOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
 
   useEffect(() => {
-    // Listen to Cash Advance collection
     const cashAdvanceUnsubscribe = onSnapshot(
       collection(db, "Cash Advance"),
       (snapshot) => {
@@ -46,20 +51,23 @@ const Dashboard1 = () => {
 
             setRecords(mergedRecords);
           },
-          (error) => {
-            console.error("Error fetching Liquidation records: ", error);
-          }
+          (error) => console.error("Error fetching Liquidation records: ", error)
         );
 
         return () => liquidationUnsubscribe();
       },
-      (error) => {
-        console.error("Error fetching Cash Advance records: ", error);
-      }
+      (error) => console.error("Error fetching Cash Advance records: ", error)
     );
 
     return () => cashAdvanceUnsubscribe();
   }, []);
+
+  const sortedRecords = [...records].sort((a, b) => {
+    if (a.cashAdvanceId != null && b.cashAdvanceId != null) {
+      return a.cashAdvanceId - b.cashAdvanceId;
+    }
+    return 0;
+  });
 
   const breadcrumbsLinks = [
     { label: "Home", path: "/home" },
@@ -68,17 +76,9 @@ const Dashboard1 = () => {
   ];
 
   const onSubmit = (data) => {
-    if (!selectedRecordId) {
-      alert("No record selected.");
-      return;
-    }
-
+    if (!selectedRecordId) return alert("No record selected.");
     const updatedCashAdvAmount = data.cashAdvAmount;
-    if (isNaN(updatedCashAdvAmount) || updatedCashAdvAmount <= 0) {
-      alert("Please enter a valid cash advance amount.");
-      return;
-    }
-
+    if (isNaN(updatedCashAdvAmount) || updatedCashAdvAmount <= 0) return alert("Invalid amount.");
     updateRecord(selectedRecordId, updatedCashAdvAmount);
   };
 
@@ -88,50 +88,33 @@ const Dashboard1 = () => {
       await updateDoc(docRef, { cashAdvAmount: newAmount });
       alert("Amount updated successfully!");
     } catch (error) {
-      console.error("Error updating Cash Advance amount: ", error);
-      alert("Failed to update amount. Please try again.");
+      console.error("Error updating amount: ", error);
+      alert("Update failed.");
     }
   };
 
   const handleApprove = async () => {
-    if (!selectedRecordId) {
-      alert("No record selected. Please select a record to approve.");
-      return;
-    }
-
+    if (!selectedRecordId) return alert("No record selected.");
     const selectedRecord = records.find((record) => record.id === selectedRecordId);
-
-    if (!selectedRecord || !selectedRecord.cashAdvAmount) {
-      alert("Please set a valid Cash Advance Amount before approving.");
-      return;
-    }
+    if (!selectedRecord?.cashAdvAmount) return alert("Set a valid amount first.");
 
     try {
-      const docRef = doc(db, "Cash Advance", selectedRecordId);
-      await updateDoc(docRef, {
-        status: "Pending GM Approval", // Updated status for GM review
-        isApproved: true, // Indicates Admin has approved
-        isGMApproved: null, // Initialize GM approval field
+      await updateDoc(doc(db, "Cash Advance", selectedRecordId), {
+        status: "Pending GM Approval",
+        isApproved: true,
+        isGMApproved: null,
       });
-
-      alert("Record approved successfully and sent for GM approval!");
+      alert("Approved and sent for GM approval!");
       navigate("/dashboard2");
     } catch (error) {
-      console.error("Error approving the record: ", error);
-      alert("Failed to approve the record. Please try again.");
+      console.error("Error approving: ", error);
+      alert("Approval failed.");
     }
   };
 
   const handleRejectSubmit = (reason) => {
-    if (!selectedRecordId) {
-      alert("No records selected for rejection. Please select a record to reject.");
-      return;
-    }
-
-    if (!reason || reason.trim() === "") {
-      alert("Please provide a reason for rejection.");
-      return;
-    }
+    if (!selectedRecordId) return alert("No record selected.");
+    if (!reason.trim()) return alert("Provide a rejection reason.");
 
     updateDoc(doc(db, "Cash Advance", selectedRecordId), {
       status: "CLOSED (Rejected)",
@@ -140,24 +123,21 @@ const Dashboard1 = () => {
       isAttached: false,
     })
       .then(() => {
-        alert("Record rejected successfully!");
-        setRecords((prevRecords) => {
-          const updatedRecords = prevRecords.filter((record) => record.id !== selectedRecordId);
-          console.log("After rejection update:", updatedRecords);
-          return updatedRecords;
-        });
+        alert("Record rejected.");
+        setRecords((prev) => prev.filter((r) => r.id !== selectedRecordId));
         setIsRejectPopupOpen(false);
         navigate("/dashboard3");
       })
       .catch((error) => {
-        console.error("Error rejecting the record:", error);
-        alert("Failed to reject the record. Please try again.");
+        console.error("Rejection error:", error);
+        alert("Rejection failed.");
       });
   };
 
   const handleRecordSelect = (recordId) => {
     setSelectedRecordId(recordId);
     const record = records.find((r) => r.id === recordId);
+    if (!record) return;
 
     setValue("liquidationId", record.liquidationId || "");
     setValue("cashAdvAmount", record.cashAdvAmount || "");
@@ -165,103 +145,181 @@ const Dashboard1 = () => {
     setValue("accountName", record.accountName || "");
   };
 
-  const closeRejectPopup = () => {
-    setIsRejectPopupOpen(false);
-  };
+  const closeRejectPopup = () => setIsRejectPopupOpen(false);
 
-  const filteredRecords = records.filter(
-    (record) => record.isApproved === null || record.isApproved === undefined
+  const filteredRecords = sortedRecords.filter((record) =>
+    (record.isApproved === null || record.isApproved === undefined) &&
+    (record.accountName?.toLowerCase().includes(searchText.toLowerCase()) ||
+      record.cashAdvanceId?.toString().includes(searchText))
   );
+
+  const paginatedRecords = filteredRecords.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredRecords.length / itemsPerPage);
+
+const uniqueCashIds = [...new Set(filteredRecords.map(r => r.cashAdvanceId).filter(Boolean))];
+  const uniqueAccountNames = [...new Set(records.map(r => r.accountName).filter(Boolean))];
 
   return (
     <div>
       <Navbar />
-
       <div className="gtv_full-container">
-          <Breadcrumbs links={breadcrumbsLinks} />
-          <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Amount Records (Admin)</h1>
+        <Breadcrumbs links={breadcrumbsLinks} />
+        <h1 className="gtv_rrHeader" style={{ textAlign: 'left' }}>Cash Advance Amount Records (Admin)</h1>
 
-        {/* Left Side Form */}
         <div className="gtv_dashboard-container">
           <div className="gtv_dashboard-left">
+
             <form onSubmit={handleSubmit(onSubmit)}>
 
-              <div className="gtv_dashboard-group">
-                <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-                <input
-                  disabled={true}
-                  className="gtv_dashBoardInput"
-                  id="cashAdvanceId"
-                  type="text"
-                  {...register("cashAdvanceId")}
-                  readOnly
-                />
-              </div>
-
-              <div className="gtv_dashboard-group">
-                <label htmlFor="accountName">Account Name:</label>
-                <input
-                  disabled={true}
-                  className="gtv_dashBoardInput"
-                  id="accountName"
-                  type="text"
-                  {...register("accountName")}
-                  readOnly
-                />
-              </div>
-
-              {/* Cash Advance Amount */}
-              {selectedRecordId && (
-                <div className="gtv_dashboard-group">
-                  <label htmlFor="cashAdvAmount">Cash Advance Amount:</label>
+              <div className="gtv_dashboard-fields-2col"
+              >
+                <div className="gtv_dashboard-field"
+                  style={{ maxWidth: 200 }}
+                >
+                  <label>Cash Advance ID</label>
+                  <select
+                    className="gtv_dashBoardInput"
+                    {...register("cashAdvanceId")}
+                    onChange={(e) => {
+                      const selectedId = e.target.value;
+                      setValue("cashAdvanceId", selectedId);
+                      const rec = records.find((r) => String(r.cashAdvanceId) === String(selectedId));
+                      setValue("accountName", rec ? rec.accountName : "");
+                      setSelectedRecordId(rec ? rec.id : null);
+                    }}
+                    value={records.find((r) => r.id === selectedRecordId)?.cashAdvanceId || ""}
+                  >
+                    <option value="">Select ID</option>
+                    {uniqueCashIds.map((id) => (
+                      <option key={id} value={id}>
+                        {id}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="gtv_dashboard-field"
+                >
+                  <label>Account Name</label>
                   <input
-                    className="gtv_dashBoardInput" style={{ width: '250px' }}
+                    className="gtv_dashBoardInput"
+                    value={records.find((r) => r.id === selectedRecordId)?.accountName || ""}
+                    disabled
+                    placeholder="Account Name"
+                  />
+                </div>
+                <div className="gtv_dashboard-field">
+                  <label htmlFor="cashAdvAmount">Amount</label>
+                  <input
+                    className="gtv_dashBoardInput"
                     id="cashAdvAmount"
                     type="number"
                     {...register("cashAdvAmount")}
-                    placeholder="Enter cash advance amount..."
+                    placeholder="Enter amount..."
+                    disabled={!selectedRecordId}
                   />
-
-                  {selectedRecordId && (
-                    <button type="submit" style={{ marginLeft: "10px" }} className="gtv_btnDB gtv_btnEdit">Set Amount</button>
-                  )}
                 </div>
-              )}
-              <div className="gtv_dashboard1-buttons">
-                <button type="button" className="gtv_btn reject" onClick={() => setIsRejectPopupOpen(true)}>Reject</button>
-                <button type="button" className="gtv_btn approve" onClick={handleApprove}>Approve</button>
               </div>
+
+              <div className="gtv_dashboard1-buttons">
+                <button
+                  type="button"
+                  className="gtv_btn reject"
+                  onClick={() => setIsRejectPopupOpen(true)}
+                >
+                  <span className="icon-label">
+                    <XCircle size={18} />
+                    <span>Reject</span>
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  className="gtv_btn approve"
+                  onClick={handleApprove}
+                >
+                  <span className="icon-label">
+                    <CheckCircle size={18} />
+                    <span>Approve</span>
+                  </span>
+                </button>
+
+                <button
+                  type="submit"
+                  className="gtv_btnDB gtv_btnEdit"
+                  disabled={!selectedRecordId}
+                  style={{ marginLeft: "10px" }}
+                >
+                  <span className="icon-label">
+                    <Edit size={18} />
+                    <span>Set Amount</span>
+                  </span>
+                </button>
+              </div>
+
             </form>
 
-            {/* Display Records */}
-            <div className="gtv_content" style={{width: '100%'}}>
+            <div className="gtv_dashboard-controls">
+              <div className="gtv_search-wrapper">
+                <Search size={18} className="gtv_search-icon" />
+                <input
+                  id="searchInput"
+                  type="text"
+                  className="gtv_search-input"
+                  placeholder="Search by Cash Advance ID or Account Name..."
+                  value={searchText}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+
+
+              <div className="gtv_pagination">
+                <button
+                  className="gtv_page-btn"
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft size={16} style={{ verticalAlign: 'middle' }} /> Previous
+                </button>
+
+                <span className="gtv_page-info">
+                  Page <strong>{currentPage}</strong> of {totalPages} &nbsp;|&nbsp; {filteredRecords.length} results
+                </span>
+
+                <button
+                  className="gtv_page-btn"
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next <ChevronRight size={16} style={{ verticalAlign: 'middle' }} />
+                </button>
+              </div>
+            </div>
+
+            <div className="gtv_content" style={{ width: '100%' }}>
               <div className="gtv_table">
-                <table style={{ tableLayout: 'fixed', width: '100%' }}>
+                <table style={{ tableLayout: 'fixed', width: '100%'}}>
                   <thead>
                     <tr>
-                      <th className="gtv_th">Cash Advance ID</th>
-                      <th className="gtv_th">Account Name</th>
-                      <th className="gtv_th">Activity</th>
-                      <th className="gtv_th">Cash Advance Amount</th>
-                      <th className="gtv_th">Action</th>
+                      <th className="">Cash Advance ID</th>
+                      <th className="gtv_sticky-header">Account Name</th>
+                      <th className="gtv_sticky-header">Activity</th>
+                      <th className="gtv_sticky-header">Cash Advance Amount</th>
+                      <th className="gtv_sticky-header">Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{ borderBottom: '1px solid red' }}>
                     {filteredRecords.length > 0 ? (
-                      filteredRecords.map((record) => (
+                      paginatedRecords.map((record) => (
                         <tr key={record.id}>
                           <td className="gtv_td">{record.cashAdvanceId}</td>
                           <td className="gtv_td">{record.accountName}</td>
                           <td className="gtv_td">{record.activity}</td>
                           <td className="gtv_td">{record.cashAdvAmount}</td>
                           <td className="gtv_td">
-                            <button
-                              type="button"
-                              className="gtv_btnDB gtv_btnEdit"
-                              onClick={() => handleRecordSelect(record.id)}
-                            >
-                              Select Row
-                            </button>
+                            <button type="button" className="gtv_btnDB gtv_btnEdit" onClick={() => handleRecordSelect(record.id)}>Select</button>
                           </td>
                         </tr>
                       ))
@@ -278,14 +336,12 @@ const Dashboard1 = () => {
         </div>
       </div>
 
-      {/* <Footer /> */}
-      {/* Rejection Reason Popup */}
       {isRejectPopupOpen && selectedRecordId && (
-        <div className="gtv_popup-overlay" onClick={() => setIsRejectPopupOpen(false)}>
+        <div className="gtv_popup-overlay" onClick={closeRejectPopup}>
           <div className="gtv_popup-content">
             <ReasonForRejecting
-              onCancel={() => setIsRejectPopupOpen(false)}
-              selectedRecord={records.find((record) => record.id === selectedRecordId)} // Find the record using selectedRecordId
+              onCancel={closeRejectPopup}
+              selectedRecord={records.find((record) => record.id === selectedRecordId)}
               onReject={handleRejectSubmit}
             />
           </div>

@@ -176,18 +176,18 @@ const LiquidationReport = () => {
           <div className="gtv_form-container">
             <div className="gtv_form-left">
               <div className="gtv_rrReport">
-                <h3 className="gtv_formTitle">Report Details</h3>
+                <h3 className="">Report Details</h3>
               </div>
 
               {/* LIQUIDATION ID FIELD */}
               <div className="gtv_form-group">
-                <label className="gtv_label" htmlFor="liquidationId">Liquidation ID:</label>
+                <label className="gtv_label" htmlFor="liquidationId">Liquidation ID</label>
                 <input disabled value={liquidationID} className="gtv_cashAdvInput" id="liquidationId" type="text" readOnly />
               </div>
 
-              {/* FIRST NAME */}
+              {/* FIRST NAME
               <div className="gtv_form-group">
-                <label className="gtv_label" htmlFor="firstName">First Name:</label>
+                <label className="gtv_label" htmlFor="firstName">First Name</label>
                 <input
                   className="gtv_cashAdvInput"
                   id="firstName"
@@ -196,11 +196,11 @@ const LiquidationReport = () => {
                   placeholder="First Name"
                 />
                 {errors.firstName && <span className="error">{errors.firstName.message}</span>}
-              </div>
+              </div> */}
 
-              {/* LAST NAME */}
+              {/* LAST NAME 
               <div className="gtv_form-group">
-                <label className="gtv_label" htmlFor="lastName">Last Name:</label>
+                <label className="gtv_label" htmlFor="lastName">Last Name</label>
                 <input
                   className="gtv_cashAdvInput"
                   id="lastName"
@@ -209,6 +209,28 @@ const LiquidationReport = () => {
                   placeholder="Last Name"
                 />
                 {errors.lastName && <span className="error">{errors.lastName.message}</span>}
+              </div>*/}
+
+              {/* CASH ADVANCE */}
+              <div className="gtv_form-group">
+                <label htmlFor="cashAdvanceId">Select Cash Advance ID</label>
+                <select
+                  style={{ width: '350px' }}
+                  className="gtv_cashAdvInput"
+                  id="cashAdvanceId"
+                  value={cashAdvanceId || ""}
+                  onChange={(e) => setCashAdvanceId(e.target.value)}
+                  disabled={!availableCashAdvances.length}
+                >
+                  <option value="" disabled>
+                    {availableCashAdvances.length ? 'Select a Cash Advance' : 'No Cash Advances Available'}
+                  </option>
+                  {availableCashAdvances.map(cashAdvance => (
+                    <option key={cashAdvance.id} value={cashAdvance.id}>
+                      {`${cashAdvance.id}`}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* ACCOUNT NAME */}
@@ -221,7 +243,7 @@ const LiquidationReport = () => {
 
               {/* ACTIVITY */}
               <div className="gtv_form-group">
-                <label className="gtv_label" htmlFor="activity">Activity:</label>
+                <label className="gtv_label" htmlFor="activity">Activity</label>
                 <textarea
                   disabled
                   className="gtv_cashAdvInput"
@@ -236,46 +258,24 @@ const LiquidationReport = () => {
 
               {/* DATE FIELD */}
               <div className="gtv_form-group">
-                <label htmlFor="date">Date:</label>
+                <label htmlFor="date">Date</label>
                 <input
                   className="gtv_cashAdvInput"
                   id="date"
                   type="date"
                   value={date}
+                  disabled
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
 
-              {/* CASH ADVANCE */}
-              <div className="gtv_form-group">
-                <label htmlFor="cashAdvanceId">Cash Advance:</label>
-                <select
-                  style={{ width: '350px' }}
-                  className="gtv_cashAdvInput"
-                  id="cashAdvanceId"
-                  value={cashAdvanceId || ""}
-                  onChange={(e) => setCashAdvanceId(e.target.value)}
-                  disabled={!availableCashAdvances.length}
-                >
-                  <option value="" disabled>
-                    {availableCashAdvances.length ? 'Select a Cash Advance' : 'No Cash Advances Available'}
-                  </option>
-                  {availableCashAdvances.map(cashAdvance => (
-                    <option key={cashAdvance.id} value={cashAdvance.id}>
-                      {`ID: ${cashAdvance.id}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
 
             {/* RECEIPT UPLOAD */}
             <div className="gtv_form-right">
               <div className="gtv_rrReport">
-                <h3 className="gtv_formTitle">Upload Photo of Receipt</h3>
+                <h3 className="">Upload Photo of Receipt</h3>
               </div>
-              <button type="button" className="gtv_buttonLF gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
-
               <div {...getRootProps()} className="gtv_dropzone">
                 <input {...getInputProps()} />
                 {file ? (
@@ -284,6 +284,7 @@ const LiquidationReport = () => {
                   <p className='gtv_fileText'>Drag/drop the file here</p>
                 )}
               </div>
+              <button type="button" className="gtv_buttonLF gtv_btnRemove" onClick={() => setFile(null)}>Remove File</button>
 
               {/* CASH AMOUNT */}
               <div className="gtv_form-group">

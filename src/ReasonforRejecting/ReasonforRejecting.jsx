@@ -1,76 +1,57 @@
-import React, { useState } from 'react';  // Ensure this is here
+import React, { useState } from 'react';
 import './ReasonforRejecting.css';
 import { useNavigate } from 'react-router-dom';
+import { X, Send } from 'lucide-react'; // Use 'X' instead of 'XCircle' for simpler close button
 
-const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => { 
-  const [reason, setReason] = useState("");  // Correct usage of useState
+const ReasonForRejecting = ({ onClose, selectedRecord, onReject }) => {
+  const [reason, setReason] = useState("");
   const navigate = useNavigate();
 
   if (!selectedRecord) {
-    return <div>Error: No record selected for rejection.</div>;
+    return <div className="reject-error">Error: No record selected for rejection.</div>;
   }
 
   const handleSubmit = (event) => {
-    event.preventDefault();  
+    event.preventDefault();
     if (reason.trim() === "") {
       alert("Please provide a reason for rejection.");
       return;
     }
-    onReject(reason); // Pass the reason to the parent component (Dashboard1.jsx)
+    onReject(reason);
   };
 
-    const handleFormClick = (event) => {
+  const handleFormClick = (event) => {
     event.stopPropagation();
   };
-
 
   return (
     <div className="reject-container">
       <div className="gtv_reject-form" onClick={handleFormClick}>
+        {/* Close Icon */}
+        <button className="gtv_close-button" onClick={onClose} type="button" aria-label="Close">
+          <X size={20} />
+        </button>
+
+        <h2 className="reject-header">Reject Cash Advance</h2>
+
         <form onSubmit={handleSubmit}>
-          <h1 className="reject-header">Reason For Rejecting</h1>
-          
-          <div className="gtv_form-group">
-            <label htmlFor="cashAdvanceId">Cash Advance ID:</label>
-            <input
-              id="cashAdvanceId"
-              type="text"
-              className ="gtv_textarea"
-              value={selectedRecord.cashAdvanceId || "N/A"}  // Display "N/A" if undefined
-              readOnly
-            />
-          </div>
-          
-          <div className="gtv_form-group">
-            <label htmlFor="accountName">Account Name:</label>
-            <input
-              id="accountName"
-              type="text"
-              value={selectedRecord.accountName || "N/A"}  // Display "N/A" if undefined
-              readOnly
-            />
-          </div>
-          
-          <div className="gtv_form-group">
-            <label htmlFor="activity">Activity:</label>
-            <textarea
-              id="activity"
-              value={selectedRecord.activity || "No activity provided"}  // Display default message if undefined
-              readOnly
-            />
-          </div>
-          
           <div className="gtv_form-group">
             <label htmlFor="reason">Reason:</label>
             <textarea
               id="reason"
+              className="gtv_textarea"
               value={reason}
-              onChange={(e) => setReason(e.target.value)} // Capture reason
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter reason for rejection"
             />
           </div>
-          
-          <button type="submit" className="gtv_buttonLF gtv_btnSubmit">Submit</button>
-          <button type="button" className="gtv_buttonLF gtv_btnCancel" onClick={onClose}>Cancel</button>  {/* Use onClose instead of onCancel */}
+
+          <div className="gtv_button-group">
+            <button type="submit" className="gtv_button gtv_btnSubmit">
+              <Send size={16} style={{ marginRight: '6px' }} />
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>
