@@ -1,7 +1,6 @@
-/* Import Poppins font */
+/* 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Global styles */
 * {
     font-family: "Poppins", sans-serif;
     margin: 0;
@@ -22,19 +21,18 @@ body {
     padding: 0;
 }
 
-/* Hamburger styles */
 .hamburger {
     margin: 10px 10px 0 0;
     width: 60px;
 }
 
-/* Navbar styles */
+
 .navbar {
     width: 100%;
     position: relative;
     z-index: 100;
     border: 1px solid white; 
-    margin-bottom: 100px; /* adjust this */
+    margin-bottom: 100px; 
 }
 
 .navbar-container {
@@ -50,7 +48,6 @@ body {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* Logo styling */
 .navbar-logo {
   display: flex;
   align-items: center;
@@ -70,7 +67,6 @@ body {
     color: #263145;
 }
 
-/* Sidebar styles */
 .sidebar-container {
     width: 100%;
     max-width: 250px;
@@ -103,7 +99,6 @@ body {
     color: white;
 }
 
-/* Footer styles */
 .footer {
     width: 100%;
     margin-top: 3rem;
@@ -138,7 +133,6 @@ body {
     padding: 0;
 }
 
-/* Media queries */
 @media (min-width: 768px) {
     .navbar-container {
         height: 60px;
@@ -174,3 +168,5 @@ body {
         height: 55px;
     }
 }
+
+*/
