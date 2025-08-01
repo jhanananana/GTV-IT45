@@ -16,7 +16,9 @@ const LiquidationReport = () => {
   const [cashAdvAmount, setCashAdvAmount] = useState(0);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
-  const [totalAmountSpent, setTotalAmountSpent] = useState(0); // Track Total Amount Spent
+  const [totalAmountSpent, setTotalAmountSpent] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
 
   useEffect(() => {
     const fetchAvailableCashAdvances = async () => {
@@ -105,7 +107,7 @@ const LiquidationReport = () => {
       // Save the file to Firebase Storage if needed here (not included in this code)
 
       await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
-      alert("Liquidation report submitted successfully!");
+      setShowSuccessModal(true);
 
       setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
 
@@ -144,7 +146,7 @@ const LiquidationReport = () => {
   useEffect(() => {
     if (cashAdvAmount > 0) {
       const refund = cashAdvAmount - totalAmountSpent;
-      setExcessRefund(refund >= 0 ? refund : 0); // Ensure no negative values
+      setExcessRefund(refund); // allow negative values
     } else {
       setExcessRefund(0); // Default if no cashAdvanceAmount
     }
@@ -209,7 +211,7 @@ const LiquidationReport = () => {
                       </option>
                       {availableCashAdvances.map(cashAdvance => (
                         <option key={cashAdvance.id} value={cashAdvance.id}>
-                          {cashAdvance.id}
+                           {cashAdvance.accountName} — {cashAdvance.id}
                         </option>
                       ))}
                     </select>
@@ -305,7 +307,7 @@ const LiquidationReport = () => {
                           const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
                           if (selectedCashAdvance) {
                             const refund = selectedCashAdvance.amount - numericValue;
-                            setExcessRefund(refund >= 0 ? refund : 0);
+                            setExcessRefund(refund); // allow negative values
                           }
                         }
                       }}
@@ -342,6 +344,21 @@ const LiquidationReport = () => {
           </form>
         </div>
       </div>
+      {showSuccessModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Submission Successful</h2>
+      <p className="text-gray-600 mb-6">Your liquidation report has been submitted successfully.</p>
+      <button
+        onClick={() => setShowSuccessModal(false)}
+        className="px-4 py-2 bg-[#1e293b] text-white rounded hover:bg-[#0f172a] transition"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
     </>
   );
 };
