@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { doc, setDoc, getDocs, query, collection, orderBy, limit } from "firebase/firestore";
 import db from "./firebase.js";
 import { useNavigate } from 'react-router-dom';
-import Navbar from './NavBarAndFooter/navbar.jsx'; 
+import Navbar from './NavBarAndFooter/navbar.jsx';
 // import Footer from '../NavBarAndFooter/footer.jsx';
+import Modal from './Modal.jsx';
 
 const CashAdvance = () => {
   const [cashAdvanceId, setCashAdvanceId] = useState(null);
   const [accountName, setAccountName] = useState('');
   const [activity, setActivity] = useState('');
   const navigate = useNavigate();
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [formError, setFormError] = useState('');
   const fetchLastCashAdvanceId = async () => {
     try {
       const cashAdvanceRef = collection(db, "Cash Advance");
@@ -37,10 +39,10 @@ const CashAdvance = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!cashAdvanceId || !accountName || !activity) {
-      alert("Please fill in all the fields.");
+      setFormError('Error: Please fill in all fields.');
       return;
     }
-
+    setFormError('');
     try {
       const docRef = doc(db, "Cash Advance", cashAdvanceId.toString());
       await setDoc(docRef, {
@@ -51,8 +53,9 @@ const CashAdvance = () => {
         isApproved: null,
       });
 
-      alert("Cash Advance Request submitted successfully!");
-      navigate("/dashboard1");
+      // alert("Cash Advance Request submitted successfully!");
+      // navigate("/dashboard1");
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error submitting Cash Advance Request:", error);
       alert("Failed to submit request. Please try again.");
@@ -69,6 +72,19 @@ const CashAdvance = () => {
           </h1>
 
           <form onSubmit={handleSubmit} autoComplete="off" className="space-y-6">
+            {formError && (
+              <div className="flex items-start gap-2 bg-red-100 mt- border border-red-300 text-red-700 px-4 py-3 rounded-md mb-4">
+                <svg
+                  className="w-5 h-5 mt-0.5 shrink-0 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+                </svg>
+                <span>{formError}</span>
+              </div>
+            )}
             <div>
               <label htmlFor="cashAdvanceId" className="block text-gray-700 mb-1">
                 Cash Advance ID:
@@ -92,7 +108,10 @@ const CashAdvance = () => {
                 type="text"
                 placeholder="Enter Account Name"
                 value={accountName}
-                onChange={(e) => setAccountName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[0-9]/g, ""); // Remove numbers
+                  setAccountName(value);
+                }}
                 className="w-full bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
@@ -105,10 +124,14 @@ const CashAdvance = () => {
                 id="activity"
                 placeholder="Describe the activity"
                 value={activity}
-                onChange={(e) => setActivity(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[0-9]/g, ""); // Remove numbers
+                  setActivity(value);
+                }}
                 className="w-full bg-white border border-gray-300 rounded px-3 py-2 resize-none h-20 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
+
 
             <div className="text-right">
               <button
@@ -122,6 +145,27 @@ const CashAdvance = () => {
         </div>
       </div>
       {/* <Footer /> */}
+      <Modal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigate("/dashboard1");
+        }}
+        title="Submission Successful"
+        icon="success"
+        footer={
+          <button
+            onClick={() => {
+              setShowSuccessModal(false);
+              navigate("/dashboard1");
+            }}
+            className="px-4 py-2 bg-[#1e293b] text-white rounded hover:bg-[#0f172a] transition"
+          >
+            Go to Dashboard
+          </button>
+        }
+      ><p>Cash advance request has been submitted successfully.</p>
+      </Modal>
     </div>
   );
 };

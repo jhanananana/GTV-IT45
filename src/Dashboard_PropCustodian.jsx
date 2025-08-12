@@ -13,7 +13,7 @@ const SearchBox = ({ placeholder, value, onChange }) => (
         </div>
         <input
             type="text"
-            className="w-full pl-10 pr-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 pr-4 py-2 border rounded focus:outline-none focus:ring-2 "
             placeholder={placeholder}
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -60,15 +60,15 @@ const Dashboard_PropCustodian = () => {
             const updatedRecords = fetchedRecords.map(record => {
                 let status = record.status || 'ALL';
                 if (record.isApproved && record.isGMApproved && record.isAttached) {
-                    status = "CLOSED (APPROVED)";
+                    status = "Closed (Approved)";
                 } else if (record.isApproved && record.isGMApproved === true && !record.isAttached) {
-                    status = "OPEN (GM APPROVED)";
+                    status = "Open (GM Approved)";
                 } else if (!record.isApproved && !record.isGMApproved) {
-                    status = "CLOSED (GM REJECTED)";
+                    status = "Closed (GM Rejected)";
                 } else if (record.isApproved && record.isAttached === false) {
-                    status = "CLOSED (REJECTED)";
+                    status = "Closed (Rejected)";
                 } else if (record.isApproved === null || record.isGMApproved === null) {
-                    status = "PENDING";
+                    status = "Pending";
                 }
                 return { ...record, status };
             });
@@ -96,29 +96,28 @@ const Dashboard_PropCustodian = () => {
     const getStatusClass = (status) => {
         switch (status.toUpperCase()) {
             case "CLOSED (APPROVED)":
-                return "bg-green-100 text-green-700";
+                return "bg-green-100 text-green-700 rounded-md ml-2";
             case "CLOSED (GM REJECTED)":
             case "CLOSED (REJECTED)":
-                return "bg-red-100 text-red-700";
+                return "bg-red-100 text-red-700 rounded-md ml-2";
             case "OPEN (GM APPROVED)":
-                return "bg-yellow-100 text-yellow-600";
+                return "bg-yellow-100 text-yellow-600 rounded-md ml-2";
             case "PENDING":
-                return "bg-gray-200 text-gray-700";
+                return "bg-gray-200 text-gray-700 rounded-md ml-2";
             default:
                 return "";
         }
     };
 
-    const tabColors = {
-        "ALL": "#1e293b",
-        "OPEN (GM APPROVED)": "bg-yellow-300 text-yellow-800",
-        "CLOSED (APPROVED)": "bg-green-200 text-green-800",
-        "CLOSED (GM REJECTED)": "bg-red-200 text-red-800",
-        "CLOSED (REJECTED)": "bg-red-200 text-red-800",
-        "PENDING": "bg-gray-300 text-gray-800",
-    };
-
     const statusLegends = [
+        {
+            key: "ALL",
+            label: "All",
+            bg: "bg-gray-600",
+            text: "text-white",
+            ring: "ring-gray-300",
+            custom: "border border-gray-600",
+        },
         {
             key: "OPEN (GM APPROVED)",
             label: "Open (GM Approved)",
@@ -158,14 +157,6 @@ const Dashboard_PropCustodian = () => {
             text: "text-gray-700",
             ring: "ring-gray-300",
             custom: "border border-gray-200"
-        },
-        {
-            key: "ALL",
-            label: "All",
-            bg: "bg-indigo-600",
-            text: "text-white",
-            ring: "ring-indigo-300",
-            custom: "border border-indigo-600"
         }
     ];
 
@@ -201,7 +192,7 @@ const Dashboard_PropCustodian = () => {
     return (
         <div>
             <Navbar />
-            <div className="px-4 md:px-8 py-6 max-w-6xl mx-auto">
+            <div className="px-4 md:px-8 py-6 max-w-7xl mx-auto">
                 <Breadcrumbs links={breadcrumbsLinks} />
 
                 <div className="bg-slate-800 text-white px-6 py-6 rounded-t-2xl">
@@ -217,7 +208,7 @@ const Dashboard_PropCustodian = () => {
                     </div>
 
                     <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-                        <div className="flex-1 min-w-[220px] max-w-[400px]">
+                        <div className="flex-1 min-w-[250px] max-w-[90%]">
                             <SearchBox
                                 placeholder="Search by Account Name, Cash Advance ID, or Liquidation ID..."
                                 value={searchText}
@@ -256,22 +247,27 @@ const Dashboard_PropCustodian = () => {
                                 <div className="px-4 py-2">Cash Advance ID</div>
                                 <div className="px-4 py-2">Account Name</div>
                                 <div className="px-4 py-2">Amount ($)</div>
-                                <div className="px-4 py-2">Reason (For Rejected Requests)</div>
+                                <div className="px-4 py-2">Rejection Reason</div>
+                                {/* <div className="px-4 py-2">Date</div> */}
                             </div>
                             <div>
                                 {paginatedRecords.length > 0 ? (
                                     paginatedRecords.map((record) => {
                                         const liquidationId = liquidationIds[record.cashAdvanceId] || "N/A";
                                         return (
-                                            <div key={record.id} className="grid grid-cols-6 border-t text-sm text-gray-800">
+                                            <div
+                                                key={record.id}
+                                                className="grid grid-cols-6 py-3 border-t text-sm text-gray-800 hover:bg-gray-50 cursor-pointer transition"
+                                            >
                                                 <div className={`px-4 py-2 font-medium ${getStatusClass(record.status)}`}>
                                                     {record.status}
                                                 </div>
                                                 <div className="px-4 py-2">{liquidationId}</div>
                                                 <div className="px-4 py-2">{record.cashAdvanceId}</div>
-                                                <div className="px-4 py-2">{record.accountName}</div>
-                                                <div className="px-4 py-2">$ {record.cashAdvAmount}</div>
+                                                <div className="px-4 py-2"><b>{record.accountName}</b></div>
+                                                <div className="px-4 py-2">${record.cashAdvAmount}</div>
                                                 <div className="px-4 py-2">{record.rejectionReason || " "}</div>
+                                                {/* <div className="px-4 py-2">N/A</div> */}
                                             </div>
                                         );
                                     })
@@ -280,6 +276,7 @@ const Dashboard_PropCustodian = () => {
                                         No records to display.
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>

@@ -6,6 +6,7 @@ import Footer from './NavBarAndFooter/footer.jsx';
 import { setDoc, collection, updateDoc, doc, getDocs } from "firebase/firestore";
 import db from "./firebase.js";
 import Breadcrumbs from './Breadcrumbs/Breadcrumbs.jsx';
+import Modal from './Modal.jsx';
 
 const LiquidationReport = () => {
   const [liquidationID, setLiquidationID] = useState(null);
@@ -18,6 +19,8 @@ const LiquidationReport = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [totalAmountSpent, setTotalAmountSpent] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [formError, setFormError] = useState('');
+  const uniqueCashIds = [...new Set(filteredRecords.map(r => r.cashAdvanceId).filter(Boolean))];
 
 
   useEffect(() => {
@@ -74,14 +77,16 @@ const LiquidationReport = () => {
   // Handle form submission
   const onSubmit = async (data) => {
     if (!cashAdvanceId) {
-      alert("Please select an OPEN Cash Advance Request to continue.");
+      setFormError("Error: Please select an open cash advance request.");
       return;
     }
 
     if (!file) {
-      alert("Uploading a receipt is mandatory. Please upload a receipt to proceed.");
+      setFormError("Please upload photo of receipt.");
       return;
     }
+
+    setFormError(''); // Clear previous errors
 
     const selectedCashAdvance = availableCashAdvances.find(ca => ca.id === cashAdvanceId);
     const cashAdvAmount = selectedCashAdvance.cashAdvAmount || 0;
@@ -100,11 +105,10 @@ const LiquidationReport = () => {
       date: date,
       excessRefund,
       totalAmountSpent,
-      receipt: file.name, // Save the file name or handle the file upload in storage
+      receipt: file.name, 
     };
 
     try {
-      // Save the file to Firebase Storage if needed here (not included in this code)
 
       await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
       setShowSuccessModal(true);
@@ -115,11 +119,10 @@ const LiquidationReport = () => {
       await updateDoc(cashAdvanceRef, { isAttached: true, isApproved: true });
 
       setLiquidationID(prevID => prevID + 1);
-      reset(); // Reset the form inputs
-      setCashAdvanceId(null); // Clear selected Cash Advance
-      setFile(null); // Clear the uploaded file
+      reset(); 
+      setCashAdvanceId(null); 
+      setFile(null);
 
-      // Reset Cash Advance Amount, Total Amount Spent, and Excess Refund
       setCashAdvAmount(0);
       setTotalAmountSpent(0);
       setExcessRefund(0);
@@ -148,7 +151,7 @@ const LiquidationReport = () => {
       const refund = cashAdvAmount - totalAmountSpent;
       setExcessRefund(refund); // allow negative values
     } else {
-      setExcessRefund(0); // Default if no cashAdvanceAmount
+      setExcessRefund(0); 
     }
   }, [cashAdvAmount, totalAmountSpent]);
 
@@ -171,14 +174,25 @@ const LiquidationReport = () => {
         <Breadcrumbs links={breadcrumbsLinks} />
         <div className="bg-[#1e293b] text-white px-6 py-6 rounded-t-2xl">
           <h1 className="text-2xl font-bold">Liquidation Report</h1>
-          <p className="text-gray-300 mt-2">Under construction.</p>
-
+          {/* <p className="text-gray-300 mt-2">Under construction.</p> */}
         </div>
 
         <div className="bg-white shadow-lg overflow-hidden">
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <div className="grid bg-white grid-cols-1 p-10 md:grid-cols-2 gap-10">
-
+            {formError && (
+              <div className="flex items-start gap-2 bg-red-100 mx-5 mt-3 border border-red-300 text-red-700 px-4 py-3 rounded-md mb-4">
+                <svg
+                  className="w-5 h-5 mt-0.5 shrink-0 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+                </svg>
+                <span>{formError}</span>
+              </div>
+            )}
+            <div className="grid bg-white grid-cols-1 px-8 mt-7 mb-6 md:grid-cols-2 gap-10">
               <div className="space-y-5">
                 <div className="text-xl font-medium text-gray-700 mb-4">
                   <h3>Report Details</h3>
@@ -186,7 +200,7 @@ const LiquidationReport = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="liquidationId" className="block text-sm font-medium text-gray-700">Liquidation ID</label>
+                    <label htmlFor="liquidationId" className="block mt-3 font-semibold text-gray-700 mb-2">Liquidation ID</label>
                     <input
                       disabled
                       value={liquidationID}
@@ -198,7 +212,7 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="cashAdvanceId" className="block text-sm font-medium text-gray-700">Select Cash Advance ID</label>
+                    <label htmlFor="cashAdvanceId" className="block mt-3 font-semibold text-gray-700 mb-2s">Select Cash Advance ID</label>
                     <select
                       id="cashAdvanceId"
                       value={cashAdvanceId || ""}
@@ -211,14 +225,14 @@ const LiquidationReport = () => {
                       </option>
                       {availableCashAdvances.map(cashAdvance => (
                         <option key={cashAdvance.id} value={cashAdvance.id}>
-                           {cashAdvance.accountName} — {cashAdvance.id}
+                          {cashAdvance.accountName} — {cashAdvance.id}
                         </option>
                       ))}
                     </select>
                   </div>
 
                   <div>
-                    <label htmlFor="accountName" className="block text-sm font-medium text-gray-700">Account Name</label>
+                    <label htmlFor="accountName" className="block mt-3 font-semibold text-gray-700 mb-2">Account Name</label>
                     <input
                       placeholder="Account name of the request"
                       disabled
@@ -230,7 +244,7 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="activity" className="block text-sm font-medium text-gray-700">Activity</label>
+                    <label htmlFor="activity" className="block mt-3 font-semibold text-gray-700 mb-2">Activity</label>
                     <textarea
                       id="activity"
                       {...register('activity')}
@@ -243,7 +257,7 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+                    <label htmlFor="date" className="block mt-3 font-semibold text-gray-700 mb-2">Date</label>
                     <input
                       id="date"
                       type="date"
@@ -282,7 +296,7 @@ const LiquidationReport = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="cashAdvAmount" className="block text-sm font-medium text-gray-700">Cash Advance Amount</label>
+                    <label htmlFor="cashAdvAmount" className="block mt-3 font-semibold text-gray-700 mb-2">Cash Advance Amount</label>
                     <input
                       disabled
                       id="cashAdvAmount"
@@ -294,7 +308,7 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="totalAmountSpent" className="block text-sm font-medium text-gray-700">Total Amount Spent</label>
+                    <label htmlFor="totalAmountSpent" className="block mt-3 font-semibold text-gray-700 mb-2">Total Amount Spent</label>
                     <input
                       id="totalAmountSpent"
                       type="number"
@@ -318,7 +332,7 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="excessRefund" className="block text-sm font-medium text-gray-700">Excess/Refund</label>
+                    <label htmlFor="excessRefund" className="block mt-3 font-semibold text-gray-700 mb-2">Excess/Refund</label>
                     <input
                       id="excessRefund"
                       type="number"
@@ -328,6 +342,7 @@ const LiquidationReport = () => {
                     />
                   </div>
                 </div>
+
               </div>
 
 
@@ -344,21 +359,21 @@ const LiquidationReport = () => {
           </form>
         </div>
       </div>
-      {showSuccessModal && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Submission Successful</h2>
-      <p className="text-gray-600 mb-6">Your liquidation report has been submitted successfully.</p>
-      <button
-        onClick={() => setShowSuccessModal(false)}
-        className="px-4 py-2 bg-[#1e293b] text-white rounded hover:bg-[#0f172a] transition"
+      <Modal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Submission Successful"
+        footer={
+          <button
+            onClick={() => setShowSuccessModal(false)}
+            className="px-4 py-2 bg-[#1e293b] text-white rounded hover:bg-[#0f172a] transition"
+          >
+            Close
+          </button>
+        }
       >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
+        <p>Your liquidation report has been submitted successfully.</p>
+      </Modal>
     </>
   );
 };
