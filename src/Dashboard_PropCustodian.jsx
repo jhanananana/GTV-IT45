@@ -119,7 +119,7 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-gray-600",
         },
         {
-            key: "OPEN (GM APPROVED)",
+            key: "Open (GM Approved)",
             label: "Open (GM Approved)",
             bg: "bg-yellow-100",
             text: "text-yellow-700",
@@ -127,7 +127,7 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-yellow-200"
         },
         {
-            key: "CLOSED (APPROVED)",
+            key: "Closed (Approved)",
             label: "Closed (Approved)",
             bg: "bg-green-100",
             text: "text-green-700",
@@ -135,7 +135,7 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-green-200"
         },
         {
-            key: "CLOSED (GM REJECTED)",
+            key: "Closed (GM Rejected)",
             label: "Closed (GM Rejected)",
             bg: "bg-red-100",
             text: "text-red-700",
@@ -143,7 +143,7 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-red-200"
         },
         {
-            key: "CLOSED (REJECTED)",
+            key: "Closed (Rejected)",
             label: "Closed (Rejected)",
             bg: "bg-red-100",
             text: "text-red-700",
@@ -151,7 +151,7 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-red-200"
         },
         {
-            key: "PENDING",
+            key: "Pending",
             label: "Pending",
             bg: "bg-gray-200",
             text: "text-gray-700",
@@ -243,9 +243,10 @@ const Dashboard_PropCustodian = () => {
                         <div className="min-w-full border rounded-md overflow-hidden">
                             <div className="grid grid-cols-6 bg-gray-100 text-sm font-semibold text-gray-700 border-b">
                                 <div className="px-4 py-2">Status</div>
+                                <div className="px-4 py-2">Account Name</div>
+
                                 <div className="px-4 py-2">Liquidation ID</div>
                                 <div className="px-4 py-2">Cash Advance ID</div>
-                                <div className="px-4 py-2">Account Name</div>
                                 <div className="px-4 py-2">Amount ($)</div>
                                 <div className="px-4 py-2">Rejection Reason</div>
                                 {/* <div className="px-4 py-2">Date</div> */}
@@ -262,9 +263,10 @@ const Dashboard_PropCustodian = () => {
                                                 <div className={`px-4 py-2 font-medium ${getStatusClass(record.status)}`}>
                                                     {record.status}
                                                 </div>
+                                                <div className="px-4 py-2"><b>{record.accountName}</b></div>
+
                                                 <div className="px-4 py-2">{liquidationId}</div>
                                                 <div className="px-4 py-2">{record.cashAdvanceId}</div>
-                                                <div className="px-4 py-2"><b>{record.accountName}</b></div>
                                                 <div className="px-4 py-2">${record.cashAdvAmount}</div>
                                                 <div className="px-4 py-2">{record.rejectionReason || " "}</div>
                                                 {/* <div className="px-4 py-2">N/A</div> */}

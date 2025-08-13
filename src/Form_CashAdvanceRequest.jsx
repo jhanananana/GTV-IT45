@@ -86,7 +86,7 @@ const CashAdvance = () => {
               </div>
             )}
             <div>
-              <label htmlFor="cashAdvanceId" className="block text-gray-700 mb-1">
+              <label htmlFor="cashAdvanceId" className="block mt-3 font-semibold text-gray-700 mb-2">
                 Cash Advance ID:
               </label>
               <input
@@ -100,7 +100,7 @@ const CashAdvance = () => {
             </div>
 
             <div>
-              <label htmlFor="accountName" className="block text-gray-700 mb-1">
+              <label htmlFor="accountName" className="bblock mt-3 font-semibold text-gray-700 mb-2">
                 Account Name:
               </label>
               <input
@@ -117,7 +117,7 @@ const CashAdvance = () => {
             </div>
 
             <div>
-              <label htmlFor="activity" className="block text-gray-700 mb-1">
+              <label htmlFor="activity" className="block mt-3 font-semibold text-gray-700 mb-2">
                 Activity:
               </label>
               <textarea
@@ -136,7 +136,7 @@ const CashAdvance = () => {
             <div className="text-right">
               <button
                 type="submit"
-                className="bg-[#2D3E50] hover:bg-[#1f2d3a] text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+                className="bg-[#2D3E50] hover:bg-[#1f2d3a] text-white font-semibold px-8 py-3 rounded-lg transition duration-300"
               >
                 Submit
               </button>

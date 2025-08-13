@@ -20,7 +20,6 @@ const LiquidationReport = () => {
   const [totalAmountSpent, setTotalAmountSpent] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [formError, setFormError] = useState('');
-  const uniqueCashIds = [...new Set(filteredRecords.map(r => r.cashAdvanceId).filter(Boolean))];
 
 
   useEffect(() => {
@@ -110,7 +109,7 @@ const LiquidationReport = () => {
 
     try {
 
-      await setDoc(doc(db, "Liquidation", `Liquidation #${liquidationID}`), docData);
+      await setDoc(doc(db, "Liquidation", `${liquidationID}`), docData);
       setShowSuccessModal(true);
 
       setAvailableCashAdvances(prev => prev.filter(ca => ca.id !== cashAdvanceId));
@@ -212,13 +211,13 @@ const LiquidationReport = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="cashAdvanceId" className="block mt-3 font-semibold text-gray-700 mb-2s">Select Cash Advance ID</label>
+                    <label htmlFor="cashAdvanceId" className="block mt-3 font-semibold text-gray-700 mb-2">Select Cash Advance ID</label>
                     <select
                       id="cashAdvanceId"
                       value={cashAdvanceId || ""}
                       onChange={(e) => setCashAdvanceId(e.target.value)}
                       disabled={!availableCashAdvances.length}
-                      className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                      className="w-full border border-gray-300 rounded px-3 py-3 bg-white"
                     >
                       <option value="" disabled>
                         {availableCashAdvances.length ? 'Select a Cash Advance' : 'No Cash Advances Available'}
@@ -287,7 +286,7 @@ const LiquidationReport = () => {
                   </div>
                   <button
                     type="button"
-                    className="mt-2 text-sm text-red-600 hover:underline"
+                    className="mt-2 text-red-600 hover:underline"
                     onClick={() => setFile(null)}
                   >
                     Remove File
@@ -296,7 +295,7 @@ const LiquidationReport = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="cashAdvAmount" className="block mt-3 font-semibold text-gray-700 mb-2">Cash Advance Amount</label>
+                    <label htmlFor="cashAdvAmount" className="block mt-3 font-semibold text-gray-700 mb-2">Cash Advance Amount ($)</label>
                     <input
                       disabled
                       id="cashAdvAmount"
@@ -342,15 +341,13 @@ const LiquidationReport = () => {
                     />
                   </div>
                 </div>
-
               </div>
 
-
               {/* Submit Button */}
-              <div className="mt-8 border-t pt-6">
+              <div className="border-t pt-5">
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-[#1e293b] text-white rounded-md hover:bg-[#080b0f] transition"
+                  className="px-6 py-3 bg-[#1e293b] text-white font-semibold rounded-md hover:bg-[#080b0f] transition"
                 >
                   Submit Report
                 </button>

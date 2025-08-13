@@ -237,7 +237,7 @@ const Dashboard_Admin = () => {
 
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex flex-col min-w-[200px] max-w-[200px]">
-                <label className="font-semibold mb-1">Cash Advance ID</label>
+                <label className="block font-semibold text-gray-700 mb-2">Cash Advance ID</label>
                 <select
                   className="p-2 border border-gray-300 rounded-md bg-gray-50 w-full focus:outline-none focus:border-[#263146] focus:bg-white"
                   {...register("cashAdvanceId")}
@@ -262,7 +262,7 @@ const Dashboard_Admin = () => {
               </div>
 
               <div className="flex flex-col min-w-[200px]">
-                <label className="font-semibold mb-1">Account Name</label>
+                <label className="block font-semibold text-gray-700 mb-2">Account Name</label>
                 <input
                   className="p-2 border border-gray-300 rounded-md bg-gray-50 w-full"
                   value={
@@ -276,7 +276,7 @@ const Dashboard_Admin = () => {
 
             {selectedRecordId && (
               <div className="mt-6 flex flex-col gap-6">
-                <div className="flex gap-4 flex-wrap">
+                <div className="flex gap-3 flex-wrap">
                   <button
                     type="button"
                     onClick={() => {
@@ -304,7 +304,7 @@ const Dashboard_Admin = () => {
 
                 {showApproveAmount && (
                   <div className="flex flex-col gap-2 max-w-md">
-                    <label className="font-semibold">Enter Approved Amount</label>
+                    <label className="block font-semibold text-gray-700 mb-2">Enter Cash Advance Amount ($)</label>
                     <input
                       type="number"
                       {...register("cashAdvAmount")}
@@ -316,16 +316,16 @@ const Dashboard_Admin = () => {
                         type="button"
                         onClick={handleSaveApprovedAmountClick}
                         disabled={!isApprovedAmountValid}
-                        className={`px-4 py-2 text-white rounded-md transition ${isApprovedAmountValid ? 'bg-emerald-600 hover:bg-emerald-800' : 'bg-gray-400 cursor-not-allowed'}`}
+                        className={`px-5 py-2 text-white rounded-md transition ${isApprovedAmountValid ? 'bg-emerald-600 hover:bg-emerald-800' : 'bg-gray-400 cursor-not-allowed'}`}
                       >
-                        Save Approved Amount
+                        Set Amount
                       </button>
                       <button
                         type="button"
                         onClick={() => {
                           setShowApproveAmount(false);
                         }}
-                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
+                        className="px-5 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
                       >
                         Cancel
                       </button>
@@ -525,7 +525,7 @@ const Dashboard_Admin = () => {
         }
       >
         <p>Are you sure you want to reject this record? This action cannot be undone.
-        <label className="block mt-3 font-semibold">Cash Advance ID</label>
+        <label className="block font-semibold text-gray-700 mb-2 mt-3">Cash Advance ID</label>
         <input
           type="text"
           value={watch("cashAdvanceId")}
@@ -533,7 +533,7 @@ const Dashboard_Admin = () => {
           className="w-full p-2 border rounded-md bg-gray-100 cursor-not-allowed"
         />
         </p>
-        <label className="block mt-4 font-semibold">Reason for Rejection</label>
+        <label className="block font-semibold text-gray-700 mb-2 mt-3">Reason for Rejection</label>
         <textarea
           value={rejectionReason}
           readOnly

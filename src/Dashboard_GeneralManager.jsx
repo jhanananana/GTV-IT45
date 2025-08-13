@@ -211,7 +211,7 @@ const Dashboard_GeneralManager = () => {
                                         </div>
 
                                         <div className="flex-1">
-                                            <label className="block font-semibold mb-1 text-gray-700">Cash Advance Amount</label>
+                                            <label className="block font-semibold mb-1 text-gray-700">Amount ($)</label>
                                             <input
                                                 disabled
                                                 readOnly
