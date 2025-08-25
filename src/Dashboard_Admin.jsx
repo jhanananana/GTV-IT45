@@ -87,7 +87,7 @@ const Dashboard_Admin = () => {
 
     try {
       await updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-        status: "Pending GM Approval",
+        status: "Pending (GM Approval)",
         isApproved: true,
         isGMApproved: null,
         cashAdvAmount: newAmount,
@@ -95,7 +95,7 @@ const Dashboard_Admin = () => {
 
       await setDoc(doc(db, "Dashboard_GeneralManager", selectedRecordId), {
         ...selectedRecord,
-        status: "Pending GM Approval",
+        status: "Pending (GM Approval)",
         isApproved: true,
         isGMApproved: null,
         cashAdvAmount: newAmount,
@@ -119,7 +119,7 @@ const Dashboard_Admin = () => {
 
     try {
       await updateDoc(doc(db, "Cash Advance", selectedRecordId), {
-        status: "REJECTED",
+        status: "Rejected (Admin)",
         isApproved: false,
         rejectionReason: rejectionReason,
         isAttached: false,

@@ -115,7 +115,7 @@ const Dashboard_GeneralManager = () => {
         try {
             const recordDocRef = doc(db, "Cash Advance", selectedRecord.id);
             await updateDoc(recordDocRef, {
-                status: "CLOSED (GM Rejected)",
+                status: "Rejected",
                 isGMApproved: false,
                 rejectionReason: rejectionReason,
                 isAttached: false,

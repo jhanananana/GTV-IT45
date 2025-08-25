@@ -51,6 +51,7 @@ const CashAdvance = () => {
         activity,
         status: "Pending",
         isApproved: null,
+        isGMApproved: null
       });
 
       // alert("Cash Advance Request submitted successfully!");

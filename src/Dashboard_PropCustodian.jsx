@@ -60,15 +60,17 @@ const Dashboard_PropCustodian = () => {
             const updatedRecords = fetchedRecords.map(record => {
                 let status = record.status || 'ALL';
                 if (record.isApproved && record.isGMApproved && record.isAttached) {
-                    status = "Closed (Approved)";
+                    status = "Closed (Approved)"; // working | approved by both and report made
                 } else if (record.isApproved && record.isGMApproved === true && !record.isAttached) {
-                    status = "Open (GM Approved)";
-                } else if (!record.isApproved && !record.isGMApproved) {
-                    status = "Closed (GM Rejected)";
-                } else if (record.isApproved && record.isAttached === false) {
-                    status = "Closed (Rejected)";
-                } else if (record.isApproved === null || record.isGMApproved === null) {
-                    status = "Pending";
+                    status = "Open (GM Approved)"; // working | approved by both 
+                } else if (record.isApproved == true && record.isGMApproved == null) {
+                    status = "Pending (GM Approval)"; // working | approved by admin only
+                } else if (record.isApproved == true && record.isGMApproved == false && record.isAttached === false) {
+                    status = "Closed (Rejected)"; // working | rejected by both
+                } else if (record.isApproved === null && record.isGMApproved === null) {
+                    status = "Pending (Admin)"; // working | not yet approved by boths
+                } else if (record.isApproved === false && record.isAttached === false) {
+                    status = "Rejected (Admin)"; // working | rejected by admin only
                 }
                 return { ...record, status };
             });
@@ -97,12 +99,16 @@ const Dashboard_PropCustodian = () => {
         switch (status.toUpperCase()) {
             case "CLOSED (APPROVED)":
                 return "bg-green-100 text-green-700 rounded-md ml-2";
+            case "PENDING (GM APPROVAL)":
+                return "bg-gray-300 text-gray-600 rounded-md ml-2";
             case "CLOSED (GM REJECTED)":
             case "CLOSED (REJECTED)":
                 return "bg-red-100 text-red-700 rounded-md ml-2";
+            case "REJECTED (ADMIN)":
+                return "bg-red-200 text-red-700 rounded-md ml-2";
             case "OPEN (GM APPROVED)":
                 return "bg-yellow-100 text-yellow-600 rounded-md ml-2";
-            case "PENDING":
+            case "PENDING (ADMIN)":
                 return "bg-gray-200 text-gray-700 rounded-md ml-2";
             default:
                 return "";
@@ -119,24 +125,24 @@ const Dashboard_PropCustodian = () => {
             custom: "border border-gray-600",
         },
         {
-            key: "Open (GM Approved)",
-            label: "Open (GM Approved)",
-            bg: "bg-yellow-100",
-            text: "text-yellow-700",
-            ring: "ring-yellow-300",
-            custom: "border border-yellow-200"
+            key: "Pending (Admin)",
+            label: "Pending (Admin)",
+            bg: "bg-gray-200",
+            text: "text-gray-700",
+            ring: "ring-gray-300",
+            custom: "border border-gray-200"
         },
         {
-            key: "Closed (Approved)",
-            label: "Closed (Approved)",
-            bg: "bg-green-100",
-            text: "text-green-700",
-            ring: "ring-green-300",
-            custom: "border border-green-200"
+            key: "Pending (GM Approval)",
+            label: "Pending (GM Approval)",
+            bg: "bg-gray-200",
+            text: "text-gray-700",
+            ring: "ring-gray-300",
+            custom: "border border-gray-200"
         },
         {
-            key: "Closed (GM Rejected)",
-            label: "Closed (GM Rejected)",
+            key: "Rejected (Admin)",
+            label: "Rejected (Admin)",
             bg: "bg-red-100",
             text: "text-red-700",
             ring: "ring-red-300",
@@ -150,14 +156,23 @@ const Dashboard_PropCustodian = () => {
             ring: "ring-red-300",
             custom: "border border-red-200"
         },
+                {
+            key: "Closed (Approved)",
+            label: "Closed (Approved)",
+            bg: "bg-green-100",
+            text: "text-green-700",
+            ring: "ring-green-300",
+            custom: "border border-green-200"
+        },
         {
-            key: "Pending",
-            label: "Pending",
-            bg: "bg-gray-200",
-            text: "text-gray-700",
-            ring: "ring-gray-300",
-            custom: "border border-gray-200"
+            key: "Open (GM Approved)",
+            label: "Open (GM Approved)",
+            bg: "bg-yellow-100",
+            text: "text-yellow-700",
+            ring: "ring-yellow-300",
+            custom: "border border-yellow-200"
         }
+
     ];
 
     const Legend = () => (
